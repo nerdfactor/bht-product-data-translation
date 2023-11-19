@@ -106,6 +106,27 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>cz.habarta.typescript-generator</groupId>
+                <artifactId>typescript-generator-maven-plugin</artifactId>
+                <version>3.1.1185</version>
+                <executions>
+                    <execution>
+                        <id>generate</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>process-classes</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jsonLibrary>jackson2</jsonLibrary>
+                    <classPatterns>
+                        <classPattern>de.bhtberlin.paf2023.productdatatranslation.entity.*</classPattern>
+                    </classPatterns>
+                    <outputKind>module</outputKind>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
