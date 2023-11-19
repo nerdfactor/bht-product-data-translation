@@ -49,11 +49,11 @@ public class ProductCrudService {
     /**
      * Read a product.
      *
-     * @param serial The identifying serial number for the product.
+     * @param id The id for the product.
      * @return An optional containing the found product.
      */
-    public @NotNull Optional<Product> readProduct(@NotNull String serial) {
-        return this.productRepository.findById(serial);
+    public @NotNull Optional<Product> readProduct(int id) {
+        return this.productRepository.findById(id);
     }
 
     /**
@@ -76,11 +76,11 @@ public class ProductCrudService {
     }
 
     /**
-     * Delete a product by its serial number.
+     * Delete a product by its id.
      *
-     * @param serial The serial number of the product to delete.
+     * @param id The id of the product to delete.
      */
-    public void deleteProductBySerial(@NotNull String serial) {
-        this.productRepository.deleteById(serial);
+    public void deleteProductById(int id) {
+        this.productRepository.deleteById(id);
     }
 }

@@ -45,10 +45,10 @@ public class ProductCrudIntegrationTests {
         );
         Product created = productService.createProduct(create);
         assertNotNull(created);
-        assertNotEquals(create.hashCode(), created.hashCode());
+        assertNotEquals(0, created.getId());
         assertEquals(create.getSerial(), created.getSerial());
 
-        Optional<Product> read = this.productService.readProduct(created.getSerial());
+        Optional<Product> read = this.productService.readProduct(created.getId());
         assertTrue(read.isPresent());
         assertEquals(read.get().getSerial(), create.getSerial());
     }
@@ -93,16 +93,16 @@ public class ProductCrudIntegrationTests {
 
         this.productService.deleteProduct(created1);
 
-        Optional<Product> read1 = this.productService.readProduct(created1.getSerial());
+        Optional<Product> read1 = this.productService.readProduct(created1.getId());
         assertFalse(read1.isPresent());
 
         Product create2 = new Product(UUID.randomUUID().toString(), "Produktname 2", 20d, 10d, 5d, 28.6, 153.99);
         Product created2 = productService.createProduct(create2);
         assertNotNull(created2);
 
-        this.productService.deleteProductBySerial(created2.getSerial());
+        this.productService.deleteProductById(created2.getId());
 
-        Optional<Product> read2 = this.productService.readProduct(created2.getSerial());
+        Optional<Product> read2 = this.productService.readProduct(created2.getId());
         assertFalse(read2.isPresent());
     }
 
