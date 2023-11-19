@@ -20,31 +20,31 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class AppTests {
 
 
-	/**
-	 * Check if the Spring ApplicationContext is loaded after starting the Application.
-	 *
-	 * @param applicationContext The application context.
-	 */
-	@Test
-	void springApplicationContextLoads(@Autowired ApplicationContext applicationContext) {
-		assertNotNull(applicationContext);
-	}
+    /**
+     * Check if the Spring ApplicationContext is loaded after starting the Application.
+     *
+     * @param applicationContext The application context.
+     */
+    @Test
+    void springApplicationContextLoads(@Autowired ApplicationContext applicationContext) {
+        assertNotNull(applicationContext);
+    }
 
-	/**
-	 * Check if the application configuration loads correctly during application startup
-	 * by checking for some of the loaded properties.
-	 *
-	 * @param appConfig   The application configuration.
-	 * @param environment The application environment.
-	 */
-	@Test
-	void applicationConfigurationLoads(@Autowired AppConfig appConfig, @Autowired Environment environment) {
-		assertNotNull(appConfig);
-		String version = appConfig.getVersion();
-		assertNotNull(version);
-		assertFalse(version.isEmpty());
-		String name = environment.getProperty("spring.application.name");
-		assertNotNull(name);
-		assertFalse(name.isEmpty());
-	}
+    /**
+     * Check if the application configuration loads correctly during application startup
+     * by checking for some of the loaded properties.
+     *
+     * @param appConfig   The application configuration.
+     * @param environment The application environment.
+     */
+    @Test
+    void applicationConfigurationLoads(@Autowired AppConfig appConfig, @Autowired Environment environment) {
+        assertNotNull(appConfig);
+        String version = appConfig.getVersion();
+        assertNotNull(version);
+        assertFalse(version.isEmpty());
+        String name = environment.getProperty("spring.application.name");
+        assertNotNull(name);
+        assertFalse(name.isEmpty());
+    }
 }

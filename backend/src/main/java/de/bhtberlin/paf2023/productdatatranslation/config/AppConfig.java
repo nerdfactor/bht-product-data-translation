@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "app")
 public class AppConfig {
 
-	/**
-	 * The current application version.
-	 */
-	private String version;
+    /**
+     * The current application version.
+     */
+    private String version;
 }

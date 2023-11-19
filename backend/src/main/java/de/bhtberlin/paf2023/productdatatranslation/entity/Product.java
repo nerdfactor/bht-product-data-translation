@@ -20,40 +20,40 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Product {
 
-	/**
-	 * A serial number identifying the product.
-	 */
-	@Id
-	private String serial;
+    /**
+     * A serial number identifying the product.
+     */
+    @Id
+    private String serial;
 
-	/**
-	 * A name for the product.
-	 */
-	private String name;
+    /**
+     * A name for the product.
+     */
+    private String name;
 
-	/**
-	 * The height of the product.
-	 */
-	private double height;
+    /**
+     * The height of the product.
+     */
+    private double height;
 
-	/**
-	 * The width of the product.
-	 */
-	private double width;
+    /**
+     * The width of the product.
+     */
+    private double width;
 
-	/**
-	 * The depth of the product.
-	 */
-	private double depth;
+    /**
+     * The depth of the product.
+     */
+    private double depth;
 
-	/**
-	 * The weight of the product.
-	 */
-	private double weight;
+    /**
+     * The weight of the product.
+     */
+    private double weight;
 
-	/**
-	 * The price of the product.
-	 */
-	private double price;
+    /**
+     * The price of the product.
+     */
+    private double price;
 
 }

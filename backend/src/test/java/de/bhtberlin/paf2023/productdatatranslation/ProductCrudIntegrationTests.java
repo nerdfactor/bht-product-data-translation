@@ -24,109 +24,109 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class ProductCrudIntegrationTests {
 
-	@Autowired
-	ProductCrudService productService;
+    @Autowired
+    ProductCrudService productService;
 
-	/**
-	 * Check if a product can be read after it was created.
-	 */
-	@Test
-	@Transactional
-	@Rollback
-	public void productCanBeCreatedAndRead() {
-		Product create = new Product(
-				UUID.randomUUID().toString(),
-				"Produktname",
-				20d,
-				10d,
-				5d,
-				28.6,
-				153.99
-		);
-		Product created = productService.createProduct(create);
-		assertNotNull(created);
-		assertNotEquals(create.hashCode(), created.hashCode());
-		assertEquals(create.getSerial(), created.getSerial());
+    /**
+     * Check if a product can be read after it was created.
+     */
+    @Test
+    @Transactional
+    @Rollback
+    public void productCanBeCreatedAndRead() {
+        Product create = new Product(
+                UUID.randomUUID().toString(),
+                "Produktname",
+                20d,
+                10d,
+                5d,
+                28.6,
+                153.99
+        );
+        Product created = productService.createProduct(create);
+        assertNotNull(created);
+        assertNotEquals(create.hashCode(), created.hashCode());
+        assertEquals(create.getSerial(), created.getSerial());
 
-		Optional<Product> read = this.productService.readProduct(created.getSerial());
-		assertTrue(read.isPresent());
-		assertEquals(read.get().getSerial(), create.getSerial());
-	}
+        Optional<Product> read = this.productService.readProduct(created.getSerial());
+        assertTrue(read.isPresent());
+        assertEquals(read.get().getSerial(), create.getSerial());
+    }
 
-	/**
-	 * Check if a product can be updated after it was created.
-	 */
-	@Test
-	@Transactional
-	@Rollback
-	public void productCanBeUpdated() {
-		Product create = new Product(
-				UUID.randomUUID().toString(),
-				"Produktname",
-				20d,
-				10d,
-				5d,
-				28.6,
-				153.99
-		);
-		Product created = productService.createProduct(create);
-		assertNotNull(created);
+    /**
+     * Check if a product can be updated after it was created.
+     */
+    @Test
+    @Transactional
+    @Rollback
+    public void productCanBeUpdated() {
+        Product create = new Product(
+                UUID.randomUUID().toString(),
+                "Produktname",
+                20d,
+                10d,
+                5d,
+                28.6,
+                153.99
+        );
+        Product created = productService.createProduct(create);
+        assertNotNull(created);
 
-		String updatedProductName = "Geänderter Produktname";
-		created.setName(updatedProductName);
-		Product updated = this.productService.updateProduct(created);
+        String updatedProductName = "Geänderter Produktname";
+        created.setName(updatedProductName);
+        Product updated = this.productService.updateProduct(created);
 
-		assertNotNull(updated);
-		assertEquals(updatedProductName, updated.getName());
-	}
+        assertNotNull(updated);
+        assertEquals(updatedProductName, updated.getName());
+    }
 
-	/**
-	 * Check if a product can't be read after it was deleted.
-	 */
-	@Test
-	@Transactional
-	@Rollback
-	public void productCantBeReadAfterItWasDeleted() {
-		Product create1 = new Product(UUID.randomUUID().toString(), "Produktname 1", 20d, 10d, 5d, 28.6, 153.99);
-		Product created1 = productService.createProduct(create1);
-		assertNotNull(created1);
+    /**
+     * Check if a product can't be read after it was deleted.
+     */
+    @Test
+    @Transactional
+    @Rollback
+    public void productCantBeReadAfterItWasDeleted() {
+        Product create1 = new Product(UUID.randomUUID().toString(), "Produktname 1", 20d, 10d, 5d, 28.6, 153.99);
+        Product created1 = productService.createProduct(create1);
+        assertNotNull(created1);
 
-		this.productService.deleteProduct(created1);
+        this.productService.deleteProduct(created1);
 
-		Optional<Product> read1 = this.productService.readProduct(created1.getSerial());
-		assertFalse(read1.isPresent());
+        Optional<Product> read1 = this.productService.readProduct(created1.getSerial());
+        assertFalse(read1.isPresent());
 
-		Product create2 = new Product(UUID.randomUUID().toString(), "Produktname 2", 20d, 10d, 5d, 28.6, 153.99);
-		Product created2 = productService.createProduct(create2);
-		assertNotNull(created2);
+        Product create2 = new Product(UUID.randomUUID().toString(), "Produktname 2", 20d, 10d, 5d, 28.6, 153.99);
+        Product created2 = productService.createProduct(create2);
+        assertNotNull(created2);
 
-		this.productService.deleteProductBySerial(created2.getSerial());
+        this.productService.deleteProductBySerial(created2.getSerial());
 
-		Optional<Product> read2 = this.productService.readProduct(created2.getSerial());
-		assertFalse(read2.isPresent());
-	}
+        Optional<Product> read2 = this.productService.readProduct(created2.getSerial());
+        assertFalse(read2.isPresent());
+    }
 
-	/**
-	 * Checks if products can be listed after they are created.
-	 */
-	@Test
-	@Transactional
-	@Rollback
-	public void productsCanBeListed() {
-		int amountOfProducts = 10;
-		for (int i = 0; i < amountOfProducts; i++) {
-			Product create = new Product(UUID.randomUUID().toString(), "Produktname " + (i + 1), 20d, 10d, 5d, 28.6, 153.99);
-			productService.createProduct(create);
-		}
+    /**
+     * Checks if products can be listed after they are created.
+     */
+    @Test
+    @Transactional
+    @Rollback
+    public void productsCanBeListed() {
+        int amountOfProducts = 10;
+        for (int i = 0; i < amountOfProducts; i++) {
+            Product create = new Product(UUID.randomUUID().toString(), "Produktname " + (i + 1), 20d, 10d, 5d, 28.6, 153.99);
+            productService.createProduct(create);
+        }
 
-		List<Product> products = this.productService.listAllProducts();
-		assertNotNull(products);
-		assertEquals(amountOfProducts, products.size());
-		assertEquals("Produktname 1", products.stream().
-				min(Comparator.comparing(Product::getName))
-				.orElseThrow()
-				.getName()
-		);
-	}
+        List<Product> products = this.productService.listAllProducts();
+        assertNotNull(products);
+        assertEquals(amountOfProducts, products.size());
+        assertEquals("Produktname 1", products.stream().
+                min(Comparator.comparing(Product::getName))
+                .orElseThrow()
+                .getName()
+        );
+    }
 
 }
