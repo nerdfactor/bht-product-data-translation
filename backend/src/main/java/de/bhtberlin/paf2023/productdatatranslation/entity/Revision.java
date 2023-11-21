@@ -3,6 +3,7 @@ package de.bhtberlin.paf2023.productdatatranslation.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Revision {
 
     /**
@@ -53,4 +55,16 @@ public class Revision {
     @ManyToOne
     @JoinColumn(name = "translation_id")
     private Translation translation;
+
+    /**
+     * Basic constructor with all data fields in order to create new {@link Revision Revisions}.
+     * The id will be set during creation of the object in the database.
+     */
+    public Revision(int version, long timestamp, String shortDescription, String longDescription, boolean correction) {
+        this.version = version;
+        this.timestamp = timestamp;
+        this.shortDescription = shortDescription;
+        this.longDescription = longDescription;
+        this.correction = correction;
+    }
 }

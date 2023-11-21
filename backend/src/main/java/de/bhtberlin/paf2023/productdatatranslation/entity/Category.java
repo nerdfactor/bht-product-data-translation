@@ -3,6 +3,7 @@ package de.bhtberlin.paf2023.productdatatranslation.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Set;
@@ -16,6 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Category {
 
     /**
@@ -37,4 +39,12 @@ public class Category {
     @JsonIgnore
     @ManyToMany(mappedBy = "categories")
     private Set<Product> products;
+
+    /**
+     * Basic constructor with all data fields in order to create new {@link Category Categories}.
+     * The id will be set during creation of the object in the database.
+     */
+    public Category(String name) {
+        this.name = name;
+    }
 }

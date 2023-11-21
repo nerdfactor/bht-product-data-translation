@@ -3,6 +3,7 @@ package de.bhtberlin.paf2023.productdatatranslation.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Picture {
 
     /**
@@ -50,4 +52,15 @@ public class Picture {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    /**
+     * Basic constructor with all data fields in order to create new {@link Picture Pictures}.
+     * The id will be set during creation of the object in the database.
+     */
+    public Picture(String filename, String format, double height, double width) {
+        this.filename = filename;
+        this.format = format;
+        this.height = height;
+        this.width = width;
+    }
 }

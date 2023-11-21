@@ -2,6 +2,7 @@ package de.bhtberlin.paf2023.productdatatranslation.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Set;
@@ -13,6 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Translation {
 
     /**
@@ -53,4 +55,13 @@ public class Translation {
     @ManyToOne
     @JoinColumn(name = "language_id")
     private Language language;
+
+    /**
+     * Basic constructor with all data fields in order to create new {@link Translation Translations}.
+     * The id will be set during creation of the object in the database.
+     */
+    public Translation(String shortDescription, String longDescription) {
+        this.shortDescription = shortDescription;
+        this.longDescription = longDescription;
+    }
 }

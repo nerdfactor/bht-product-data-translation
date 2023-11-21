@@ -3,6 +3,7 @@ package de.bhtberlin.paf2023.productdatatranslation.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Set;
@@ -14,6 +15,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Language {
 
     /**
@@ -54,4 +56,15 @@ public class Language {
      */
     @OneToMany(mappedBy = "language", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Set<Translation> translations;
+
+    /**
+     * Basic constructor with all data fields in order to create new {@link Language Languages}.
+     * The id will be set during creation of the object in the database.
+     */
+    public Language(String name, String currency, String measure, String isoCode) {
+        this.name = name;
+        this.currency = currency;
+        this.measure = measure;
+        this.isoCode = isoCode;
+    }
 }
