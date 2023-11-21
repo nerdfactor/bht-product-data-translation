@@ -70,13 +70,21 @@ public class Product {
     /**
      * The {@link Category Categories} for this {@link Product}.
      */
-    @ManyToMany(mappedBy = "products")
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @JoinTable(
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
     private Set<Category> categories;
 
     /**
      * The {@link Color Colors} for this {@link Product}.
      */
-    @ManyToMany(mappedBy = "products")
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @JoinTable(
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "color_id")
+    )
     private Set<Color> colors;
 
     /**

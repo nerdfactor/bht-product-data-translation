@@ -1,5 +1,6 @@
 package de.bhtberlin.paf2023.productdatatranslation.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,10 +34,7 @@ public class Category {
     /**
      * All the {@link Product Products} that are in this {@link Category}.
      */
-    @ManyToMany
-    @JoinTable(
-            joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
+    @JsonIgnore
+    @ManyToMany(mappedBy = "categories")
     private Set<Product> products;
 }

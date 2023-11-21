@@ -1,5 +1,6 @@
 package de.bhtberlin.paf2023.productdatatranslation.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,10 +32,7 @@ public class Color {
     /**
      * All the {@link Product Products} that have this {@link Color}.
      */
-    @ManyToMany
-    @JoinTable(
-            joinColumns = @JoinColumn(name = "color_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
+    @JsonIgnore
+    @ManyToMany(mappedBy = "colors", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Set<Product> products;
 }
