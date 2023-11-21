@@ -37,7 +37,7 @@ public class Color {
      * All the {@link Product Products} that have this {@link Color}.
      */
     @JsonIgnore
-    @ManyToMany(mappedBy = "colors", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToMany(mappedBy = "colors")
     private Set<Product> products;
 
     /**

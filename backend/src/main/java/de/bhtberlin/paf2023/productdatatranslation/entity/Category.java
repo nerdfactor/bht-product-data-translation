@@ -39,7 +39,7 @@ public class Category {
      * All the {@link Product Products} that are in this {@link Category}.
      */
     @JsonIgnore
-    @ManyToMany(mappedBy = "categories", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToMany(mappedBy = "categories")
     private Set<Product> products;
 
     /**
