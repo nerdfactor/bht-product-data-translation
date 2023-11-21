@@ -10,10 +10,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,15 +31,7 @@ public class ProductCrudIntegrationTests {
     @Transactional
     @Rollback
     public void productCanBeCreatedAndRead() {
-        Product create = new Product(
-                UUID.randomUUID().toString(),
-                "Produktname",
-                20d,
-                10d,
-                5d,
-                28.6,
-                153.99
-        );
+        Product create = this.createTestProduct();
         Product created = productService.createProduct(create);
         assertNotNull(created);
         assertNotEquals(0, created.getId());
@@ -60,15 +49,7 @@ public class ProductCrudIntegrationTests {
     @Transactional
     @Rollback
     public void productCanBeUpdated() {
-        Product create = new Product(
-                UUID.randomUUID().toString(),
-                "Produktname",
-                20d,
-                10d,
-                5d,
-                28.6,
-                153.99
-        );
+        Product create = this.createTestProduct();
         Product created = productService.createProduct(create);
         assertNotNull(created);
 
@@ -87,7 +68,7 @@ public class ProductCrudIntegrationTests {
     @Transactional
     @Rollback
     public void productCantBeReadAfterItWasDeleted() {
-        Product create1 = new Product(UUID.randomUUID().toString(), "Produktname 1", 20d, 10d, 5d, 28.6, 153.99);
+        Product create1 = this.createTestProduct();
         Product created1 = productService.createProduct(create1);
         assertNotNull(created1);
 
@@ -96,7 +77,7 @@ public class ProductCrudIntegrationTests {
         Optional<Product> read1 = this.productService.readProduct(created1.getId());
         assertFalse(read1.isPresent());
 
-        Product create2 = new Product(UUID.randomUUID().toString(), "Produktname 2", 20d, 10d, 5d, 28.6, 153.99);
+        Product create2 = this.createTestProduct();
         Product created2 = productService.createProduct(create2);
         assertNotNull(created2);
 
@@ -114,18 +95,41 @@ public class ProductCrudIntegrationTests {
     @Rollback
     public void productsCanBeListed() {
         int amountOfProducts = 10;
+        List<Product> listOfTestProducts = new ArrayList<>();
         for (int i = 0; i < amountOfProducts; i++) {
-            Product create = new Product(UUID.randomUUID().toString(), "Produktname " + (i + 1), 20d, 10d, 5d, 28.6, 153.99);
+            Product create = this.createTestProduct();
+            listOfTestProducts.add(create);
             productService.createProduct(create);
         }
+        Product firstProduct = listOfTestProducts.stream()
+                .min(Comparator.comparing(Product::getName))
+                .orElse(this.createTestProduct());
 
         List<Product> products = this.productService.listAllProducts();
         assertNotNull(products);
         assertEquals(amountOfProducts, products.size());
-        assertEquals("Produktname 1", products.stream().
+        assertEquals(firstProduct.getName(), products.stream().
                 min(Comparator.comparing(Product::getName))
                 .orElseThrow()
                 .getName()
+        );
+    }
+
+    /**
+     * Create a random {@link Product} for testing.
+     *
+     * @return A Product with random values.
+     */
+    private Product createTestProduct() {
+        Random random = new Random();
+        return new Product(
+                UUID.randomUUID().toString(),
+                UUID.randomUUID().toString().replace("-", "").substring(10),
+                1 + (100 - 1) * random.nextDouble(),
+                1 + (100 - 1) * random.nextDouble(),
+                1 + (100 - 1) * random.nextDouble(),
+                1 + (100 - 1) * random.nextDouble(),
+                1 + (100 - 1) * random.nextDouble()
         );
     }
 
