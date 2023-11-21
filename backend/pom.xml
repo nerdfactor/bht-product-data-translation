@@ -122,7 +122,7 @@
                 <configuration>
                     <jsonLibrary>jackson2</jsonLibrary>
                     <classPatterns>
-                        <classPattern>de.bhtberlin.paf2023.productdatatranslation.entity.*</classPattern>
+                        <classPattern>de.bhtberlin.paf2023.productdatatranslation.dto.*Dto</classPattern>
                     </classPatterns>
                     <outputKind>module</outputKind>
                 </configuration>
