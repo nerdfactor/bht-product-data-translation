@@ -13,7 +13,7 @@ import java.util.Optional;
 
 
 /**
- * Service for basic Crud operations on products.
+ * Service for basic CRUD operations on products.
  */
 @Slf4j
 @RequiredArgsConstructor

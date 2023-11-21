@@ -1,4 +1,4 @@
-package de.bhtberlin.paf2023.productdatatranslation;
+package de.bhtberlin.paf2023.productdatatranslation.crud;
 
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.service.ProductCrudService;
@@ -53,7 +53,7 @@ public class ProductCrudIntegrationTests {
         Product created = productService.createProduct(create);
         assertNotNull(created);
 
-        String updatedProductName = "Geänderter Produktname";
+        String updatedProductName = "Geänderter Name";
         created.setName(updatedProductName);
         Product updated = this.productService.updateProduct(created);
 
