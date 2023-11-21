@@ -63,4 +63,21 @@ public class Picture {
         this.height = height;
         this.width = width;
     }
+
+    /**
+     * Compare an Object to this {@link Picture} by checking
+     * object equality or the same id.
+     *
+     * @param o The Object to compare.
+     * @return true if Object is equal to this {@link Picture}.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Picture obj = (Picture) o;
+        return o == this || this.id == obj.id;
+    }
+
 }

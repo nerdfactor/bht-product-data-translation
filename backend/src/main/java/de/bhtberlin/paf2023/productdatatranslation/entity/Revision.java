@@ -67,4 +67,21 @@ public class Revision {
         this.longDescription = longDescription;
         this.correction = correction;
     }
+
+    /**
+     * Compare an Object to this {@link Revision} by checking
+     * object equality or the same id.
+     *
+     * @param o The Object to compare.
+     * @return true if Object is equal to this {@link Revision}.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Revision obj = (Revision) o;
+        return o == this || this.id == obj.id;
+    }
+
 }

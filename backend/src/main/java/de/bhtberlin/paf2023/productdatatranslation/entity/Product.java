@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -112,4 +114,117 @@ public class Product {
         this.weight = weight;
         this.price = price;
     }
+
+    /**
+     * Add a {@link Category}.
+     *
+     * @param category The {@link Category} to add.
+     */
+    public void addCategory(@NotNull Category category) {
+        if (this.categories == null) {
+            this.categories = new HashSet<>();
+        }
+        this.categories.add(category);
+    }
+
+    /**
+     * Remove a {@link Category}.
+     *
+     * @param category The {@link Category} to remove.
+     */
+    public void removeCategory(@NotNull Category category) {
+        if (this.categories == null) {
+            this.categories = new HashSet<>();
+        }
+        this.categories.remove(category);
+    }
+
+    /**
+     * Add a {@link Color}.
+     *
+     * @param color The {@link Color} to add.
+     */
+    public void addColor(@NotNull Color color) {
+        if (this.colors == null) {
+            this.colors = new HashSet<>();
+        }
+        this.colors.add(color);
+    }
+
+    /**
+     * Remove a {@link Color}.
+     *
+     * @param color The {@link Color} to remove.
+     */
+    public void removeColor(@NotNull Color color) {
+        if (this.colors == null) {
+            this.colors = new HashSet<>();
+        }
+        this.colors.remove(color);
+    }
+
+    /**
+     * Add a {@link Picture}.
+     *
+     * @param picture The {@link Picture} to add.
+     */
+    public void addPicture(@NotNull Picture picture) {
+        if (this.pictures == null) {
+            this.pictures = new HashSet<>();
+        }
+        this.pictures.add(picture);
+    }
+
+    /**
+     * Remove a {@link Picture}.
+     *
+     * @param picture The {@link Picture} to remove.
+     */
+    public void removePicture(@NotNull Picture picture) {
+        if (this.pictures == null) {
+            this.pictures = new HashSet<>();
+        }
+        this.pictures.remove(picture);
+    }
+
+    /**
+     * Add a {@link Translation}.
+     *
+     * @param translation The {@link Translation} to add.
+     */
+    public void addTranslation(@NotNull Translation translation) {
+        if (this.translations == null) {
+            this.translations = new HashSet<>();
+        }
+        this.translations.add(translation);
+    }
+
+    /**
+     * Remove a {@link Translation}.
+     *
+     * @param translation The {@link Translation} to remove.
+     */
+    public void removeTranslation(@NotNull Translation translation) {
+        if (this.translations == null) {
+            this.translations = new HashSet<>();
+        }
+        this.translations.remove(translation);
+    }
+
+    /**
+     * Compare an Object to this {@link Product} by checking
+     * object equality or the same id.
+     *
+     * @param o The Object to compare.
+     * @return true if Object is equal to this {@link Product}.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Product obj = (Product) o;
+        return o == this || this.id == obj.id;
+    }
+
 }

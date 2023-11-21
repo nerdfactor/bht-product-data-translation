@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -64,4 +66,45 @@ public class Translation {
         this.shortDescription = shortDescription;
         this.longDescription = longDescription;
     }
+
+    /**
+     * Add a {@link Revision}.
+     *
+     * @param revision The {@link Revision} to add.
+     */
+    public void addRevision(@NotNull Revision revision) {
+        if (this.revisions == null) {
+            this.revisions = new HashSet<>();
+        }
+        this.revisions.add(revision);
+    }
+
+    /**
+     * Remove a {@link Revision}.
+     *
+     * @param revision The {@link Revision} to remove.
+     */
+    public void removeRevision(@NotNull Revision revision) {
+        if (this.revisions == null) {
+            this.revisions = new HashSet<>();
+        }
+        this.revisions.remove(revision);
+    }
+
+    /**
+     * Compare an Object to this {@link Translation} by checking
+     * object equality or the same id.
+     *
+     * @param o The Object to compare.
+     * @return true if Object is equal to this {@link Translation}.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Translation obj = (Translation) o;
+        return o == this || this.id == obj.id;
+    }
+
 }

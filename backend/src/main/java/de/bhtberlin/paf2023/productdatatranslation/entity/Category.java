@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -37,7 +39,7 @@ public class Category {
      * All the {@link Product Products} that are in this {@link Category}.
      */
     @JsonIgnore
-    @ManyToMany(mappedBy = "categories")
+    @ManyToMany(mappedBy = "categories", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Set<Product> products;
 
     /**
@@ -46,5 +48,45 @@ public class Category {
      */
     public Category(String name) {
         this.name = name;
+    }
+
+    /**
+     * Add a {@link Product}.
+     *
+     * @param product The {@link Product} to add.
+     */
+    public void addProduct(@NotNull Product product) {
+        if (this.products == null) {
+            this.products = new HashSet<>();
+        }
+        this.products.add(product);
+    }
+
+    /**
+     * Remove a {@link Product}.
+     *
+     * @param product The {@link Product} to remove.
+     */
+    public void removeProduct(@NotNull Product product) {
+        if (this.products == null) {
+            this.products = new HashSet<>();
+        }
+        this.products.remove(product);
+    }
+
+    /**
+     * Compare an Object to this {@link Category} by checking
+     * object equality or the same id.
+     *
+     * @param o The Object to compare.
+     * @return true if Object is equal to this {@link Category}.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Category obj = (Category) o;
+        return o == this || this.id == obj.id;
     }
 }

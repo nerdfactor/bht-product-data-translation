@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -67,4 +69,45 @@ public class Language {
         this.measure = measure;
         this.isoCode = isoCode;
     }
+
+    /**
+     * Add a {@link Translation}.
+     *
+     * @param translation The {@link Translation} to add.
+     */
+    public void addTranslation(@NotNull Translation translation) {
+        if (this.translations == null) {
+            this.translations = new HashSet<>();
+        }
+        this.translations.add(translation);
+    }
+
+    /**
+     * Remove a {@link Translation}.
+     *
+     * @param translation The {@link Translation} to remove.
+     */
+    public void removeTranslation(@NotNull Translation translation) {
+        if (this.translations == null) {
+            this.translations = new HashSet<>();
+        }
+        this.translations.remove(translation);
+    }
+
+    /**
+     * Compare an Object to this {@link Language} by checking
+     * object equality or the same id.
+     *
+     * @param o The Object to compare.
+     * @return true if Object is equal to this {@link Language}.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Language obj = (Language) o;
+        return o == this || this.id == obj.id;
+    }
+
 }
