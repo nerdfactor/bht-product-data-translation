@@ -67,6 +67,12 @@ public class Translation {
         this.longDescription = longDescription;
     }
 
+    public Translation(String shortDescription, String longDescription, Language language) {
+        this.shortDescription = shortDescription;
+        this.longDescription = longDescription;
+        this.language = language;
+    }
+
     /**
      * Add a {@link Revision}.
      *
