@@ -94,6 +94,7 @@ public class ColorCrudIntegrationTests {
     @Transactional
     @Rollback
     public void ColorsCanBeListed() {
+        // todo: handle previously existing objects.
         int amountOfColors = 10;
         List<Color> listOfTestColors = new ArrayList<>();
         for (int i = 0; i < amountOfColors; i++) {

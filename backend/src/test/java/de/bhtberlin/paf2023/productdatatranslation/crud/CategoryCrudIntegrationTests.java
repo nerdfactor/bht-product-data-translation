@@ -94,6 +94,7 @@ public class CategoryCrudIntegrationTests {
     @Transactional
     @Rollback
     public void CategoriesCanBeListed() {
+        // todo: handle previously existing objects.
         int amountOfCategories = 10;
         List<Category> listOfTestCategories = new ArrayList<>();
         for (int i = 0; i < amountOfCategories; i++) {

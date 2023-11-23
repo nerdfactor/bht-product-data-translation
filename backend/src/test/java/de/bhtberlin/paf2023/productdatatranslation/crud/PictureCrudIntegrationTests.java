@@ -94,6 +94,7 @@ public class PictureCrudIntegrationTests {
     @Transactional
     @Rollback
     public void PicturesCanBeListed() {
+        // todo: handle previously existing objects.
         int amountOfPictures = 10;
         List<Picture> listOfTestPictures = new ArrayList<>();
         for (int i = 0; i < amountOfPictures; i++) {

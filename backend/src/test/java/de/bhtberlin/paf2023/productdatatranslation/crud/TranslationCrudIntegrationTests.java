@@ -94,6 +94,7 @@ public class TranslationCrudIntegrationTests {
     @Transactional
     @Rollback
     public void TranslationsCanBeListed() {
+        // todo: handle previously existing objects.
         int amountOfTranslations = 10;
         List<Translation> listOfTestTranslations = new ArrayList<>();
         for (int i = 0; i < amountOfTranslations; i++) {

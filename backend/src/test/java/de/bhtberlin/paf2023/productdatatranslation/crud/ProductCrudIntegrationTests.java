@@ -68,6 +68,7 @@ public class ProductCrudIntegrationTests {
     @Transactional
     @Rollback
     public void productCantBeReadAfterItWasDeleted() {
+        // todo: handle previously existing objects.
         Product create1 = this.createTestProduct();
         Product created1 = productService.createProduct(create1);
         assertNotNull(created1);

@@ -94,6 +94,7 @@ public class RevisionCrudIntegrationTests {
     @Transactional
     @Rollback
     public void RevisionsCanBeListed() {
+        // todo: handle previously existing objects.
         int amountOfRevisions = 10;
         List<Revision> listOfTestRevisions = new ArrayList<>();
         for (int i = 0; i < amountOfRevisions; i++) {
