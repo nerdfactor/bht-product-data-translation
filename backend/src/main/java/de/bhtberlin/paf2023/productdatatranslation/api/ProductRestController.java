@@ -1,5 +1,6 @@
 package de.bhtberlin.paf2023.productdatatranslation.api;
 
+import de.bhtberlin.paf2023.productdatatranslation.dto.AddNewProductDto;
 import de.bhtberlin.paf2023.productdatatranslation.dto.ErrorResponseDto;
 import de.bhtberlin.paf2023.productdatatranslation.dto.ProductDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
@@ -42,6 +43,23 @@ public class ProductRestController {
             );
         }
         return ResponseEntity.ok(this.mapper.map(product.get(), ProductDto.class));
+    }
+
+    /**
+     * Create a new {@link Product} .
+     * <p>
+     * This method will enforce plain {@link Product}  creation by removing all linked entities. maybe use
+     * {@link ProductController#addNewProduct(AddNewProductDto)} instead, for creation of {@link Product}
+     * with relationships at the same time.
+     */
+    @PostMapping("")
+    public ResponseEntity<ProductDto> createProduct(@RequestBody final ProductDto dto) {
+        dto.setCategories(null);
+        dto.setColors(null);
+        dto.setTranslations(null);
+        dto.setPictures(null);
+        Product created = this.productCrudService.createProduct(this.mapper.map(dto, Product.class));
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.mapper.map(created, ProductDto.class));
     }
 
     @RequestMapping(value = "/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
