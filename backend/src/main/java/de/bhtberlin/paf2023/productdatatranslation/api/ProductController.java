@@ -42,12 +42,13 @@ public class ProductController {
      * and assigned {@link Color Colors} and {@link Category Categories}.
      * New {@link Category Categories} will be created.
      * <p>
-     * Replaces the REST endpoint for plain creation of {@link Product Products}.
+     * Should be used instead of {@link ProductRestController#createProduct(ProductDto) the REST endpoint} for plain
+     * creation of {@link Product Products}.
      *
      * @param dto A data transfer object containing all required data to add a new {@link Product}.
      * @return The created {@link Product}.
      */
-    @PostMapping("")
+    @PostMapping("/add")
     public ResponseEntity<ProductDto> addNewProduct(@RequestBody final AddNewProductDto dto) {
         // todo: Test.
         // todo: add validation, either in code or with Spring Validation?
@@ -61,16 +62,16 @@ public class ProductController {
         translation.setProduct(product);
         product.addTranslation(translation);
         product.setColors(new HashSet<>());
-        dto.getColors().forEach(color -> {
-            product.addColor(this.entityManager.getReference(Color.class, color.getId()));
-        });
+        dto.getColors().forEach(color ->
+                product.addColor(this.entityManager.getReference(Color.class, color.getId()))
+        );
         product.setCategories(new HashSet<>());
-        dto.getExistingCategories().forEach(category -> {
-            product.addCategory(this.entityManager.getReference(Category.class, category.getId()));
-        });
-        dto.getAddedCategories().forEach(name -> {
-            product.addCategory(this.categoryCrudService.createCategory(new Category(name)));
-        });
+        dto.getExistingCategories().forEach(category ->
+                product.addCategory(this.entityManager.getReference(Category.class, category.getId()))
+        );
+        dto.getAddedCategories().forEach(name ->
+                product.addCategory(this.categoryCrudService.createCategory(new Category(name)))
+        );
         this.productCrudService.createProduct(product);
         return ResponseEntity.ok(this.mapper.map(product, ProductDto.class));
     }
