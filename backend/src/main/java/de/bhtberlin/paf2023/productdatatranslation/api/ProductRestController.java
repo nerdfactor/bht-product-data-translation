@@ -47,7 +47,7 @@ public class ProductRestController {
     /**
      * Create a new {@link Product} .
      * <p>
-     * This method will enforce plain {@link Product}  creation by removing all linked entities.
+     * This method will enforce plain {@link Product} creation by removing all linked entities.
      */
     @PostMapping("")
     public ResponseEntity<ProductDto> createProduct(@RequestBody final ProductDto dto) {
