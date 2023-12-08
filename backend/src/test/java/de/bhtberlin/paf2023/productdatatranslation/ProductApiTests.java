@@ -20,8 +20,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import static org.hamcrest.core.StringContains.containsString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -56,6 +55,34 @@ public class ProductApiTests {
         ProductDto created = this.jsonMapper.readValue(result.getResponse().getContentAsString(), ProductDto.class);
 
         mockMvc.perform(get("/api/products/" + created.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(this.jsonMapper.writeValueAsString(created)))
+                .andReturn();
+    }
+
+    /**
+     * Check if a {@link Product} can be updated after it was created using the REST endpoints.
+     *
+     * @throws Exception For Exceptions during mock mvc methods.
+     */
+    @Test
+    @Transactional
+    @Rollback
+    public void productCanBeUpdated() throws Exception {
+        ProductDto create = this.createTestProduct();
+        MvcResult result = mockMvc.perform(post("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.jsonMapper.writeValueAsString(create))
+        ).andReturn();
+        ProductDto created = this.jsonMapper.readValue(result.getResponse().getContentAsString(), ProductDto.class);
+
+
+        created.setName("Geänderter Produktname");
+
+        mockMvc.perform(put("/api/products/" + created.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.jsonMapper.writeValueAsString(created))
+                )
                 .andExpect(status().isOk())
                 .andExpect(content().json(this.jsonMapper.writeValueAsString(created)))
                 .andReturn();

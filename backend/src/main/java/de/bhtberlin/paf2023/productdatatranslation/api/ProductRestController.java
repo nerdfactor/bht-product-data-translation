@@ -1,6 +1,5 @@
 package de.bhtberlin.paf2023.productdatatranslation.api;
 
-import de.bhtberlin.paf2023.productdatatranslation.dto.AddNewProductDto;
 import de.bhtberlin.paf2023.productdatatranslation.dto.ErrorResponseDto;
 import de.bhtberlin.paf2023.productdatatranslation.dto.ProductDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
@@ -48,9 +47,7 @@ public class ProductRestController {
     /**
      * Create a new {@link Product} .
      * <p>
-     * This method will enforce plain {@link Product}  creation by removing all linked entities. maybe use
-     * {@link ProductController#addNewProduct(AddNewProductDto)} instead, for creation of {@link Product}
-     * with relationships at the same time.
+     * This method will enforce plain {@link Product}  creation by removing all linked entities.
      */
     @PostMapping("")
     public ResponseEntity<ProductDto> createProduct(@RequestBody final ProductDto dto) {
