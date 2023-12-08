@@ -1,9 +1,9 @@
 package de.bhtberlin.paf2023.productdatatranslation.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.bhtberlin.paf2023.productdatatranslation.dto.ProductDto;
-import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
-import de.bhtberlin.paf2023.productdatatranslation.service.ProductCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.dto.LanguageDto;
+import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
+import de.bhtberlin.paf2023.productdatatranslation.service.LanguageCrudService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
@@ -15,7 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -25,13 +28,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 /**
- * Test for {@link Product} REST controller.
+ * Test for {@link Language} REST controller.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-class ProductRestControllerTest {
+class LanguageRestControllerTest {
 
-    private static final String API_PATH = "/api/products";
+    private static final String API_PATH = "/api/languages";
 
     @Autowired
     ObjectMapper jsonMapper;
@@ -43,23 +46,23 @@ class ProductRestControllerTest {
     private MockMvc mockMvc;
 
     /**
-     * Mocked {@link ProductCrudService} in order to provide
+     * Mocked {@link LanguageCrudService} in order to provide
      * mock responses to the tested REST controller.
      */
     @MockBean
-    ProductCrudService productCrudService;
+    LanguageCrudService languageCrudService;
 
     /**
-     * Check if {@link Product Products} can be listed.
+     * Check if {@link Language Languages} can be listed.
      */
     @Test
-    void productsCanBeListed() throws Exception {
-        List<ProductDto> mockDtos = Arrays.asList(
-                createTestProduct(1),
-                createTestProduct(2)
+    void languagesCanBeListed() throws Exception {
+        List<LanguageDto> mockDtos = Arrays.asList(
+                createTestLanguage(1),
+                createTestLanguage(2)
         );
-        List<Product> mockEntities = mockDtos.stream().map(dto -> this.modelMapper.map(dto, Product.class)).toList();
-        Mockito.when(productCrudService.listAllProducts())
+        List<Language> mockEntities = mockDtos.stream().map(dto -> this.modelMapper.map(dto, Language.class)).toList();
+        Mockito.when(languageCrudService.listAllLanguages())
                 .thenReturn(mockEntities);
 
         mockMvc.perform(get(API_PATH))
@@ -68,29 +71,29 @@ class ProductRestControllerTest {
     }
 
     /**
-     * Check if a {@link Product} can be created.
+     * Check if a {@link Language} can be created.
      */
     @Test
-    void productCanBeCreated() throws Exception {
-        ProductDto mockDto = createTestProduct();
-        Mockito.when(productCrudService.createProduct(any(Product.class)))
-                .thenReturn(this.modelMapper.map(mockDto, Product.class));
+    void languageCanBeCreated() throws Exception {
+        LanguageDto mockDto = createTestLanguage();
+        Mockito.when(languageCrudService.createLanguage(any(Language.class)))
+                .thenReturn(this.modelMapper.map(mockDto, Language.class));
 
         mockMvc.perform(post(API_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(this.jsonMapper.writeValueAsString(new Product()))
+                        .content(this.jsonMapper.writeValueAsString(new Language()))
                 ).andExpect(status().isCreated())
                 .andExpect(content().json(jsonMapper.writeValueAsString(mockDto)));
     }
 
     /**
-     * Check if a {@link Product} can be read.
+     * Check if a {@link Language} can be read.
      */
     @Test
-    void productCanBeRead() throws Exception {
-        ProductDto mockDto = createTestProduct();
-        Mockito.when(productCrudService.readProduct(any(int.class)))
-                .thenReturn(Optional.of(this.modelMapper.map(mockDto, Product.class)));
+    void languageCanBeRead() throws Exception {
+        LanguageDto mockDto = createTestLanguage();
+        Mockito.when(languageCrudService.readLanguage(any(int.class)))
+                .thenReturn(Optional.of(this.modelMapper.map(mockDto, Language.class)));
 
         mockMvc.perform(get(API_PATH + "/" + mockDto.getId()))
                 .andExpect(status().isOk())
@@ -98,13 +101,13 @@ class ProductRestControllerTest {
     }
 
     /**
-     * Check if a {@link Product} can be updated.
+     * Check if a {@link Language} can be updated.
      */
     @Test
-    void productCanBeUpdated() throws Exception {
-        ProductDto mockDto = createTestProduct(1);
-        Mockito.when(productCrudService.updateProduct(argThat(argument -> argument.getId() == mockDto.getId())))
-                .thenReturn(this.modelMapper.map(mockDto, Product.class));
+    void languageCanBeUpdated() throws Exception {
+        LanguageDto mockDto = createTestLanguage(1);
+        Mockito.when(languageCrudService.updateLanguage(argThat(argument -> argument.getId() == mockDto.getId())))
+                .thenReturn(this.modelMapper.map(mockDto, Language.class));
 
         mockMvc.perform(put(API_PATH + "/" + mockDto.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -114,29 +117,25 @@ class ProductRestControllerTest {
     }
 
     /**
-     * Check if a {@link Product} can be deleted.
+     * Check if a {@link Language} can be deleted.
      */
     @Test
-    void productCanBeDeleted() throws Exception {
+    void languageCanBeDeleted() throws Exception {
         mockMvc.perform(delete(API_PATH + "/1"))
                 .andExpect(status().is(HttpStatus.NO_CONTENT.value()));
     }
 
-    private ProductDto createTestProduct() {
-        Random random = new Random();
-        ProductDto dto = new ProductDto();
-        dto.setSerial(UUID.randomUUID().toString());
+    private LanguageDto createTestLanguage() {
+        LanguageDto dto = new LanguageDto();
         dto.setName(UUID.randomUUID().toString().replace("-", "").substring(10));
-        dto.setHeight(1 + (100 - 1) * random.nextDouble());
-        dto.setWidth(1 + (100 - 1) * random.nextDouble());
-        dto.setDepth(1 + (100 - 1) * random.nextDouble());
-        dto.setWeight(1 + (100 - 1) * random.nextDouble());
-        dto.setPrice(1 + (100 - 1) * random.nextDouble());
+        dto.setCurrency("EURO");
+        dto.setMeasure("METRIC");
+        dto.setIsoCode(dto.getName().substring(0, 2));
         return dto;
     }
 
-    private ProductDto createTestProduct(int id) {
-        ProductDto dto = createTestProduct();
+    private LanguageDto createTestLanguage(int id) {
+        LanguageDto dto = createTestLanguage();
         dto.setId(id);
         return dto;
     }
