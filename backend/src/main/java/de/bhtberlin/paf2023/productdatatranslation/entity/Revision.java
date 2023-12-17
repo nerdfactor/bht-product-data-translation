@@ -13,48 +13,30 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
-public class Revision {
-
-    /**
-     * An internal identifier for the {@link Revision}.
-     * The id will be automatically incremented by the database.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+public class Revision extends Translation{
 
     /**
      * The version number for this {@link Revision} that will be
      * counted up for every changed {@link Translation}.
      */
-    private int version;
+    protected int version;
 
     /**
      * A timestamp when the {@link Revision} was created.
      */
-    private long timestamp;
-
-    /**
-     * The short description from the original {@link Translation}.
-     */
-    private String shortDescription;
-
-    /**
-     * The longer description from the original {@link Translation}.
-     */
-    private String longDescription;
+    protected long timestamp;
 
     /**
      * Information if this {@link Revision} is a correction.
      */
-    private boolean correction;
+    protected boolean correction;
 
     /**
      * The {@link Translation} this {@link Revision} is for.
      */
     @ManyToOne
     @JoinColumn(name = "translation_id")
-    private Translation translation;
+    protected Translation translation;
 
     /**
      * Basic constructor with all data fields in order to create new {@link Revision Revisions}.
