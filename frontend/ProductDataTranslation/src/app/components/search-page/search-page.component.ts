@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ProductService } from '../../services/product.service';
+import { Product } from '../../models/product';
 
 @Component({
   selector: 'app-search-page',
@@ -6,12 +8,13 @@ import { Component } from '@angular/core';
   styleUrl: './search-page.component.scss'
 })
 export class SearchPageComponent {
-  displayedColumns: string[] = ['position', 'name', 'action']
-  datasource = [
-    { position: 1, name: "Hammer" },
-    { position: 2, name: "Sichel" },
-    { position: 3, name: "Meißel" },
-    { position: 4, name: "Bohrer" },
-    { position: 5, name: "Dreher" },
-  ]
+
+  displayedColumns: string[] = ['id', 'name', 'action'];
+  products: Product[] = [];
+
+  constructor(private productService: ProductService) { }
+
+  ngOnInit(): void {
+    this.productService.getProducts().subscribe(products => this.products = products);
+  }
 }
