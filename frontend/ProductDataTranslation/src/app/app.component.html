@@ -1,5 +1,10 @@
 <mat-toolbar color="primary">
-  <a mat-button routerLink="/search">Product Data Translation</a>
+  <a mat-button routerLink="/search" class="text-uppercase">Product Data Translation</a>
+  <span class="flex-grow-1"></span>
+  <button mat-button>
+    <mat-icon>translate</mat-icon>
+    <span>Deutsch</span>
+  </button>
 </mat-toolbar>
 <div style="padding: 70px 50px;">
   <router-outlet></router-outlet>

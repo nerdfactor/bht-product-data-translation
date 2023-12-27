@@ -13,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
 
 import { SearchPageComponent } from './components/search-page/search-page.component';
 import { DetailPageComponent } from './components/detail-page/detail-page.component';
@@ -34,7 +35,8 @@ import { DetailPageComponent } from './components/detail-page/detail-page.compon
     MatFormFieldModule,
     MatInputModule,
     MatGridListModule,
-    MatTableModule
+    MatTableModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,3 +1,5 @@
+import { Translation } from "./translation";
+
 export interface Revision {
     id: number;
     version: number;
@@ -5,4 +7,5 @@ export interface Revision {
     shortDescription: string;
     longDescription: string;
     correction: boolean;
+    translation: Translation;
 }
