@@ -12,25 +12,52 @@ import java.util.Set;
 /**
  * A {@link Translation} contains the description for a {@link Product}
  * in a specific language.
+ * todo: rename to Description in order not to confuse translated Data in {@link Translation} with actual translation functionality.
  */
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
-public class Translation extends Description{
+public class Translation {
+
+    /**
+     * An internal identifier for the {@link Translation}.
+     * The id will be automatically incremented by the database.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    /**
+     * A short description for the {@link Product}.
+     */
+    private String shortDescription;
+
+    /**
+     * A longer description for the {@link Product}.
+     */
+    @Lob
+    private String longDescription;
+
+    /**
+     * The {@link Product} this {@link Translation} is for.
+     */
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     /**
      * Multiple {@link Revision Revisions} for this {@link Translation}.
      */
     @OneToMany(mappedBy = "translation", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    protected Set<Revision> revisions;
+    private Set<Revision> revisions;
 
     /**
      * The {@link Language} for this {@link Translation}.
      */
     @ManyToOne
     @JoinColumn(name = "language_id")
-    protected Language language;
+    private Language language;
 
     /**
      * Basic constructor with all data fields in order to create new {@link Translation Translations}.

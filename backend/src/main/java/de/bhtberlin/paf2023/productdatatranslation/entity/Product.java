@@ -24,6 +24,7 @@ public class Product {
     /**
      * An internal identifier for the {@link Product}.
      * The id will be automatically incremented by the database.
+     * todo: Decide if this and other IDs should be changed to UUID that can be set in frontend instead of in the database?
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -95,10 +96,10 @@ public class Product {
     private Set<Picture> pictures;
 
     /**
-     * The {@link Description descriptions} for this {@link Product}.
+     * The {@link Translation ranslations} for this {@link Product}.
      */
     @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    private Set<Description> descriptions;
+    private Set<Translation> translations;
 
     /**
      * Basic constructor with all data fields in order to create new {@link Product Products}.
@@ -187,27 +188,27 @@ public class Product {
     }
 
     /**
-     * Add a {@link Description}.
+     * Add a {@link Translation}.
      *
-     * @param description The {@link Description} to add.
+     * @param translation The {@link Translation} to add.
      */
-    public void addDescription(@NotNull Description description) {
-        if (this.descriptions == null) {
-            this.descriptions = new HashSet<>();
+    public void addTranslation(@NotNull Translation translation) {
+        if (this.translations == null) {
+            this.translations = new HashSet<>();
         }
-        this.descriptions.add(description);
+        this.translations.add(translation);
     }
 
     /**
-     * Remove a {@link Description}.
+     * Remove a {@link Translation}.
      *
-     * @param description The {@link Description} to remove.
+     * @param translation The {@link Translation} to remove.
      */
-    public void removeDescription(@NotNull Description description) {
-        if (this.descriptions == null) {
-            this.descriptions = new HashSet<>();
+    public void removeTranslation(@NotNull Translation translation) {
+        if (this.translations == null) {
+            this.translations = new HashSet<>();
         }
-        this.descriptions.remove(description);
+        this.translations.remove(translation);
     }
 
     /**
