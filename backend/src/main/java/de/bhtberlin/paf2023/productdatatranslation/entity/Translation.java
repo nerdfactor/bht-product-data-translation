@@ -36,7 +36,7 @@ public class Translation {
     /**
      * A longer description for the {@link Product}.
      */
-    @Lob
+    @Column(columnDefinition = "text")
     private String longDescription;
 
     /**
