@@ -1,0 +1,32 @@
+version: '3.7'
+
+services:
+  pdt-db:
+    image: postgres:latest
+    restart: always
+    container_name: pdt
+    labels:
+      project: "Project Data Translation"
+      component: "Database for Project Data Translation PaF 2023"
+      version: "1.0"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: pdt
+      POSTGRES_PASSWORD: paf2023
+      POSTGRES_DB: pdt
+    volumes:
+      # volume for postgres data
+      - PdtPostgresVolume:/var/lib/postgresql/data
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    networks:
+      - pdt_network
+
+volumes:
+  PdtPostgresVolume:
+
+networks:
+  pdt_network:
+    external: false
+    name: pdt_network
