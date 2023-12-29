@@ -1,3 +1,4 @@
+# use -Dspring.profiles.active=dev for dev profile
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
