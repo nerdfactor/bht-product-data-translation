@@ -28,7 +28,6 @@ public class ProductRestController {
 
 	@GetMapping(value = {"", "/"})
 	public ResponseEntity<List<ProductDto>> listAllProducts() {
-		;
 		return ResponseEntity.ok(this.productCrudService.listAllProducts(LocaleContextHolder.getLocale())
 				.stream().map(product -> this.mapper.map(product, ProductDto.class))
 				.toList());
