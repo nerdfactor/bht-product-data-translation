@@ -45,5 +45,11 @@ public class ProductDto implements AutoTranslatable {
 	@Override
 	public void autoTranslate(Translator translator, String locale) {
 		this.name = translator.translate(this.name, locale);
+		if (categories != null) {
+			categories.forEach(categoryDto -> categoryDto.autoTranslate(translator, locale));
+		}
+		if (colors != null) {
+			colors.forEach(colorDto -> colorDto.autoTranslate(translator, locale));
+		}
 	}
 }

@@ -21,7 +21,4 @@ public class LanguageDto {
     private String measure;
 
     private String isoCode;
-
-    @JsonIgnoreProperties({"language"})
-    private Set<TranslationDto> translations;
 }

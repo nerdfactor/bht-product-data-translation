@@ -2,6 +2,8 @@ package de.bhtberlin.paf2023.productdatatranslation.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import de.bhtberlin.paf2023.productdatatranslation.service.translation.AutoTranslatable;
+import de.bhtberlin.paf2023.productdatatranslation.service.translation.Translator;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,12 +12,14 @@ import java.util.Set;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ColorDto {
+public class ColorDto implements AutoTranslatable {
 
     private int id;
 
     private String name;
 
-    @JsonIgnoreProperties({"colors"})
-    private Set<ProductDto> products;
+    @Override
+    public void autoTranslate(Translator translator, String locale) {
+        this.name = translator.translate(this.name, locale);
+    }
 }
