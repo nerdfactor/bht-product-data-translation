@@ -50,7 +50,7 @@ public class ProductCrudService {
 					if(!locale.isEmpty()){
 						product.removeTranslationsNotInLocal(locale);
 						if (!product.hasTranslations()) {
-							this.autoTranslationService.autoTranslateProductAsync(product, "en_US");
+							this.autoTranslationService.autoTranslateProductAsync(product, locale);
 						}
 					}
 				})
