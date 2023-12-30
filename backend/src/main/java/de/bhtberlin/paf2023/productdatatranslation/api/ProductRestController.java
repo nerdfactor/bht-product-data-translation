@@ -1,15 +1,13 @@
 package de.bhtberlin.paf2023.productdatatranslation.api;
 
-import de.bhtberlin.paf2023.productdatatranslation.dto.ErrorResponseDto;
 import de.bhtberlin.paf2023.productdatatranslation.dto.ProductDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
+import de.bhtberlin.paf2023.productdatatranslation.exception.EntityNotFoundException;
+import de.bhtberlin.paf2023.productdatatranslation.exception.UnprocessableEntityException;
 import de.bhtberlin.paf2023.productdatatranslation.service.ProductCrudService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +35,7 @@ public class ProductRestController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<ProductDto> readProduct(@PathVariable final int id) throws EntityNotFoundException {
+	public ResponseEntity<ProductDto> readProduct(@PathVariable final int id) {
 		Product product = this.productCrudService.readProduct(id).
 				orElseThrow(() -> new EntityNotFoundException("Product with Id " + id + " was not found."));
 		return ResponseEntity.ok(this.mapper.map(product, ProductDto.class));
@@ -59,28 +57,17 @@ public class ProductRestController {
 	}
 
 	@RequestMapping(value = "/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
-	public ResponseEntity<?> setProduct(@PathVariable final int id, @RequestBody final ProductDto dto) {
+	public ResponseEntity<ProductDto> setProduct(@PathVariable final int id, @RequestBody final ProductDto dto) {
 		if (id != dto.getId()) {
-			return ErrorResponseDto.createResponseEntity(
-					HttpStatus.UNPROCESSABLE_ENTITY,
-					"Mismatch between provided Ids."
-			);
+			throw new UnprocessableEntityException(String.format("Mismatch between provided Ids (%d - %d).", id, dto.getId()));
 		}
 		Product updated = this.productCrudService.updateProduct(this.mapper.map(dto, Product.class));
 		return ResponseEntity.ok(this.mapper.map(updated, ProductDto.class));
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteProduct(@PathVariable final int id) {
+	public ResponseEntity<Void> deleteProduct(@PathVariable final int id) {
 		this.productCrudService.deleteProductById(id);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-	}
-
-	@ExceptionHandler(EntityNotFoundException.class)
-	public HttpEntity<ErrorResponseDto> handleEntityNotFoundException(HttpRequest request, Exception e) {
-		return ErrorResponseDto.createResponseEntity(
-				HttpStatus.NOT_FOUND,
-				e.getMessage()
-		);
 	}
 }
