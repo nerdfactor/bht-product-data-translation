@@ -4,6 +4,7 @@ insert into "language" ("id","name","currency","measure","iso_code") values (3, 
 insert into "color" ("id","name") values (1, 'rot');
 insert into "color" ("id","name") values (2, 'blau');
 insert into "color" ("id","name") values (3, 'grün');
+insert into "category" ("id", "name") values(1, 'Stuhl');
 
 -- Insert additional data into product table
 INSERT INTO "product" ("id", "name", "serial", "depth", "height", "price", "weight", "width") VALUES (1, 'Luxuriöser Wellness-Massagestuhl', 'W123456', 80.00, 120.00, 899.00, 12.00, 60.00);
@@ -46,3 +47,5 @@ INSERT INTO "translation" ("product_id", "language_id", "short_description", "lo
 INSERT INTO "translation" ("product_id", "language_id", "short_description", "long_description") VALUES (20, 1, 'Bleiben Sie fit mit unserer Smartwatch und dem integrierten Fitness-Tracker.', 'Die Smartwatch bietet nicht nur stilvolles Design, sondern auch praktische Funktionen für Ihre Gesundheit und Fitness.');
 INSERT INTO "translation" ("product_id", "language_id", "short_description", "long_description") VALUES (21, 1, 'Schneiden Sie mühelos mit unserem multifunktionalen Küchenmesser-Set.', 'Das Küchenmesser-Set vereint Funktionalität und Präzision. Perfekt für jede kulinarische Herausforderung in der Küche.');
 
+INSERT INTO "product_categories" (category_id, product_id) VALUES(1, 1);
+INSERT INTO "product_colors" (color_id, product_id) VALUES (1, 1);
