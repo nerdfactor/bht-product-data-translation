@@ -9,7 +9,7 @@ public class SimpleStringTranslator implements Translator {
 	}
 
 	private String replaceLocalePrefix(String text, String newPrefix) {
-		String prefixPattern = "^[a-z]{2}_[A-Z]{2}:";
+		String prefixPattern = "^[a-z]{2}(_[A-Z]{2})?:";
 		if (Pattern.matches(prefixPattern, text)) {
 			text = text.replaceFirst(prefixPattern, newPrefix);
 		} else {
