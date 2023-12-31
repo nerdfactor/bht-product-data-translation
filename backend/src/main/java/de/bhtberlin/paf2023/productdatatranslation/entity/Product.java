@@ -211,7 +211,7 @@ public class Product {
 		this.translations.remove(translation);
 	}
 
-	public void removeTranslationsNotInLocal(@NotNull String locale) {
+	public void removeTranslationsNotInLocale(@NotNull String locale) {
 		this.translations.removeIf(translation -> !translation.getLanguage().getIsoCode().equalsIgnoreCase(locale));
 	}
 

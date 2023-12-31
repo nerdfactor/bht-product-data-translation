@@ -1,8 +1,7 @@
 package de.bhtberlin.paf2023.productdatatranslation.component;
 
-import de.bhtberlin.paf2023.productdatatranslation.service.AutoTranslationService;
 import de.bhtberlin.paf2023.productdatatranslation.service.translation.AutoTranslatable;
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.SimpleStringTranslator;
+import de.bhtberlin.paf2023.productdatatranslation.service.translation.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.MethodParameter;
@@ -21,7 +20,7 @@ import java.util.List;
 public class AutoTranslateListAdvice implements ResponseBodyAdvice<List<AutoTranslatable>> {
 
 	@Autowired
-	AutoTranslationService AutoTranslationService;
+	Translator translator;
 
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
@@ -46,8 +45,7 @@ public class AutoTranslateListAdvice implements ResponseBodyAdvice<List<AutoTran
 	public List<AutoTranslatable> beforeBodyWrite(List<AutoTranslatable> body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
 		if (body != null) {
 			body.forEach(translatable -> {
-				int i = 0;
-				translatable.autoTranslate(new SimpleStringTranslator(), LocaleContextHolder.getLocale().toLanguageTag().replace("-", "_"));
+				translatable.autoTranslate(translator, LocaleContextHolder.getLocale().toLanguageTag().replace("-", "_"));
 			});
 		}
 		return body;

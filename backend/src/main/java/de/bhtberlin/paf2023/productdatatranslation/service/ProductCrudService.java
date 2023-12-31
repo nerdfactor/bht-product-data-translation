@@ -40,15 +40,14 @@ public class ProductCrudService {
 	}
 
 	public @NonNull List<Product> listAllProducts(@NotNull Locale locale) {
-		String lang = locale.toLanguageTag().replace("-", "_");
-		return this.listAllProducts(locale.toString());
+		return this.listAllProducts(locale.toLanguageTag());
 	}
 
 	public @NonNull List<Product> listAllProducts(@NotNull final String locale) {
 		return this.productRepository.findAll().stream().
 				peek(product -> {
 					if(!locale.isEmpty()){
-						product.removeTranslationsNotInLocal(locale);
+						product.removeTranslationsNotInLocale(locale);
 						if (!product.hasTranslations()) {
 							this.autoTranslationService.autoTranslateProductAsync(product, locale);
 						}

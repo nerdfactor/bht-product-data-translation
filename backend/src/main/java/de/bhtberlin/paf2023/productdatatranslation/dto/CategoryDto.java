@@ -2,6 +2,7 @@ package de.bhtberlin.paf2023.productdatatranslation.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
 import de.bhtberlin.paf2023.productdatatranslation.service.translation.AutoTranslatable;
 import de.bhtberlin.paf2023.productdatatranslation.service.translation.Translator;
 import lombok.Getter;
@@ -20,6 +21,6 @@ public class CategoryDto implements AutoTranslatable {
 
     @Override
     public void autoTranslate(Translator translator, String locale) {
-        this.name = translator.translate(this.name, locale);
+        this.name = translator.translate(this.name, AppConfig.DEFAULT_LANGUAGE, locale);
     }
 }

@@ -5,7 +5,6 @@ import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Translation;
 import de.bhtberlin.paf2023.productdatatranslation.repo.LanguageRepository;
 import de.bhtberlin.paf2023.productdatatranslation.repo.TranslationRepository;
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.SimpleStringTranslator;
 import de.bhtberlin.paf2023.productdatatranslation.service.translation.Translator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,13 +15,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class AutoTranslationService {
 
+	final Translator translator;
+
 	final TranslationRepository translationRepository;
 
 	final LanguageRepository languageRepository;
 
 	// todo: placeholder for auto translation
-	public Product autoTranslateProductAsync(Product product, String locale) {
-		Language language = this.languageRepository.findOneByIsoCode(locale).orElseThrow();
+	public Product autoTranslateProductAsync(Product product, String to) {
+		Language language = this.languageRepository.findOneByIsoCode(to).orElseThrow();
 
 		// get default translation from the product
 		Translation defaultTranslation = this.translationRepository.getOneByProduct(product);
@@ -34,9 +35,8 @@ public class AutoTranslationService {
 		translation.setLongDescription(defaultTranslation.getLongDescription());
 
 		// let the translator translate it
-		Translator translator = new SimpleStringTranslator();
-		translation.setShortDescription(translator.translate(translation.getShortDescription(), locale));
-		translation.setLongDescription(translator.translate(translation.getLongDescription(), locale));
+		translation.setShortDescription(translator.translate(translation.getShortDescription(), defaultTranslation.getLanguage().getIsoCode(), to));
+		translation.setLongDescription(translator.translate(translation.getLongDescription(), defaultTranslation.getLanguage().getIsoCode(), to));
 
 		// add the new translation to the product
 		product.addTranslation(translation);
@@ -44,12 +44,11 @@ public class AutoTranslationService {
 
 		// save the translation
 		this.translationRepository.save(translation);
-		log.info("Auto Translate " + product.getName() + " to " + locale);
+		log.info("Auto Translate " + product.getName() + " to " + to);
 		return product;
 	}
 
-	public String autoTranslateString(String string, String locale) {
-		Translator translator = new SimpleStringTranslator();
-		return translator.translate(string, locale);
+	public String autoTranslateString(String string, String from, String to) {
+		return this.translator.translate(string, from, to);
 	}
 }

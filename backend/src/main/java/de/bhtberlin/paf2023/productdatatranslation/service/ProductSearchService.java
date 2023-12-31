@@ -28,7 +28,7 @@ public class ProductSearchService {
 		spec.and((root, query, cb) -> cb.like(root.get("name"), search));
 		Page<Product> products = this.productRepository.findAll(spec, Pageable.unpaged());
 		products.getContent().forEach(product -> {
-			product.removeTranslationsNotInLocal("en_US");
+			product.removeTranslationsNotInLocale("en_US");
 			if (!product.hasTranslations()) {
 				this.autoTranslationService.autoTranslateProductAsync(product, "en_US");
 			}

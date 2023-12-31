@@ -1,8 +1,7 @@
 package de.bhtberlin.paf2023.productdatatranslation.component;
 
 import de.bhtberlin.paf2023.productdatatranslation.service.translation.AutoTranslatable;
-import de.bhtberlin.paf2023.productdatatranslation.service.AutoTranslationService;
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.SimpleStringTranslator;
+import de.bhtberlin.paf2023.productdatatranslation.service.translation.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.MethodParameter;
@@ -20,7 +19,7 @@ import java.lang.reflect.Type;
 public class AutoTranslateAdvice implements ResponseBodyAdvice<AutoTranslatable> {
 
 	@Autowired
-	AutoTranslationService AutoTranslationService;
+	Translator translator;
 
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
@@ -28,7 +27,7 @@ public class AutoTranslateAdvice implements ResponseBodyAdvice<AutoTranslatable>
 			try {
 				Type[] args = ((ParameterizedType) returnType.getGenericParameterType()).getActualTypeArguments();
 				return AutoTranslatable.class.isAssignableFrom((Class<?>) args[0]);
-			}catch (Exception e){
+			} catch (Exception e) {
 				return false;
 			}
 		}
@@ -38,7 +37,7 @@ public class AutoTranslateAdvice implements ResponseBodyAdvice<AutoTranslatable>
 	@Override
 	public AutoTranslatable beforeBodyWrite(AutoTranslatable body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
 		if (body != null) {
-			body.autoTranslate(new SimpleStringTranslator(), LocaleContextHolder.getLocale().toLanguageTag().replace("-", "_"));
+			body.autoTranslate(translator, LocaleContextHolder.getLocale().toLanguageTag().replace("-", "_"));
 		}
 		return body;
 	}
