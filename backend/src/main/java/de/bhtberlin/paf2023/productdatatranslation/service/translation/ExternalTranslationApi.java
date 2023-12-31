@@ -2,10 +2,13 @@ package de.bhtberlin.paf2023.productdatatranslation.service.translation;
 
 import de.bhtberlin.paf2023.productdatatranslation.exception.ExternalTranslationApiException;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
 
 /**
  * Facade for external translations Apis.
+ * todo: why separate ExternalTranslationApi and Translator?
  */
+@Component
 public interface ExternalTranslationApi {
 
 	/**
