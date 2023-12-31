@@ -1,7 +1,8 @@
 package de.bhtberlin.paf2023.productdatatranslation.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.SimpleStringTranslator;
+import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
+import de.bhtberlin.paf2023.productdatatranslation.service.translation.FakeStringTranslator;
 import de.bhtberlin.paf2023.productdatatranslation.service.translation.Translator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,8 @@ public class TranslationControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	Translator translator = new SimpleStringTranslator();
+	@Autowired
+	Translator translator;
 
 	/**
 	 * Check if a set of internationalization data can be auto translated.
@@ -41,7 +43,7 @@ public class TranslationControllerTest {
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(this.jsonMapper.writeValueAsString(i18n))
 				).andExpect(status().isOk())
-				.andExpect(jsonPath("$.test").value(this.translator.translate(i18n.get("test"), "en")));
+				.andExpect(jsonPath("$.test").value(this.translator.translate(i18n.get("test"), AppConfig.DEFAULT_LANGUAGE,"en")));
 	}
 
 }

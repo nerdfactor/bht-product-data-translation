@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bhtberlin.paf2023.productdatatranslation.dto.ColorDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Color;
 import de.bhtberlin.paf2023.productdatatranslation.service.ColorCrudService;
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.SimpleStringTranslator;
+import de.bhtberlin.paf2023.productdatatranslation.service.translation.FakeStringTranslator;
 import de.bhtberlin.paf2023.productdatatranslation.service.translation.Translator;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -54,7 +54,8 @@ class ColorRestControllerTest {
     @MockBean
     ColorCrudService colorCrudService;
 
-    Translator translator = new SimpleStringTranslator();
+    @Autowired
+    Translator translator;
 
     /**
      * Check if {@link Color Colors} can be listed.

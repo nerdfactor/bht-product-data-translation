@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bhtberlin.paf2023.productdatatranslation.dto.ProductDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.service.ProductCrudService;
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.SimpleStringTranslator;
+import de.bhtberlin.paf2023.productdatatranslation.service.translation.FakeStringTranslator;
 import de.bhtberlin.paf2023.productdatatranslation.service.translation.Translator;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -50,7 +50,8 @@ class ProductRestControllerTest {
 	@MockBean
 	ProductCrudService productCrudService;
 
-	Translator translator = new SimpleStringTranslator();
+	@Autowired
+	Translator translator;
 
 	/**
 	 * Check if {@link Product Products} can be listed.
