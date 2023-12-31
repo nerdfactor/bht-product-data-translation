@@ -19,3 +19,6 @@ spring:
 
 app:
   version: ^project.version^
+  api-config:
+    deepl-api-key: ${PDT_DEEPL_API_KEY}
+    google-cloud-api-key: ${PDT_GOOGLE_CLOUD_API_KEY}

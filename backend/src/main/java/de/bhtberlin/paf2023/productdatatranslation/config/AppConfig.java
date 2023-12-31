@@ -14,8 +14,21 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "app")
 public class AppConfig {
 
-    /**
-     * The current application version.
-     */
-    private String version;
+	/**
+	 * The current application version.
+	 */
+	private String version;
+
+	/**
+	 * The configuration for external Apis.
+	 */
+	private ExternalApiConfig apiConfig;
+
+	@Getter
+	@Setter
+	public static class ExternalApiConfig {
+
+		private String deeplApiKey;
+		private String googleCloudApiKey;
+	}
 }
