@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,16 +36,16 @@ public class ProductDto implements CompositeTranslatable {
     private double price;
 
     @JsonIgnoreProperties({"products"})
-    private Set<CategoryDto> categories;
+    private Set<CategoryDto> categories = new HashSet<>();
 
     @JsonIgnoreProperties({"products"})
-    private Set<ColorDto> colors;
+    private Set<ColorDto> colors = new HashSet<>();
 
     @JsonIgnoreProperties({"product"})
-    private Set<PictureDto> pictures;
+    private Set<PictureDto> pictures = new HashSet<>();
 
     @JsonIgnoreProperties({"product", "revisions"})
-    private Set<TranslationDto> translations;
+    private Set<TranslationDto> translations = new HashSet<>();
 
     @Override
     public void addTranslatable(@NotNull Translatable translatable) {
