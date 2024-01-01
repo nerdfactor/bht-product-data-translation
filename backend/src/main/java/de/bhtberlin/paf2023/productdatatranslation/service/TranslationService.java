@@ -3,27 +3,31 @@ package de.bhtberlin.paf2023.productdatatranslation.service;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Translation;
+import de.bhtberlin.paf2023.productdatatranslation.exception.TranslationException;
 import de.bhtberlin.paf2023.productdatatranslation.repo.LanguageRepository;
 import de.bhtberlin.paf2023.productdatatranslation.repo.TranslationRepository;
-import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
+import de.bhtberlin.paf2023.productdatatranslation.translation.BaseTranslator;
+import de.bhtberlin.paf2023.productdatatranslation.translation.Translatable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service for translation related tasks.
+ */
 @Slf4j
-@RequiredArgsConstructor
 @Service
-public class AutoTranslationService {
+@RequiredArgsConstructor
+public class TranslationService {
 
-    final Translator translator;
+    final BaseTranslator translator;
 
     final TranslationRepository translationRepository;
 
     final LanguageRepository languageRepository;
 
-    // todo: placeholder for auto translation
-    public Product autoTranslateProductAsync(Product product, String to) {
-        Language language = this.languageRepository.findOneByIsoCode(to).orElseThrow();
+    public Product translateProduct(Product product, String to) throws TranslationException {
+        Language language = this.languageRepository.findOneByIsoCode(to).orElseThrow(() -> new TranslationException("Could not find Language for translation."));
 
         // get default translation from the product
         Translation defaultTranslation = this.translationRepository.getOneByProduct(product);
@@ -48,7 +52,11 @@ public class AutoTranslationService {
         return product;
     }
 
-    public String autoTranslateString(String string, String from, String to) {
+    public Translatable translate(Translatable translatable, String from, String to) {
+        return translatable.translate(translator, from, to);
+    }
+
+    public String translate(String string, String from, String to) {
         return this.translator.translateText(string, from, to);
     }
 }
