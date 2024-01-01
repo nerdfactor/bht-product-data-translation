@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface TranslationRepository extends JpaRepository<Translation, Integer> {
 
 
-	public Translation getOneByProduct(Product product);
+    public Translation getOneByProduct(Product product);
 }

@@ -22,51 +22,51 @@ import java.util.List;
 @RequestMapping("/api/products")
 public class ProductRestController {
 
-	final ProductCrudService productCrudService;
+    final ProductCrudService productCrudService;
 
-	final ModelMapper mapper;
+    final ModelMapper mapper;
 
-	@GetMapping(value = {"", "/"})
-	public ResponseEntity<List<ProductDto>> listAllProducts() {
-		return ResponseEntity.ok(this.productCrudService.listAllProducts(LocaleContextHolder.getLocale())
-				.stream().map(product -> this.mapper.map(product, ProductDto.class))
-				.toList());
-	}
+    @GetMapping(value = {"", "/"})
+    public ResponseEntity<List<ProductDto>> listAllProducts() {
+        return ResponseEntity.ok(this.productCrudService.listAllProducts(LocaleContextHolder.getLocale())
+                .stream().map(product -> this.mapper.map(product, ProductDto.class))
+                .toList());
+    }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<ProductDto> readProduct(@PathVariable final int id) {
-		Product product = this.productCrudService.readProduct(id).
-				orElseThrow(() -> new EntityNotFoundException("Product with Id " + id + " was not found."));
-		return ResponseEntity.ok(this.mapper.map(product, ProductDto.class));
-	}
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> readProduct(@PathVariable final int id) {
+        Product product = this.productCrudService.readProduct(id).
+                orElseThrow(() -> new EntityNotFoundException("Product with Id " + id + " was not found."));
+        return ResponseEntity.ok(this.mapper.map(product, ProductDto.class));
+    }
 
-	/**
-	 * Create a new {@link Product} .
-	 * <p>
-	 * This method will enforce plain {@link Product} creation by removing all linked entities.
-	 */
-	@PostMapping("")
-	public ResponseEntity<ProductDto> createProduct(@RequestBody final ProductDto dto) {
-		dto.setCategories(null);
-		dto.setColors(null);
-		dto.setTranslations(null);
-		dto.setPictures(null);
-		Product created = this.productCrudService.createProduct(this.mapper.map(dto, Product.class));
-		return ResponseEntity.status(HttpStatus.CREATED).body(this.mapper.map(created, ProductDto.class));
-	}
+    /**
+     * Create a new {@link Product} .
+     * <p>
+     * This method will enforce plain {@link Product} creation by removing all linked entities.
+     */
+    @PostMapping("")
+    public ResponseEntity<ProductDto> createProduct(@RequestBody final ProductDto dto) {
+        dto.setCategories(null);
+        dto.setColors(null);
+        dto.setTranslations(null);
+        dto.setPictures(null);
+        Product created = this.productCrudService.createProduct(this.mapper.map(dto, Product.class));
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.mapper.map(created, ProductDto.class));
+    }
 
-	@RequestMapping(value = "/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
-	public ResponseEntity<ProductDto> setProduct(@PathVariable final int id, @RequestBody final ProductDto dto) {
-		if (id != dto.getId()) {
-			throw new UnprocessableEntityException(String.format("Mismatch between provided Ids (%d - %d).", id, dto.getId()));
-		}
-		Product updated = this.productCrudService.updateProduct(this.mapper.map(dto, Product.class));
-		return ResponseEntity.ok(this.mapper.map(updated, ProductDto.class));
-	}
+    @RequestMapping(value = "/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
+    public ResponseEntity<ProductDto> setProduct(@PathVariable final int id, @RequestBody final ProductDto dto) {
+        if (id != dto.getId()) {
+            throw new UnprocessableEntityException(String.format("Mismatch between provided Ids (%d - %d).", id, dto.getId()));
+        }
+        Product updated = this.productCrudService.updateProduct(this.mapper.map(dto, Product.class));
+        return ResponseEntity.ok(this.mapper.map(updated, ProductDto.class));
+    }
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteProduct(@PathVariable final int id) {
-		this.productCrudService.deleteProductById(id);
-		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-	}
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable final int id) {
+        this.productCrudService.deleteProductById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

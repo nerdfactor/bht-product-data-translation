@@ -1,11 +1,11 @@
 package de.bhtberlin.paf2023.productdatatranslation.exception;
 
-public class EntityNotFoundException extends RuntimeException{
+public class EntityNotFoundException extends RuntimeException {
 
-	public EntityNotFoundException() {
-	}
+    public EntityNotFoundException() {
+    }
 
-	public EntityNotFoundException(String message) {
-		super(message);
-	}
+    public EntityNotFoundException(String message) {
+        super(message);
+    }
 }

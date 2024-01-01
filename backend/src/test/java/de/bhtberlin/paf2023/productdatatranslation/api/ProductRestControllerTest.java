@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bhtberlin.paf2023.productdatatranslation.dto.ProductDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.service.ProductCrudService;
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.SimpleStringTranslator;
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.Translator;
+import de.bhtberlin.paf2023.productdatatranslation.translation.BaseTranslator;
+import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
@@ -50,7 +50,8 @@ class ProductRestControllerTest {
 	@MockBean
 	ProductCrudService productCrudService;
 
-	Translator translator = new SimpleStringTranslator();
+	@Autowired
+	BaseTranslator translator;
 
 	/**
 	 * Check if {@link Product Products} can be listed.
@@ -65,7 +66,7 @@ class ProductRestControllerTest {
 		Mockito.when(productCrudService.listAllProducts(any(Locale.class)))
 				.thenReturn(mockEntities);
 
-		mockDtos.forEach(dto -> dto.autoTranslate(translator, "en"));
+		mockDtos.forEach(dto -> dto.translate(translator, "de", "en"));
 		mockMvc.perform(get(API_PATH))
 				.andExpect(status().isOk())
 				.andExpect(content().json(jsonMapper.writeValueAsString(mockDtos)));
@@ -80,7 +81,7 @@ class ProductRestControllerTest {
 		Mockito.when(productCrudService.createProduct(any(Product.class)))
 				.thenReturn(this.modelMapper.map(mockDto, Product.class));
 
-		mockDto.autoTranslate(translator, "en");
+		mockDto.translate(translator, "de", "en");
 		mockMvc.perform(post(API_PATH)
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(this.jsonMapper.writeValueAsString(new Product()))
@@ -97,7 +98,7 @@ class ProductRestControllerTest {
 		Mockito.when(productCrudService.readProduct(any(int.class)))
 				.thenReturn(Optional.of(this.modelMapper.map(mockDto, Product.class)));
 
-		mockDto.autoTranslate(translator, "en");
+		mockDto.translate(translator, "de", "en");
 		mockMvc.perform(get(API_PATH + "/" + mockDto.getId()))
 				.andExpect(status().isOk())
 				.andExpect(content().json(jsonMapper.writeValueAsString(mockDto)));
@@ -112,7 +113,7 @@ class ProductRestControllerTest {
 		Mockito.when(productCrudService.updateProduct(argThat(argument -> argument.getId() == mockDto.getId())))
 				.thenReturn(this.modelMapper.map(mockDto, Product.class));
 
-		mockDto.autoTranslate(translator, "en");
+		mockDto.translate(translator, "de", "en");
 		mockMvc.perform(put(API_PATH + "/" + mockDto.getId())
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(this.jsonMapper.writeValueAsString(mockDto))
