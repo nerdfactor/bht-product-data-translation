@@ -1,6 +1,6 @@
-insert into "language" ("id","name","currency","measure","iso_code") values (1, 'Deutsch', 'euro','metric','de-DE');
-insert into "language" ("id","name","currency","measure","iso_code") values (2, 'Englisch', 'dollar','imperial','en-US');
-insert into "language" ("id","name","currency","measure","iso_code") values (3, 'Französisch', 'euro','metric','fr-FR');
+insert into "language" ("id","name","currency","measure","iso_code") values (1, 'Deutsch', 'euro','metric','de');
+insert into "language" ("id","name","currency","measure","iso_code") values (2, 'Englisch', 'dollar','imperial','en');
+insert into "language" ("id","name","currency","measure","iso_code") values (3, 'Französisch', 'euro','metric','fr');
 insert into "color" ("id","name") values (1, 'rot');
 insert into "color" ("id","name") values (2, 'blau');
 insert into "color" ("id","name") values (3, 'grün');

@@ -27,8 +27,9 @@ public class TranslationService {
     final LanguageRepository languageRepository;
 
     public Product translateProduct(Product product, String to) throws TranslationException {
-        Language defaultLanguage = this.languageRepository.findOneByIsoCode("de-DE")
+        Language defaultLanguage = this.languageRepository.findOneByIsoCode("de")
                 .orElseThrow(() -> new TranslationException("Could not find default Language."));
+        to = LanguageService.normalizeLanguageTag(to);
         Language language = this.languageRepository.findOneByIsoCode(to)
                 .orElseThrow(() -> new TranslationException("Could not find Language for translation."));
 

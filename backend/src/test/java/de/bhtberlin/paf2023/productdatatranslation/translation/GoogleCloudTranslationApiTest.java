@@ -18,7 +18,7 @@ class GoogleCloudTranslationApiTest {
 	@Test
 	void shouldTranslateBasicText() {
 		String expected = "Dies ist ein Beispiel für einen übersetzbaren Text.";
-		String result = this.api.translate("This is a sample translatable text.", "EN", "DE");
+		String result = this.api.translate("This is a sample translatable text.", "en", "de");
 		Assertions.assertEquals(expected, result);
 	}
 

@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+
 /**
  * External translation Api using the Deepl Api.
  */
@@ -18,6 +20,19 @@ public class DeeplTranslationApi implements ExternalTranslationApi {
      * The internal Deepl {@link Translator}.
      */
     private final Translator translator;
+
+    /**
+     * Supported locales.
+     */
+    private static final Set<String> supportedLocales = Set.of("cs", "bg", "da", "de", "el", "en", "en-GB", "en-US", "es", "et", "fi", "fr", "hu", "id", "it", "ja", "ko", "lt", "lv", "nb", "nl", "pl", "pt", "pt-BR", "pt-PT", "ro", "ru", "sk", "sl", "sv", "tr", "uk", "zh");
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull Set<String> getSupportedLocales() {
+        return supportedLocales;
+    }
 
     /**
      * {@inheritDoc}

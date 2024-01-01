@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class AppConfig {
 
     // todo: where to put this?
-    public static final String DEFAULT_LANGUAGE = "DE";
+    public static final String DEFAULT_LANGUAGE = "de";
 
     /**
      * The current application version.
