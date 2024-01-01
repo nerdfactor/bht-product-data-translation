@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bhtberlin.paf2023.productdatatranslation.dto.ColorDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Color;
 import de.bhtberlin.paf2023.productdatatranslation.service.ColorCrudService;
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.FakeStringTranslator;
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.Translator;
+import de.bhtberlin.paf2023.productdatatranslation.translation.BaseTranslator;
+import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
@@ -55,7 +55,7 @@ class ColorRestControllerTest {
     ColorCrudService colorCrudService;
 
     @Autowired
-    Translator translator;
+    BaseTranslator translator;
 
     /**
      * Check if {@link Color Colors} can be listed.
@@ -70,7 +70,7 @@ class ColorRestControllerTest {
         Mockito.when(colorCrudService.listAllColors())
                 .thenReturn(mockEntities);
 
-        mockDtos.forEach(dto -> dto.autoTranslate(translator, "en"));
+        mockDtos.forEach(dto -> dto.translate(translator, "de", "en"));
         mockMvc.perform(get(API_PATH))
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonMapper.writeValueAsString(mockDtos)));
@@ -85,7 +85,7 @@ class ColorRestControllerTest {
         Mockito.when(colorCrudService.createColor(any(Color.class)))
                 .thenReturn(this.modelMapper.map(mockDto, Color.class));
 
-        mockDto.autoTranslate(translator, "en");
+        mockDto.translate(translator, "de", "en");
         mockMvc.perform(post(API_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(this.jsonMapper.writeValueAsString(new Color()))
@@ -102,7 +102,7 @@ class ColorRestControllerTest {
         Mockito.when(colorCrudService.readColor(any(int.class)))
                 .thenReturn(Optional.of(this.modelMapper.map(mockDto, Color.class)));
 
-        mockDto.autoTranslate(translator, "en");
+        mockDto.translate(translator, "de", "en");
         mockMvc.perform(get(API_PATH + "/" + mockDto.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonMapper.writeValueAsString(mockDto)));
@@ -117,7 +117,7 @@ class ColorRestControllerTest {
         Mockito.when(colorCrudService.updateColor(argThat(argument -> argument.getId() == mockDto.getId())))
                 .thenReturn(this.modelMapper.map(mockDto, Color.class));
 
-        mockDto.autoTranslate(translator, "en");
+        mockDto.translate(translator, "de", "en");
         mockMvc.perform(put(API_PATH + "/" + mockDto.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(this.jsonMapper.writeValueAsString(mockDto))

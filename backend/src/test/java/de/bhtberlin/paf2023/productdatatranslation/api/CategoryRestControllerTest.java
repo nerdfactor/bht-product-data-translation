@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bhtberlin.paf2023.productdatatranslation.dto.CategoryDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Category;
 import de.bhtberlin.paf2023.productdatatranslation.service.CategoryCrudService;
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.FakeStringTranslator;
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.Translator;
+import de.bhtberlin.paf2023.productdatatranslation.translation.BaseTranslator;
+import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
@@ -55,7 +55,7 @@ class CategoryRestControllerTest {
     CategoryCrudService categoryCrudService;
 
     @Autowired
-    Translator translator;
+    BaseTranslator translator;
 
     /**
      * Check if {@link Category Categories} can be listed.
@@ -70,7 +70,7 @@ class CategoryRestControllerTest {
         Mockito.when(categoryCrudService.listAllCategories())
                 .thenReturn(mockEntities);
 
-        mockDtos.forEach(dto -> dto.autoTranslate(translator, "en"));
+        mockDtos.forEach(dto -> dto.translate(translator, "de", "en"));
         mockMvc.perform(get(API_PATH))
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonMapper.writeValueAsString(mockDtos)));
@@ -85,7 +85,7 @@ class CategoryRestControllerTest {
         Mockito.when(categoryCrudService.createCategory(any(Category.class)))
                 .thenReturn(this.modelMapper.map(mockDto, Category.class));
 
-        mockDto.autoTranslate(translator, "en");
+        mockDto.translate(translator, "de", "en");
         mockMvc.perform(post(API_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(this.jsonMapper.writeValueAsString(new Category()))
@@ -102,7 +102,7 @@ class CategoryRestControllerTest {
         Mockito.when(categoryCrudService.readCategory(any(int.class)))
                 .thenReturn(Optional.of(this.modelMapper.map(mockDto, Category.class)));
 
-        mockDto.autoTranslate(translator, "en");
+        mockDto.translate(translator, "de", "en");
         mockMvc.perform(get(API_PATH + "/" + mockDto.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonMapper.writeValueAsString(mockDto)));
@@ -117,7 +117,7 @@ class CategoryRestControllerTest {
         Mockito.when(categoryCrudService.updateCategory(argThat(argument -> argument.getId() == mockDto.getId())))
                 .thenReturn(this.modelMapper.map(mockDto, Category.class));
 
-        mockDto.autoTranslate(translator, "en");
+        mockDto.translate(translator, "de", "en");
         mockMvc.perform(put(API_PATH + "/" + mockDto.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(this.jsonMapper.writeValueAsString(mockDto))
