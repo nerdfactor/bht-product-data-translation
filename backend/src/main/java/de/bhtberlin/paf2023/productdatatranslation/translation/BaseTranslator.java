@@ -47,6 +47,8 @@ public class BaseTranslator implements Translator, TranslationVisitor {
             return this.visit(categoryDto, from, to);
         } else if (translatable instanceof ColorDto colorDto) {
             return this.visit(colorDto, from, to);
+        } else if (translatable instanceof ProductDto productDto) {
+            return this.visit(productDto, from, to);
         }
         return translatable;
     }

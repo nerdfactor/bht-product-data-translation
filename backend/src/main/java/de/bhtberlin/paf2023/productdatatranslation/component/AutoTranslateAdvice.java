@@ -3,7 +3,6 @@ package de.bhtberlin.paf2023.productdatatranslation.component;
 import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
 import de.bhtberlin.paf2023.productdatatranslation.service.TranslationService;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translatable;
-import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.i18n.LocaleContextHolder;
