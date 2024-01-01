@@ -3,6 +3,7 @@ package de.bhtberlin.paf2023.productdatatranslation.config;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.TranslateOptions;
+import de.bhtberlin.paf2023.productdatatranslation.translation.BaseTranslator;
 import de.bhtberlin.paf2023.productdatatranslation.translation.MultiStrategyTranslator;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
 import de.bhtberlin.paf2023.productdatatranslation.translation.api.ExternalTranslationApi;
@@ -23,7 +24,7 @@ public class TranslationConfig {
 
     @Bean
     @Primary
-    public Translator getTranslator() {
+    public BaseTranslator getTranslator() {
         // todo: get from configuration.
         // todo: somehow change during runtime?
         return MultiStrategyTranslator.builder()
