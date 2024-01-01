@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface LanguageRepository extends JpaRepository<Language, Integer> {
 
-	public Optional<Language> findOneByIsoCode(String isoCode);
+    public Optional<Language> findOneByIsoCode(String isoCode);
 }

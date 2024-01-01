@@ -15,25 +15,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductSearchService {
 
-	final AutoTranslationService autoTranslationService;
+    final AutoTranslationService autoTranslationService;
 
-	/**
-	 * An implementation of a {@link ProductRepository} for data access.
-	 * For example a specific JpaRepository for access to database layer.
-	 */
-	final ProductRepository productRepository;
+    /**
+     * An implementation of a {@link ProductRepository} for data access.
+     * For example a specific JpaRepository for access to database layer.
+     */
+    final ProductRepository productRepository;
 
-	public @NonNull Page<Product> searchAllProducts(final String search) {
-		Specification<Product> spec = Specification.where(null);
-		spec.and((root, query, cb) -> cb.like(root.get("name"), search));
-		Page<Product> products = this.productRepository.findAll(spec, Pageable.unpaged());
-		products.getContent().forEach(product -> {
-			product.removeTranslationsNotInLocale("en_US");
-			if (!product.hasTranslations()) {
-				this.autoTranslationService.autoTranslateProductAsync(product, "en_US");
-			}
-		});
-		return products;
-	}
+    public @NonNull Page<Product> searchAllProducts(final String search) {
+        Specification<Product> spec = Specification.where(null);
+        spec.and((root, query, cb) -> cb.like(root.get("name"), search));
+        Page<Product> products = this.productRepository.findAll(spec, Pageable.unpaged());
+        products.getContent().forEach(product -> {
+            product.removeTranslationsNotInLocale("en_US");
+            if (!product.hasTranslations()) {
+                this.autoTranslationService.autoTranslateProductAsync(product, "en_US");
+            }
+        });
+        return products;
+    }
 
 }

@@ -18,14 +18,14 @@ import java.util.Optional;
 @RequestMapping("/api/products")
 public class ProductController {
 
-	final ProductSearchService productSearchService;
+    final ProductSearchService productSearchService;
 
-	final ModelMapper mapper;
+    final ModelMapper mapper;
 
-	@GetMapping(value = "/search")
-	public ResponseEntity<List<ProductDto>> searchAllProducts(@RequestParam(value = "search", required = false) Optional<String> search) {
-		return ResponseEntity.ok(this.productSearchService.searchAllProducts(search.orElse(""))
-				.stream().map(product -> this.mapper.map(product, ProductDto.class))
-				.toList());
-	}
+    @GetMapping(value = "/search")
+    public ResponseEntity<List<ProductDto>> searchAllProducts(@RequestParam(value = "search", required = false) Optional<String> search) {
+        return ResponseEntity.ok(this.productSearchService.searchAllProducts(search.orElse(""))
+                .stream().map(product -> this.mapper.map(product, ProductDto.class))
+                .toList());
+    }
 }

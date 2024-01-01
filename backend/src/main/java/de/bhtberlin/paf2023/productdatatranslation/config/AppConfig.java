@@ -14,24 +14,24 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "app")
 public class AppConfig {
 
-	// todo: where to put this?
-	public static final String DEFAULT_LANGUAGE = "DE";
+    // todo: where to put this?
+    public static final String DEFAULT_LANGUAGE = "DE";
 
-	/**
-	 * The current application version.
-	 */
-	private String version;
+    /**
+     * The current application version.
+     */
+    private String version;
 
-	/**
-	 * The configuration for external Apis.
-	 */
-	private ExternalApiConfig apiConfig;
+    /**
+     * The configuration for external Apis.
+     */
+    private ExternalApiConfig apiConfig;
 
-	@Getter
-	@Setter
-	public static class ExternalApiConfig {
+    @Getter
+    @Setter
+    public static class ExternalApiConfig {
 
-		private String deeplApiKey;
-		private String googleCloudApiKey;
-	}
+        private String deeplApiKey;
+        private String googleCloudApiKey;
+    }
 }
