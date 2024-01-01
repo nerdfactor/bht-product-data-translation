@@ -1,8 +1,11 @@
 package de.bhtberlin.paf2023.productdatatranslation.component;
 
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.AutoTranslatable;
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.Translator;
-import org.springframework.beans.factory.annotation.Autowired;
+import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
+import de.bhtberlin.paf2023.productdatatranslation.service.TranslationService;
+import de.bhtberlin.paf2023.productdatatranslation.translation.Translatable;
+import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -16,29 +19,34 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 @ControllerAdvice
-public class AutoTranslateAdvice implements ResponseBodyAdvice<AutoTranslatable> {
+@RequiredArgsConstructor
+public class AutoTranslateAdvice implements ResponseBodyAdvice<Translatable> {
 
-	@Autowired
-	Translator translator;
+    final TranslationService translationService;
 
-	@Override
-	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-		if (returnType.getGenericParameterType() instanceof ParameterizedType) {
-			try {
-				Type[] args = ((ParameterizedType) returnType.getGenericParameterType()).getActualTypeArguments();
-				return AutoTranslatable.class.isAssignableFrom((Class<?>) args[0]);
-			} catch (Exception e) {
-				return false;
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean supports(MethodParameter returnType, @NotNull Class<? extends HttpMessageConverter<?>> converterType) {
+        if (returnType.getGenericParameterType() instanceof ParameterizedType) {
+            try {
+                Type[] args = ((ParameterizedType) returnType.getGenericParameterType()).getActualTypeArguments();
+                return Translatable.class.isAssignableFrom((Class<?>) args[0]);
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public AutoTranslatable beforeBodyWrite(AutoTranslatable body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-		if (body != null) {
-			body.autoTranslate(translator, LocaleContextHolder.getLocale().toLanguageTag().replace("-", "_"));
-		}
-		return body;
-	}
+    @Override
+    public Translatable beforeBodyWrite(Translatable body,
+                                        @NotNull MethodParameter returnType,
+                                        @NotNull MediaType selectedContentType,
+                                        @NotNull Class<? extends HttpMessageConverter<?>> selectedConverterType,
+                                        @NotNull ServerHttpRequest request,
+                                        @NotNull ServerHttpResponse response) {
+        if (body != null) {
+            this.translationService.translate(body, AppConfig.DEFAULT_LANGUAGE, LocaleContextHolder.getLocale().toLanguageTag());
+        }
+        return body;
+    }
 }

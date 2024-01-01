@@ -10,12 +10,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class ProductSearchService {
 
-    final AutoTranslationService autoTranslationService;
+    final TranslationService translationService;
 
     /**
      * An implementation of a {@link ProductRepository} for data access.
@@ -24,13 +26,21 @@ public class ProductSearchService {
     final ProductRepository productRepository;
 
     public @NonNull Page<Product> searchAllProducts(final String search) {
+        return this.searchAllProducts(search, "");
+    }
+
+    public @NonNull Page<Product> searchAllProducts(final String search, Locale locale) {
+        return this.searchAllProducts(search, locale.toLanguageTag());
+    }
+
+    public @NonNull Page<Product> searchAllProducts(final String search, String locale) {
         Specification<Product> spec = Specification.where(null);
         spec.and((root, query, cb) -> cb.like(root.get("name"), search));
         Page<Product> products = this.productRepository.findAll(spec, Pageable.unpaged());
         products.getContent().forEach(product -> {
-            product.removeTranslationsNotInLocale("en_US");
+            product.removeTranslationsNotInLocale(locale);
             if (!product.hasTranslations()) {
-                this.autoTranslationService.autoTranslateProductAsync(product, "en_US");
+                this.translationService.translateProduct(product, locale);
             }
         });
         return products;

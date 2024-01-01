@@ -21,7 +21,7 @@ import java.util.Optional;
 @Service
 public class ProductCrudService {
 
-    final AutoTranslationService autoTranslationService;
+    final TranslationService translationService;
 
     /**
      * An implementation of a {@link ProductRepository} for data access.
@@ -49,7 +49,7 @@ public class ProductCrudService {
                     if (!locale.isEmpty()) {
                         product.removeTranslationsNotInLocale(locale);
                         if (!product.hasTranslations()) {
-                            this.autoTranslationService.autoTranslateProductAsync(product, locale);
+                            this.translationService.translateProduct(product, locale);
                         }
                     }
                 })

@@ -4,6 +4,7 @@ import de.bhtberlin.paf2023.productdatatranslation.dto.ProductDto;
 import de.bhtberlin.paf2023.productdatatranslation.service.ProductSearchService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +25,7 @@ public class ProductController {
 
     @GetMapping(value = "/search")
     public ResponseEntity<List<ProductDto>> searchAllProducts(@RequestParam(value = "search", required = false) Optional<String> search) {
-        return ResponseEntity.ok(this.productSearchService.searchAllProducts(search.orElse(""))
+        return ResponseEntity.ok(this.productSearchService.searchAllProducts(search.orElse(""), LocaleContextHolder.getLocale())
                 .stream().map(product -> this.mapper.map(product, ProductDto.class))
                 .toList());
     }

@@ -1,8 +1,10 @@
 package de.bhtberlin.paf2023.productdatatranslation.component;
 
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.AutoTranslatable;
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.Translator;
-import org.springframework.beans.factory.annotation.Autowired;
+import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
+import de.bhtberlin.paf2023.productdatatranslation.service.TranslationService;
+import de.bhtberlin.paf2023.productdatatranslation.translation.Translatable;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -17,37 +19,42 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 @ControllerAdvice
-public class AutoTranslateListAdvice implements ResponseBodyAdvice<List<AutoTranslatable>> {
+@RequiredArgsConstructor
+public class AutoTranslateListAdvice implements ResponseBodyAdvice<List<Translatable>> {
 
-	@Autowired
-	Translator translator;
+    final TranslationService translationService;
 
-	@Override
-	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-		if (returnType.getGenericParameterType() instanceof ParameterizedType) {
-			try {
-				Type[] args = ((ParameterizedType) returnType.getGenericParameterType()).getActualTypeArguments();
-				if (args[0] instanceof ParameterizedType) {
-					Class<?> cls = (Class<?>) ((ParameterizedType) args[0]).getRawType();
-					Type[] types = ((ParameterizedType) args[0]).getActualTypeArguments();
-					if (cls != null && List.class.isAssignableFrom(cls) && types.length > 0 && AutoTranslatable.class.isAssignableFrom((Class<?>) types[0])) {
-						return true;
-					}
-				}
-			} catch (Exception e) {
-				return false;
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean supports(MethodParameter returnType, @NotNull Class<? extends HttpMessageConverter<?>> converterType) {
+        if (returnType.getGenericParameterType() instanceof ParameterizedType) {
+            try {
+                Type[] args = ((ParameterizedType) returnType.getGenericParameterType()).getActualTypeArguments();
+                if (args[0] instanceof ParameterizedType) {
+                    Class<?> cls = (Class<?>) ((ParameterizedType) args[0]).getRawType();
+                    Type[] types = ((ParameterizedType) args[0]).getActualTypeArguments();
+                    if (cls != null && List.class.isAssignableFrom(cls) && types.length > 0 && Translatable.class.isAssignableFrom((Class<?>) types[0])) {
+                        return true;
+                    }
+                }
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public List<AutoTranslatable> beforeBodyWrite(List<AutoTranslatable> body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-		if (body != null) {
-			body.forEach(translatable -> {
-				translatable.autoTranslate(translator, LocaleContextHolder.getLocale().toLanguageTag().replace("-", "_"));
-			});
-		}
-		return body;
-	}
+    @Override
+    public List<Translatable> beforeBodyWrite(List<Translatable> body,
+                                              @NotNull MethodParameter returnType,
+                                              @NotNull MediaType selectedContentType,
+                                              @NotNull Class<? extends HttpMessageConverter<?>> selectedConverterType,
+                                              @NotNull ServerHttpRequest request,
+                                              @NotNull ServerHttpResponse response) {
+        if (body != null) {
+            body.forEach(translatable -> {
+                this.translationService.translate(translatable, AppConfig.DEFAULT_LANGUAGE, LocaleContextHolder.getLocale().toLanguageTag());
+            });
+        }
+        return body;
+    }
 }
