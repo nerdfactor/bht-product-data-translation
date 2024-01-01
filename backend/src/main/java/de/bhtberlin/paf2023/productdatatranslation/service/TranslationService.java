@@ -27,10 +27,13 @@ public class TranslationService {
     final LanguageRepository languageRepository;
 
     public Product translateProduct(Product product, String to) throws TranslationException {
-        Language language = this.languageRepository.findOneByIsoCode(to).orElseThrow(() -> new TranslationException("Could not find Language for translation."));
+        Language defaultLanguage = this.languageRepository.findOneByIsoCode("de-DE")
+                .orElseThrow(() -> new TranslationException("Could not find default Language."));
+        Language language = this.languageRepository.findOneByIsoCode(to)
+                .orElseThrow(() -> new TranslationException("Could not find Language for translation."));
 
         // get default translation from the product
-        Translation defaultTranslation = this.translationRepository.getOneByProduct(product);
+        Translation defaultTranslation = this.translationRepository.getOneByProductAndLanguage(product, defaultLanguage);
 
         // create new translation with the default content
         Translation translation = new Translation();
