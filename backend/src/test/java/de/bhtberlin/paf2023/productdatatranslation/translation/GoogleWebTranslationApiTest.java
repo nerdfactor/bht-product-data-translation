@@ -1,8 +1,8 @@
 package de.bhtberlin.paf2023.productdatatranslation.translation;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.ExternalTranslationApi;
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.GoogleWebTranslationApi;
+import de.bhtberlin.paf2023.productdatatranslation.translation.api.ExternalTranslationApi;
+import de.bhtberlin.paf2023.productdatatranslation.translation.api.GoogleWebTranslationApi;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

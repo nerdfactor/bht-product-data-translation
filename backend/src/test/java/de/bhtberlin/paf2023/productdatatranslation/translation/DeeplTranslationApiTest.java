@@ -1,6 +1,6 @@
 package de.bhtberlin.paf2023.productdatatranslation.translation;
 
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.DeeplTranslationApi;
+import de.bhtberlin.paf2023.productdatatranslation.translation.api.DeeplTranslationApi;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
