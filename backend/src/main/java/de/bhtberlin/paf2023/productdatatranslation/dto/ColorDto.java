@@ -1,23 +1,16 @@
 package de.bhtberlin.paf2023.productdatatranslation.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.AutoTranslatable;
-import de.bhtberlin.paf2023.productdatatranslation.service.translation.Translator;
+import de.bhtberlin.paf2023.productdatatranslation.translation.Translatable;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ColorDto implements AutoTranslatable {
+public class ColorDto implements Translatable {
 
-	private int id;
+    private int id;
 
-	private String name;
-
-	@Override
-	public void autoTranslate(Translator translator, String locale) {
-		this.name = translator.translate(this.name, AppConfig.DEFAULT_LANGUAGE, locale);
-	}
+    private String name;
 }
