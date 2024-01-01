@@ -3,8 +3,7 @@ package de.bhtberlin.paf2023.productdatatranslation.translation;
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.CurrencyConversionStrategy;
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.MeasurementConversionStrategy;
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.TextTranslationStrategy;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * Translator that uses a {@link TextTranslationStrategy}, {@link CurrencyConversionStrategy}
@@ -13,6 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@Builder(setterPrefix = "with")
 public class MultiStrategyTranslator extends BaseTranslator {
 
     private TextTranslationStrategy textStrategy;

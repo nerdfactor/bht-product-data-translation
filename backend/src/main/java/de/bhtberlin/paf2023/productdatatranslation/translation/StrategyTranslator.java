@@ -1,6 +1,7 @@
 package de.bhtberlin.paf2023.productdatatranslation.translation;
 
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.MultiTranslationStrategy;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@Builder(setterPrefix = "with")
 public class StrategyTranslator extends BaseTranslator {
 
     private MultiTranslationStrategy strategy;
