@@ -15,13 +15,16 @@ public class ExternalApiTextTranslationStrategy implements TextTranslationStrate
 
     /**
      * {@inheritDoc}
+     * // todo: what to do if external translation failed or not supported? use some internal translator as fallback?
      */
     @Override
     public @NotNull String translateText(@NotNull String text, @NotNull String from, @NotNull String to) {
+        if (externalTranslationApi.isNotSupportedLocale(from) || externalTranslationApi.isNotSupportedLocale(to)) {
+            return text;
+        }
         try {
             return externalTranslationApi.translate(text, from, to);
         } catch (ExternalTranslationApiException e) {
-            // todo: what to do if external translation failed? use some internal translator as fallback?
             return text;
         }
     }
