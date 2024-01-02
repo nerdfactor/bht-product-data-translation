@@ -4,6 +4,7 @@ import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.Currency
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.MeasurementConversionStrategy;
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.TextTranslationStrategy;
 import lombok.*;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Translator that uses a {@link TextTranslationStrategy}, {@link CurrencyConversionStrategy}
@@ -40,8 +41,11 @@ public class MultiStrategyTranslator extends BaseTranslator {
      * {@inheritDoc}
      */
     @Override
-    public String translateText(String string, String from, String to) {
-        return this.textStrategy.translateText(string, from, to);
+    public @NotNull String translateText(String text, String from, String to) {
+        if (text == null || text.isEmpty()) {
+            return "";
+        }
+        return this.textStrategy.translateText(text, from, to);
     }
 
     /**

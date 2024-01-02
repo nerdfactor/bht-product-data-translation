@@ -3,6 +3,8 @@ package de.bhtberlin.paf2023.productdatatranslation.translation;
 import de.bhtberlin.paf2023.productdatatranslation.dto.CategoryDto;
 import de.bhtberlin.paf2023.productdatatranslation.dto.ColorDto;
 import de.bhtberlin.paf2023.productdatatranslation.dto.ProductDto;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base Implementation of a {@link Translator} and {@link TranslationVisitor}
@@ -18,7 +20,10 @@ public class BaseTranslator implements Translator, TranslationVisitor {
      * {@inheritDoc}
      */
     @Override
-    public String translateText(String text, String from, String to) {
+    public @NotNull String translateText(@Nullable String text, String from, String to) {
+        if (text == null || text.isEmpty()) {
+            return "";
+        }
         return text;
     }
 

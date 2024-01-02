@@ -1,5 +1,8 @@
 package de.bhtberlin.paf2023.productdatatranslation.translation;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Translates texts, currencies and measurements.
  */
@@ -13,7 +16,7 @@ public interface Translator {
      * @param to   The tag of the target locale.
      * @return The translated text.
      */
-    String translateText(String text, String from, String to);
+    @NotNull String translateText(@Nullable String text, String from, String to);
 
     /**
      * Convert a currency.

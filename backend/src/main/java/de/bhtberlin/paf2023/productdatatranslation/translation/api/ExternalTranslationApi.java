@@ -3,6 +3,7 @@ package de.bhtberlin.paf2023.productdatatranslation.translation.api;
 import de.bhtberlin.paf2023.productdatatranslation.exception.ExternalTranslationApiException;
 import de.bhtberlin.paf2023.productdatatranslation.service.LanguageService;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
@@ -49,5 +50,5 @@ public interface ExternalTranslationApi {
      * @return The translated string.
      * @throws ExternalTranslationApiException If something did not work during translation.
      */
-    @NotNull String translate(@NotNull String text, @NotNull String from, @NotNull String to) throws ExternalTranslationApiException;
+    @NotNull String translate(@Nullable String text, @NotNull String from, @NotNull String to) throws ExternalTranslationApiException;
 }

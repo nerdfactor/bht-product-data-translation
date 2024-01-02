@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bhtberlin.paf2023.productdatatranslation.exception.ExternalTranslationApiException;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -46,7 +47,10 @@ public class GoogleWebTranslationApi implements ExternalTranslationApi {
      * {@inheritDoc}
      */
     @Override
-    public @NotNull String translate(@NotNull String text, @NotNull String from, @NotNull String to) throws ExternalTranslationApiException {
+    public @NotNull String translate(@Nullable String text, @NotNull String from, @NotNull String to) throws ExternalTranslationApiException {
+        if (text == null || text.isEmpty()) {
+            return "";
+        }
         RestTemplate restTemplate = new RestTemplate();
 
         String uri = apiUrl.formatted(from, to, URLEncoder.encode(text, StandardCharsets.UTF_8));

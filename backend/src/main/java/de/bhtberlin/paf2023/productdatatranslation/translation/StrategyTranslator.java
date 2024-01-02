@@ -4,6 +4,7 @@ import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.MultiTra
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Translator that uses a {@link MultiTranslationStrategy} in order to translate
@@ -20,7 +21,7 @@ public class StrategyTranslator extends BaseTranslator {
      * {@inheritDoc}
      */
     @Override
-    public String translateText(String string, String from, String to) {
+    public @NotNull String translateText(String string, String from, String to) {
         return this.strategy.translateText(string, from, to);
     }
 

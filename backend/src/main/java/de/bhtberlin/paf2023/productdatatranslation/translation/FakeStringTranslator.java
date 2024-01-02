@@ -1,5 +1,7 @@
 package de.bhtberlin.paf2023.productdatatranslation.translation;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.regex.Pattern;
 
 /**
@@ -13,7 +15,10 @@ public class FakeStringTranslator extends BaseTranslator {
      * {@inheritDoc}
      */
     @Override
-    public String translateText(String text, String from, String to) {
+    public @NotNull String translateText(String text, String from, String to) {
+        if (text == null || text.isEmpty()) {
+            return "";
+        }
         return this.replaceLocalePrefix(text, to + ":");
     }
 
