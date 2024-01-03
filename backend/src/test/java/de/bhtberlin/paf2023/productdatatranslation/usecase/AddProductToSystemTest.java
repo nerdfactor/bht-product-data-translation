@@ -1,6 +1,7 @@
 package de.bhtberlin.paf2023.productdatatranslation.usecase;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.bhtberlin.paf2023.productdatatranslation.dto.CategoryDto;
 import de.bhtberlin.paf2023.productdatatranslation.dto.ProductDto;
 import de.bhtberlin.paf2023.productdatatranslation.dto.TranslationDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Category;
@@ -23,10 +24,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -40,6 +38,8 @@ public class AddProductToSystemTest {
     private static final String API_PATH_PRODUCTS = "/api/products";
 
     private static final String API_PATH_TRANSLATIONS = "/api/translations";
+
+    private static final String API_PATH_CATEGORIES = "/api/categories";
 
     @Autowired
     private MockMvc mockMvc;
@@ -125,6 +125,57 @@ public class AddProductToSystemTest {
     }
 
     /**
+     * Should add a product with new category to the system.
+     */
+    @Test
+    @Transactional
+    @Rollback
+    public void shouldAddProductWithNewCategoryToSystem() throws Exception {
+        // create a test product
+        Product product = createTestProduct();
+
+        // create a dto to send from the product
+        ProductDto dto = this.modelMapper.map(product, ProductDto.class);
+
+        // create the product. this should throw away the color and category.
+        String responseCreated = mockMvc.perform(post(API_PATH_PRODUCTS)
+                        .header("Accept-Language", "de")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.jsonMapper.writeValueAsString(dto))
+                ).andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+        ProductDto responseCreatedDto = this.jsonMapper.readValue(responseCreated, ProductDto.class);
+        Assertions.assertEquals(dto.getName(), responseCreatedDto.getName());
+
+
+        // create the new category
+        Category category = createTestCategory();
+        CategoryDto categoryDto = this.modelMapper.map(category, CategoryDto.class);
+
+        String responseCategory = mockMvc.perform(post(API_PATH_CATEGORIES)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.jsonMapper.writeValueAsString(categoryDto))
+                ).andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+        CategoryDto responseCategoryDto = this.jsonMapper.readValue(responseCategory, CategoryDto.class);
+        Assertions.assertEquals(categoryDto.getName(), responseCategoryDto.getName());
+
+
+        // update the relation to category
+        ProductDto updateDto = this.modelMapper.map(product, ProductDto.class);
+        updateDto.setId(responseCreatedDto.getId());
+        updateDto.setCategories(Set.of(new CategoryDto(responseCategoryDto.getId())));
+        String responseUpdated = mockMvc.perform(patch(API_PATH_PRODUCTS + "/" + responseCreatedDto.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.jsonMapper.writeValueAsString(updateDto))
+                ).andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        ProductDto responseUpdatedDto = this.jsonMapper.readValue(responseUpdated, ProductDto.class);
+        Assertions.assertEquals(responseCreatedDto.getName(), responseUpdatedDto.getName());
+        Assertions.assertEquals(1, responseUpdatedDto.getCategories().size());
+    }
+
+    /**
      * Should add a product with a new description to the system.
      */
     @Test
@@ -195,5 +246,11 @@ public class AddProductToSystemTest {
                 description.substring(0, 20),
                 description
         );
+    }
+
+    private Category createTestCategory() {
+        Category category = new Category();
+        category.setName(UUID.randomUUID().toString());
+        return category;
     }
 }
