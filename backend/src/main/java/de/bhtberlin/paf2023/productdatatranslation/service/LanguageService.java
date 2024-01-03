@@ -1,13 +1,34 @@
 package de.bhtberlin.paf2023.productdatatranslation.service;
 
+import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
+import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
+import de.bhtberlin.paf2023.productdatatranslation.repo.LanguageRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.Locale;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class LanguageService {
 
+    /**
+     * An implementation of a {@link LanguageRepository} for data access.
+     * For example a specific JpaRepository for access to database layer.
+     */
+    final LanguageRepository languageRepository;
+
+    /**
+     * Get the default {@link Language} of the system.
+     *
+     * @return The default {@link Language}.
+     */
+    public Language getDefaultLanguage() {
+        return this.languageRepository.findOneByIsoCode(AppConfig.DEFAULT_LANGUAGE).orElseThrow();
+    }
 
     /**
      * Normalize a language tag to conform to ISO639, ISO3166 and IETF so
