@@ -30,7 +30,7 @@ public class ColorCrudIntegrationTests {
     @Test
     @Transactional
     @Rollback
-    public void ColorCanBeCreatedAndRead() {
+    public void colorCanBeCreatedAndRead() {
         Color create = this.createTestColor();
         Color created = colorService.createColor(create);
         assertNotNull(created);
@@ -48,7 +48,7 @@ public class ColorCrudIntegrationTests {
     @Test
     @Transactional
     @Rollback
-    public void ColorCanBeUpdated() {
+    public void colorCanBeUpdated() {
         Color create = this.createTestColor();
         Color created = colorService.createColor(create);
         assertNotNull(created);
@@ -67,7 +67,7 @@ public class ColorCrudIntegrationTests {
     @Test
     @Transactional
     @Rollback
-    public void ColorCantBeReadAfterItWasDeleted() {
+    public void colorCantBeReadAfterItWasDeleted() {
         Color create1 = this.createTestColor();
         Color created1 = colorService.createColor(create1);
         assertNotNull(created1);
@@ -93,8 +93,8 @@ public class ColorCrudIntegrationTests {
     @Test
     @Transactional
     @Rollback
-    public void ColorsCanBeListed() {
-        // todo: handle previously existing objects.
+    public void colorsCanBeListed() {
+        int previousAmountOfColors = this.colorService.listAllColors().size();
         int amountOfColors = 10;
         List<Color> listOfTestColors = new ArrayList<>();
         for (int i = 0; i < amountOfColors; i++) {
@@ -106,10 +106,10 @@ public class ColorCrudIntegrationTests {
                 .min(Comparator.comparing(Color::getName))
                 .orElse(this.createTestColor());
 
-        List<Color> Colors = this.colorService.listAllColors();
-        assertNotNull(Colors);
-        assertEquals(amountOfColors, Colors.size());
-        assertEquals(firstColor.getName(), Colors.stream().
+        List<Color> colors = this.colorService.listAllColors();
+        assertNotNull(colors);
+        assertEquals(amountOfColors+previousAmountOfColors, colors.size());
+        assertEquals(firstColor.getName(), colors.stream().
                 min(Comparator.comparing(Color::getName))
                 .orElseThrow()
                 .getName()

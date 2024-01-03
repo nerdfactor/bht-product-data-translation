@@ -95,6 +95,7 @@ public class ProductCrudIntegrationTests {
     @Transactional
     @Rollback
     public void productsCanBeListed() {
+        int previousAmountOfProducts = this.productService.listAllProducts().size();
         int amountOfProducts = 10;
         List<Product> listOfTestProducts = new ArrayList<>();
         for (int i = 0; i < amountOfProducts; i++) {
@@ -108,7 +109,7 @@ public class ProductCrudIntegrationTests {
 
         List<Product> products = this.productService.listAllProducts();
         assertNotNull(products);
-        assertEquals(amountOfProducts, products.size());
+        assertEquals(amountOfProducts + previousAmountOfProducts, products.size());
         assertEquals(firstProduct.getName(), products.stream().
                 min(Comparator.comparing(Product::getName))
                 .orElseThrow()

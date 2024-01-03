@@ -30,7 +30,7 @@ public class CategoryCrudIntegrationTests {
     @Test
     @Transactional
     @Rollback
-    public void CategoryCanBeCreatedAndRead() {
+    public void categoryCanBeCreatedAndRead() {
         Category create = this.createTestCategory();
         Category created = categoryService.createCategory(create);
         assertNotNull(created);
@@ -48,7 +48,7 @@ public class CategoryCrudIntegrationTests {
     @Test
     @Transactional
     @Rollback
-    public void CategoryCanBeUpdated() {
+    public void categoryCanBeUpdated() {
         Category create = this.createTestCategory();
         Category created = categoryService.createCategory(create);
         assertNotNull(created);
@@ -67,7 +67,7 @@ public class CategoryCrudIntegrationTests {
     @Test
     @Transactional
     @Rollback
-    public void CategoryCantBeReadAfterItWasDeleted() {
+    public void categoryCantBeReadAfterItWasDeleted() {
         Category create1 = this.createTestCategory();
         Category created1 = categoryService.createCategory(create1);
         assertNotNull(created1);
@@ -93,8 +93,8 @@ public class CategoryCrudIntegrationTests {
     @Test
     @Transactional
     @Rollback
-    public void CategoriesCanBeListed() {
-        // todo: handle previously existing objects.
+    public void categoriesCanBeListed() {
+        int previousAmountOfCategories = this.categoryService.listAllCategories().size();
         int amountOfCategories = 10;
         List<Category> listOfTestCategories = new ArrayList<>();
         for (int i = 0; i < amountOfCategories; i++) {
@@ -106,10 +106,10 @@ public class CategoryCrudIntegrationTests {
                 .min(Comparator.comparing(Category::getName))
                 .orElse(this.createTestCategory());
 
-        List<Category> Categories = this.categoryService.listAllCategories();
-        assertNotNull(Categories);
-        assertEquals(amountOfCategories, Categories.size());
-        assertEquals(firstCategory.getName(), Categories.stream().
+        List<Category> categories = this.categoryService.listAllCategories();
+        assertNotNull(categories);
+        assertEquals(amountOfCategories + previousAmountOfCategories, categories.size());
+        assertEquals(firstCategory.getName(), categories.stream().
                 min(Comparator.comparing(Category::getName))
                 .orElseThrow()
                 .getName()
