@@ -30,7 +30,7 @@ public class TranslationCrudIntegrationTests {
     @Test
     @Transactional
     @Rollback
-    public void TranslationCanBeCreatedAndRead() {
+    public void translationCanBeCreatedAndRead() {
         Translation create = this.createTestTranslation();
         Translation created = translationService.createTranslation(create);
         assertNotNull(created);
@@ -48,7 +48,7 @@ public class TranslationCrudIntegrationTests {
     @Test
     @Transactional
     @Rollback
-    public void TranslationCanBeUpdated() {
+    public void translationCanBeUpdated() {
         Translation create = this.createTestTranslation();
         Translation created = translationService.createTranslation(create);
         assertNotNull(created);
@@ -67,7 +67,7 @@ public class TranslationCrudIntegrationTests {
     @Test
     @Transactional
     @Rollback
-    public void TranslationCantBeReadAfterItWasDeleted() {
+    public void translationCantBeReadAfterItWasDeleted() {
         Translation create1 = this.createTestTranslation();
         Translation created1 = translationService.createTranslation(create1);
         assertNotNull(created1);
@@ -93,8 +93,8 @@ public class TranslationCrudIntegrationTests {
     @Test
     @Transactional
     @Rollback
-    public void TranslationsCanBeListed() {
-        // todo: handle previously existing objects.
+    public void translationsCanBeListed() {
+        int previousAmountOfTranslations = this.translationService.listAllTranslations().size();
         int amountOfTranslations = 10;
         List<Translation> listOfTestTranslations = new ArrayList<>();
         for (int i = 0; i < amountOfTranslations; i++) {
@@ -106,10 +106,10 @@ public class TranslationCrudIntegrationTests {
                 .min(Comparator.comparing(Translation::getShortDescription))
                 .orElse(this.createTestTranslation());
 
-        List<Translation> Translations = this.translationService.listAllTranslations();
-        assertNotNull(Translations);
-        assertEquals(amountOfTranslations, Translations.size());
-        assertEquals(firstTranslation.getShortDescription(), Translations.stream().
+        List<Translation> translations = this.translationService.listAllTranslations();
+        assertNotNull(translations);
+        assertEquals(amountOfTranslations + previousAmountOfTranslations, translations.size());
+        assertEquals(firstTranslation.getShortDescription(), translations.stream().
                 min(Comparator.comparing(Translation::getShortDescription))
                 .orElseThrow()
                 .getShortDescription()

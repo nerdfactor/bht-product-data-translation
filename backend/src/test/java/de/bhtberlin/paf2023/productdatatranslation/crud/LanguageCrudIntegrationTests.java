@@ -30,7 +30,7 @@ public class LanguageCrudIntegrationTests {
     @Test
     @Transactional
     @Rollback
-    public void LanguageCanBeCreatedAndRead() {
+    public void languageCanBeCreatedAndRead() {
         Language create = this.createTestLanguage();
         Language created = languageService.createLanguage(create);
         assertNotNull(created);
@@ -48,7 +48,7 @@ public class LanguageCrudIntegrationTests {
     @Test
     @Transactional
     @Rollback
-    public void LanguageCanBeUpdated() {
+    public void languageCanBeUpdated() {
         Language create = this.createTestLanguage();
         Language created = languageService.createLanguage(create);
         assertNotNull(created);
@@ -67,7 +67,7 @@ public class LanguageCrudIntegrationTests {
     @Test
     @Transactional
     @Rollback
-    public void LanguageCantBeReadAfterItWasDeleted() {
+    public void languageCantBeReadAfterItWasDeleted() {
         Language create1 = this.createTestLanguage();
         Language created1 = languageService.createLanguage(create1);
         assertNotNull(created1);
@@ -93,8 +93,8 @@ public class LanguageCrudIntegrationTests {
     @Test
     @Transactional
     @Rollback
-    public void LanguagesCanBeListed() {
-        // todo: handle previously existing objects.
+    public void languagesCanBeListed() {
+        int previousAmountOfLanguages = this.languageService.listAllLanguages().size();
         int amountOfLanguages = 10;
         List<Language> listOfTestLanguages = new ArrayList<>();
         for (int i = 0; i < amountOfLanguages; i++) {
@@ -106,10 +106,10 @@ public class LanguageCrudIntegrationTests {
                 .min(Comparator.comparing(Language::getName))
                 .orElse(this.createTestLanguage());
 
-        List<Language> Languages = this.languageService.listAllLanguages();
-        assertNotNull(Languages);
-        assertEquals(amountOfLanguages, Languages.size());
-        assertEquals(firstLanguage.getName(), Languages.stream().
+        List<Language> languages = this.languageService.listAllLanguages();
+        assertNotNull(languages);
+        assertEquals(amountOfLanguages + previousAmountOfLanguages, languages.size());
+        assertEquals(firstLanguage.getName(), languages.stream().
                 min(Comparator.comparing(Language::getName))
                 .orElseThrow()
                 .getName()
