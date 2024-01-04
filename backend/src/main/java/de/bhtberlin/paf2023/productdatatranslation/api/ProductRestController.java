@@ -43,7 +43,7 @@ public class ProductRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> readProduct(@PathVariable final int id) {
-        Product product = this.productCrudService.readProduct(id).
+        Product product = this.productCrudService.readProduct(id, LocaleContextHolder.getLocale()).
                 orElseThrow(() -> new EntityNotFoundException("Product with Id " + id + " was not found."));
         return ResponseEntity.ok(this.mapper.map(product, ProductDto.class));
     }

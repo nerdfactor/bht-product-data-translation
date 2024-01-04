@@ -1,5 +1,6 @@
 package de.bhtberlin.paf2023.productdatatranslation.service;
 
+import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Translation;
@@ -27,7 +28,7 @@ public class TranslationService {
     final LanguageRepository languageRepository;
 
     public Product translateProduct(Product product, String to) throws TranslationException {
-        Language defaultLanguage = this.languageRepository.findOneByIsoCode("de")
+        Language defaultLanguage = this.languageRepository.findOneByIsoCode(AppConfig.DEFAULT_LANGUAGE)
                 .orElseThrow(() -> new TranslationException("Could not find default Language."));
         to = LanguageService.normalizeLanguageTag(to);
         Language language = this.languageRepository.findOneByIsoCode(to)
