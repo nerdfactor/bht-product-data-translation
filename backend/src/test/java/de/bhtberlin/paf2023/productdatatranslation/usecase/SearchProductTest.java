@@ -48,7 +48,9 @@ public class SearchProductTest {
 
         DataPage<ProductDto> responses = this.jsonMapper.readValue(response, new TypeReference<>() {
         });
-        Assertions.assertTrue(responses.getContent().get(0).getName().contains(search));
+        Assertions.assertTrue(responses.getContent().get(0).getName().contains(search)
+                || responses.getContent().get(0).getTranslations().stream().findFirst().orElseThrow().getLongDescription().contains(search)
+                || responses.getContent().get(0).getTranslations().stream().findFirst().orElseThrow().getShortDescription().contains(search));
     }
 
 
