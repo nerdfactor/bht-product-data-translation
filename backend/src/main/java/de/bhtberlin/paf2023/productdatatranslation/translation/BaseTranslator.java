@@ -67,7 +67,7 @@ public class BaseTranslator implements Translator, TranslationVisitor {
         dto.getTranslatables().forEach(translatable -> {
             this.deferredVisit(translatable, from, to);
         });
-        return null;
+        return dto;
     }
 
     /**

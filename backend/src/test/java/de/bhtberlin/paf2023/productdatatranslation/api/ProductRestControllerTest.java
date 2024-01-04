@@ -94,8 +94,8 @@ class ProductRestControllerTest {
 	 */
 	@Test
 	void productCanBeRead() throws Exception {
-		ProductDto mockDto = createTestProduct();
-		Mockito.when(productCrudService.readProduct(any(int.class)))
+		ProductDto mockDto = createTestProduct(1);
+		Mockito.when(productCrudService.readProduct(any(int.class), any(Locale.class)))
 				.thenReturn(Optional.of(this.modelMapper.map(mockDto, Product.class)));
 
 		mockDto.translate(translator, "de", "en");
