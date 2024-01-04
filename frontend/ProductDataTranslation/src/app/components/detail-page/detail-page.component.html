@@ -1,8 +1,8 @@
-<div class="container-fluid mat-body text-body-secondary">
+<div class="container-fluid mat-body text-body-secondary" *ngIf="(elements$ | async) as elements; else loadingBlock">
     <div *ngIf="(product$ | async) as product; else elseBlock">
         <div class="d-flex align-items-center">
             <a mat-mini-fab color="primary" class="me-2 shadow-none" routerLink="/search">
-                <mat-icon fontIcon="chevron_left" aria-label="Zurück"></mat-icon>
+                <mat-icon fontIcon="chevron_left"></mat-icon>
             </a>
             <h1 class="display-4">{{product.name}}</h1>
             <a routerLink="/edit/{{product.id}}" mat-icon-button>
@@ -11,37 +11,37 @@
         </div>
         <div class="row">
             <div class="col-9">
-                <p>Seriennummer: {{product.serial}}</p>
+                <p>{{elements['serial']}}: {{product.serial}}</p>
                 <div class="border rounded p-3">
                     {{product.translations[0].longDescription}}
                 </div>
             </div>
             <div class="col-3">
                 <div class="border rounded p-3 mb-3">
-                    <h4 class="fw-light">Eigenschaften</h4>
+                    <h4 class="fw-light">{{elements['properties']}}</h4>
                     <p class="d-flex justify-content-between mb-2">
-                        <strong>Gewicht</strong>
+                        <strong>{{elements['weight']}}</strong>
                         <em>{{product.weight}}</em>
                     </p>
                     <p class="d-flex justify-content-between mb-2">
-                        <strong class="fw-bold"><abbr title="Höhe, Breite, Tiefe">H, B, T</abbr></strong>
+                        <strong class="fw-bold"><abbr title="{{elements['height']}}, {{elements['width']}}, {{elements['depth']}}">{{elements['height'][0]}}, {{elements['width'][0]}}, {{elements['depth'][0]}}</abbr></strong>
                         <em>{{product.height}}, {{product.width}}, {{product.width}}</em>
                     </p>
                     <p class="d-flex justify-content-between mb-2">
-                        <strong>Preis</strong>
+                        <strong>{{elements['price']}}</strong>
                         <em>{{product.price}}</em>
                     </p>
                     <p class="d-flex justify-content-between mb-2">
-                        <strong>Farben</strong>
+                        <strong>{{elements['colors']}}</strong>
                         <em *ngFor="let color of product.colors; last as isLast">{{color}} <span *ngIf="!isLast">,</span></em>
                     </p>
                     <p class="d-flex justify-content-between mb-2">
-                        <strong>Kategorien</strong>
+                        <strong>{{elements['categories']}}</strong>
                         <em *ngFor="let category of product.categories; last as isLast">{{category}} <span *ngIf="!isLast">,</span></em>
                     </p>
                 </div>
                 <div style="height: 250px;" class="d-flex border rounded justify-content-center align-items-center">
-                    Foto
+                    {{elements['photo']}}
                 </div>
             </div>
         </div>
@@ -51,3 +51,8 @@
         <div class="">Produkt kann nicht geladen werden</div>
     </ng-template>
 </div>
+<ng-template #loadingBlock>
+    <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center">
+        <mat-icon>hourglass_empty</mat-icon>
+    </div>
+</ng-template>
