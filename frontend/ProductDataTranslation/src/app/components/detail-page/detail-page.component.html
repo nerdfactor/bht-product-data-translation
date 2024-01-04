@@ -5,9 +5,9 @@
                 <mat-icon fontIcon="chevron_left" aria-label="Zurück"></mat-icon>
             </a>
             <h1 class="display-4">{{product.name}}</h1>
-            <button mat-icon-button>
+            <a routerLink="edit/{{product.id}}" mat-icon-button>
                 <mat-icon>edit</mat-icon>
-            </button>
+            </a>
         </div>
         <div class="row">
             <div class="col-9">

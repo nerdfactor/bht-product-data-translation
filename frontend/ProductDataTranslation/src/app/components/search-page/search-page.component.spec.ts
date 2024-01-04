@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SearchPageComponent } from './search-page.component';
+import { ProductService } from '../../services/product.service';
 
 describe('SearchPageComponent', () => {
   let component: SearchPageComponent;
@@ -8,7 +9,8 @@ describe('SearchPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SearchPageComponent]
+      declarations: [SearchPageComponent],
+      providers: [ProductService]
     })
     .compileComponents();
     
