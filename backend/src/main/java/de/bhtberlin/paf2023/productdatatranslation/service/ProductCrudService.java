@@ -1,6 +1,7 @@
 package de.bhtberlin.paf2023.productdatatranslation.service;
 
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
+import de.bhtberlin.paf2023.productdatatranslation.entity.Translation;
 import de.bhtberlin.paf2023.productdatatranslation.repo.ProductRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -73,7 +74,27 @@ public class ProductCrudService {
      * @return An optional containing the found product.
      */
     public @NotNull Optional<Product> readProduct(int id) {
-        return this.productRepository.findById(id);
+        return this.readProduct(id, "");
+    }
+
+    public @NotNull Optional<Product> readProduct(int id, Locale locale) {
+        return this.readProduct(id, locale.toLanguageTag());
+    }
+
+    public @NotNull Optional<Product> readProduct(int id, @NotNull String locale) {
+        Product product = this.productRepository.findById(id).orElse(null);
+        if (product != null && !locale.isEmpty()) {
+            boolean hasCorrectTranslation = false;
+            for (Translation translation : product.getTranslations()) {
+                if (translation.getLanguage().getIsoCode().equalsIgnoreCase(locale)) {
+                    hasCorrectTranslation = true;
+                }
+            }
+            if (!hasCorrectTranslation) {
+                product = this.translationService.translateProduct(product, locale);
+            }
+        }
+        return Optional.ofNullable(product);
     }
 
     /**
