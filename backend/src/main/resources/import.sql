@@ -47,5 +47,9 @@ INSERT INTO "translation" ("product_id", "language_id", "short_description", "lo
 INSERT INTO "translation" ("product_id", "language_id", "short_description", "long_description") VALUES (17, 1, 'Bleiben Sie fit mit unserer Smartwatch und dem integrierten Fitness-Tracker.', 'Die Smartwatch bietet nicht nur stilvolles Design, sondern auch praktische Funktionen für Ihre Gesundheit und Fitness.');
 INSERT INTO "translation" ("product_id", "language_id", "short_description", "long_description") VALUES (18, 1, 'Schneiden Sie mühelos mit unserem multifunktionalen Küchenmesser-Set.', 'Das Küchenmesser-Set vereint Funktionalität und Präzision. Perfekt für jede kulinarische Herausforderung in der Küche.');
 
-INSERT INTO "product_categories" (category_id, product_id) VALUES(1, 1);
-INSERT INTO "product_colors" (color_id, product_id) VALUES (1, 1);
+INSERT INTO "product_categories" ("category_id", "product_id") VALUES(1, 1);
+INSERT INTO "product_colors" ("color_id", "product_id") VALUES (1, 1);
+
+INSERT INTO "product_categories" ("category_id", "product_id") VALUES(1, 2);
+INSERT INTO "product_colors" ("color_id", "product_id") VALUES (2, 2);
+INSERT INTO "product_colors" ("color_id", "product_id") VALUES (3, 2);
