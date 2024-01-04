@@ -5,12 +5,13 @@
                 <mat-icon fontIcon="chevron_left" aria-label="Zurück"></mat-icon>
             </a>
             <h1 class="display-4">{{product.name}}</h1>
-            <a routerLink="edit/{{product.id}}" mat-icon-button>
+            <a routerLink="/edit/{{product.id}}" mat-icon-button>
                 <mat-icon>edit</mat-icon>
             </a>
         </div>
         <div class="row">
             <div class="col-9">
+                <p>Seriennummer: {{product.serial}}</p>
                 <div class="border rounded p-3">
                     {{product.translations[0].longDescription}}
                 </div>

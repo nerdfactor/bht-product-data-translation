@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { Product } from '../../models/product';
-import { Translation } from '../../models/translation';
-import { Language } from '../../models/language';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
+import { ProductService } from '../../services/product.service';
+import { ActivatedRoute } from '@angular/router';
+import { first, tap } from 'rxjs';
 
 @Component({
   selector: 'app-edit-page',
@@ -11,46 +12,33 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 })
 export class EditPageComponent {
 
-  constructor(private formBuilder: FormBuilder) { }
+  product!: Product;
+  constructor(private route: ActivatedRoute, private productService: ProductService, private formBuilder: FormBuilder) { }
 
-  product: Product = {
-    id: 0,
-    name: '',
-    categories: [],
-    colors: [],
-    depth: 0,
-    height: 0,
-    pictures: [],
-    price: 0,
-    serial: '0',
-    translations: [],
-    weight: 0,
-    width: 0
-  };
-
-  language: Language = {
-    id: 0,
-    currency: '',
-    isoCode: '',
-    measure: '',
-    name: '',
-    translations: []
-  }
-
-  translation: Translation = {
-    id: 0,
-    longDescription: '',
-    shortDescription: '',
-    product: this.product,
-    language: this.language
+  ngOnInit(): void {
+    const productId = Number(this.route.snapshot.paramMap.get('id'));
+    this.productService.getProduct(productId).pipe(
+      first(),
+      tap(product => {
+        this.productForm.patchValue({
+          name: product.name,
+          depth: product.depth,
+          height: product.height,
+          price: product.price,
+          serial: product.serial,
+          weight: product.weight,
+          width: product.width,
+        })
+      }),
+      ).subscribe(product => this.product = product);
   }
 
   productForm = this.formBuilder.group({
-    name: [''],
+    name: ['', Validators.required],
     depth: [0],
     height: [0],
     price: [0],
-    serial: [''],
+    serial: ['', Validators.required],
     weight: [0],
     width: [0],
     shortDescription: [''],
@@ -58,13 +46,14 @@ export class EditPageComponent {
   })
 
   onSubmit() {
-    this.product.name = this.productForm.value.name!;
-    this.product.depth = this.productForm.value.depth!;
-    this.product.height = this.productForm.value.height!;
-    this.product.price = this.productForm.value.price!;
-    this.product.serial = this.productForm.value.serial!;
-    this.product.weight = this.productForm.value.weight!;
-    this.product.width = this.productForm.value.width!;
+    const formValue = this.productForm.value;
+    this.product.name = formValue.name!;
+    this.product.depth = formValue.depth!;
+    this.product.height = formValue.height!;
+    this.product.price = formValue.price!;
+    this.product.serial = formValue.serial!;
+    this.product.weight = formValue.weight!;
+    this.product.width = formValue.width!;
     console.log('submitting', this.product);
   }
 }
