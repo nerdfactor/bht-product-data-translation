@@ -21,6 +21,14 @@ public class BaseTranslator implements Translator {
      */
     @Override
     public @NotNull String translateText(@Nullable String text, String from, String to) {
+        return this.translateText(text, from, to, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull String translateText(@Nullable String text, String from, String to, boolean cached) {
         if (text == null || text.isEmpty()) {
             return "";
         }

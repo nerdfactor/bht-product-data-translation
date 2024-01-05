@@ -28,6 +28,8 @@ public class StrategyTranslator extends BaseTranslator {
 
     private MeasurementConversionStrategy measurementStrategy;
 
+    private AutoTranslationCache translationCache;
+
     /**
      * Set all strategies.
      *
@@ -48,10 +50,22 @@ public class StrategyTranslator extends BaseTranslator {
      */
     @Override
     public @NotNull String translateText(String text, String from, String to) {
+        return this.translateText(text, from, to, this.translationCache != null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull String translateText(String text, String from, String to, boolean cached) {
         if (text == null || text.isEmpty()) {
             return "";
         }
-        return this.textStrategy.translateText(text, from, to);
+        if (cached && this.translationCache != null) {
+            return this.translationCache.cachedTranslate(text, from, to, this);
+        } else {
+            return this.textStrategy.translateText(text, from, to);
+        }
     }
 
     /**
