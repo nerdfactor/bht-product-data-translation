@@ -124,9 +124,7 @@ public class LanguageCrudIntegrationTests {
     private Language createTestLanguage() {
         return new Language(
                 UUID.randomUUID().toString().replace("-", "").substring(10),
-                "euro",
-                "metric",
-                "de_DE"
+                "de-DE"
         );
     }
 
