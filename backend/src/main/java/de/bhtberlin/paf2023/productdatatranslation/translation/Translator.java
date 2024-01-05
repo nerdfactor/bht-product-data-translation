@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Translates texts, currencies and measurements.
  */
-public interface Translator extends TranslationVisitor{
+public interface Translator extends TranslationVisitor {
 
     /**
      * Translate a text.
@@ -17,6 +17,17 @@ public interface Translator extends TranslationVisitor{
      * @return The translated text.
      */
     @NotNull String translateText(@Nullable String text, String from, String to);
+
+    /**
+     * Translate a text.
+     *
+     * @param text   The text to translate.
+     * @param from   The tag of the current locale.
+     * @param to     The tag of the target locale.
+     * @param cached A possible cache can be checked.
+     * @return The translated text.
+     */
+    @NotNull String translateText(@Nullable String text, String from, String to, boolean cached);
 
     /**
      * Convert a currency.

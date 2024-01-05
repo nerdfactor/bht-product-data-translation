@@ -7,6 +7,7 @@ import de.bhtberlin.paf2023.productdatatranslation.entity.Translation;
 import de.bhtberlin.paf2023.productdatatranslation.exception.TranslationException;
 import de.bhtberlin.paf2023.productdatatranslation.repo.LanguageRepository;
 import de.bhtberlin.paf2023.productdatatranslation.repo.TranslationRepository;
+import de.bhtberlin.paf2023.productdatatranslation.translation.AutoTranslationCache;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translatable;
 import de.bhtberlin.paf2023.productdatatranslation.translation.TranslationVisitor;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
@@ -27,6 +28,8 @@ public class TranslationService {
      * and conversion of text, currencies and measurements.
      */
     final Translator translator;
+
+    final AutoTranslationCache translationCache;
 
     /**
      * An implementation of a {@link TranslationRepository} for data access.
@@ -70,8 +73,17 @@ public class TranslationService {
         translation.setLongDescription(defaultTranslation.getLongDescription());
 
         // let the translator translate it
-        translation.setShortDescription(translator.translateText(translation.getShortDescription(), defaultTranslation.getLanguage().getIsoCode(), to));
-        translation.setLongDescription(translator.translateText(translation.getLongDescription(), defaultTranslation.getLanguage().getIsoCode(), to));
+        translation.setShortDescription(this.translationCache.cachedTranslate(
+                translation.getShortDescription(),
+                defaultTranslation.getLanguage().getIsoCode(),
+                to,
+                translator
+        ));
+        translation.setLongDescription(this.translationCache.cachedTranslate(
+                translation.getLongDescription(),
+                defaultTranslation.getLanguage().getIsoCode(),
+                to, translator
+        ));
 
         // add the new translation to the product
         product.addTranslation(translation);
@@ -101,6 +113,6 @@ public class TranslationService {
      * @return The translated {@link String}.
      */
     public String translateString(String string, String from, String to) {
-        return this.translator.translateText(string, from, to);
+        return this.translationCache.cachedTranslate(string, from, to, translator);
     }
 }
