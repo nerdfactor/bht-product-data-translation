@@ -56,6 +56,9 @@ public class LanguageService {
             // support multiple languages for them.
             tag = "en";
         }
+        if (tag.isEmpty()) {
+            return AppConfig.DEFAULT_LANGUAGE;
+        }
         return Locale.forLanguageTag(tag).toLanguageTag();
     }
 }
