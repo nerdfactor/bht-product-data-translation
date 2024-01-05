@@ -128,8 +128,6 @@ class LanguageRestControllerTest {
     private LanguageDto createTestLanguage() {
         LanguageDto dto = new LanguageDto();
         dto.setName(UUID.randomUUID().toString().replace("-", "").substring(10));
-        dto.setCurrency("EURO");
-        dto.setMeasure("METRIC");
         dto.setIsoCode(dto.getName().substring(0, 2));
         return dto;
     }
