@@ -18,7 +18,9 @@ public interface TranslationVisitor {
 
     /**
      * Defer the decision about the concrete implementation of {@link Translatable}
-     * back to the visitor.
+     * back to the visitor. This allows to centralize the translation logic
+     * even more. The concrete {@link Translatable} don't need to implement
+     * their own logic how to delegate back to the visitor.
      *
      * @param translatable The visited {@link Translatable}.
      * @param from         The tag of the current locale.

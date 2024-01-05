@@ -7,8 +7,8 @@ import de.bhtberlin.paf2023.productdatatranslation.entity.Translation;
 import de.bhtberlin.paf2023.productdatatranslation.exception.TranslationException;
 import de.bhtberlin.paf2023.productdatatranslation.repo.LanguageRepository;
 import de.bhtberlin.paf2023.productdatatranslation.repo.TranslationRepository;
-import de.bhtberlin.paf2023.productdatatranslation.translation.BaseTranslator;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translatable;
+import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TranslationService {
 
-    final BaseTranslator translator;
+    final Translator translator;
 
     final TranslationRepository translationRepository;
 

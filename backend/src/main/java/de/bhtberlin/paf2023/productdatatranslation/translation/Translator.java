@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Translates texts, currencies and measurements.
  */
-public interface Translator {
+public interface Translator extends TranslationVisitor{
 
     /**
      * Translate a text.
