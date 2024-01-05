@@ -40,11 +40,25 @@ public class AutoTranslationCache {
      * Clear a specific cached value.
      *
      * @param text The text.
+     */
+    public void clearCache(String text) {
+        String partialId = sha256(text);
+        this.cache.keySet().forEach(s -> {
+            if (s.endsWith(partialId)) {
+                this.cache.put(s, null);
+            }
+        });
+    }
+
+    /**
+     * Clear a specific cached value.
+     *
+     * @param text The text.
      * @param from The tag of the current locale.
      * @param to   The tag of the target locale.
      */
     public void clearCache(String text, String from, String to) {
-        this.cache.put(this.createCacheId(text, from, to), null);
+        this.cache.remove(this.createCacheId(text, from, to));
     }
 
     /**
@@ -109,7 +123,7 @@ public class AutoTranslationCache {
      * @return The id for the text.
      */
     private String createCacheId(@NotNull String text, @NotNull String from, @NotNull String to) {
-        return sha256(String.format("%s:%s:%s", from, to, text));
+        return String.format("%s:%s:%s", from, to, sha256(text));
     }
 
     /**
