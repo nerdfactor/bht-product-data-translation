@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import de.bhtberlin.paf2023.productdatatranslation.translation.CompositeTranslatable;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translatable;
+import de.bhtberlin.paf2023.productdatatranslation.translation.TranslationVisitor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -80,5 +81,33 @@ public class ProductDto implements CompositeTranslatable {
                         Optional.ofNullable(this.categories).orElse(new HashSet<>()).stream(),
                         Optional.ofNullable(this.colors).orElse(new HashSet<>()).stream()).
                 collect(Collectors.toList());
+    }
+
+    /**
+     * Translate the {@link ProductDto} and all containing {@link Translatable Translatables}.
+     * <br>
+     * The ProductDto implements {@link Translatable#translate(TranslationVisitor, String, String)}
+     * and doesn't use the default implementation in order to take care of its
+     * compound nature and the containing {@link Translatable Translatables}.
+     *
+     * @param visitor The visiting {@link TranslationVisitor}.
+     * @param from    The tag of the current locale.
+     * @param to      The tag of the target locale.
+     * @return The translated {@link ProductDto}.
+     */
+    @Override
+    public @NotNull Translatable translate(@NotNull TranslationVisitor visitor, @NotNull String from, @NotNull String to) {
+        visitor.visit(this, from, to);
+        // could not use getTranslatables() and instead loop over getCategories()
+        // and getColors() separately but getTranslatables() already takes care
+        // of empty sets.
+        this.getTranslatables().forEach(translatable -> {
+            if (translatable instanceof CategoryDto categoryDto) {
+                visitor.visit(categoryDto, from, to);
+            } else if (translatable instanceof ColorDto colorDto) {
+                visitor.visit(colorDto, from, to);
+            }
+        });
+        return this;
     }
 }

@@ -24,7 +24,7 @@ public class TranslationConfig {
 
     @Bean
     @Primary
-    public BaseTranslator getTranslator() {
+    public Translator getTranslator() {
         // todo: get from configuration.
         // todo: somehow change during runtime?
         return MultiStrategyTranslator.builder()
