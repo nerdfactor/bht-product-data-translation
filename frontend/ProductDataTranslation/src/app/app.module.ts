@@ -21,13 +21,17 @@ import { MatMenuModule } from '@angular/material/menu';
 import { SearchPageComponent } from './components/search-page/search-page.component';
 import { DetailPageComponent } from './components/detail-page/detail-page.component';
 import { EditPageComponent } from './components/edit-page/edit-page.component';
+import { FilterPipe } from './pipes/filter.pipe';
+import { FindPipe } from './pipes/find.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     SearchPageComponent,
     DetailPageComponent,
-    EditPageComponent
+    EditPageComponent,
+    FilterPipe,
+    FindPipe
   ],
   imports: [
     HttpClientModule,

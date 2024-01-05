@@ -17,7 +17,7 @@ export class EditPageComponent {
 
   ngOnInit(): void {
     const productId = Number(this.route.snapshot.paramMap.get('id'));
-    this.productService.getProduct(productId).pipe(
+    this.productService.getProduct(productId, 'de').pipe(
       first(),
       tap(product => {
         this.productForm.patchValue({

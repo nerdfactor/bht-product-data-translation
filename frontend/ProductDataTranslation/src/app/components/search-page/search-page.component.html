@@ -16,7 +16,7 @@
         </ng-container>
         <ng-container matColumnDef="description">
             <th mat-header-cell *matHeaderCellDef>{{elements['description']}}</th>
-            <td mat-cell *matCellDef="let element">{{element.translations[0].shortDescription}}</td>
+            <td mat-cell *matCellDef="let element">{{(element.translations | find:'language.id':currentLanguage.id)?.shortDescription}}</td>
         </ng-container>
         <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef></th>

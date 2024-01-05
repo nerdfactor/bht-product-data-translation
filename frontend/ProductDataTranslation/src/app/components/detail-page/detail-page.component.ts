@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { I18nService } from '../../services/i18n.service';
+import { LanguageService } from '../../services/language.service';
+import { Language } from '../../models/language';
 
 @Component({
   selector: 'app-detail-page',
@@ -14,11 +16,13 @@ export class DetailPageComponent implements OnInit {
 
   product$?: Observable<Product>;
   elements$?: Observable<any>;
-  constructor(private route: ActivatedRoute, private productService: ProductService, private i18nService: I18nService) { }
+  currentLanguage?: Language;
+
+  constructor(private route: ActivatedRoute, private productService: ProductService, private languageService: LanguageService, private i18nService: I18nService) { }
 
   ngOnInit(): void {
     const productId = Number(this.route.snapshot.paramMap.get('id'));
-    this.product$ = this.productService.getProduct(productId);
+    
     const elements = {
       serial: 'Seriennummer',
       property: 'Eigenschaften',
@@ -32,6 +36,12 @@ export class DetailPageComponent implements OnInit {
       photo: 'Foto'
     };
 
-    this.elements$ = this.i18nService.translate(elements);
+    this.languageService.onLanguageChanged.subscribe(language => {
+      this.currentLanguage = language;
+      this.elements$ = this.i18nService.translate(elements, language.isoCode);
+      this.product$ = this.productService.getProduct(productId, language.isoCode);
+    });
+
+    this.elements$ = of(elements);
   }
 }

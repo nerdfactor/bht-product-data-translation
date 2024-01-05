@@ -13,7 +13,7 @@
             <div class="col-9">
                 <p>{{elements['serial']}}: {{product.serial}}</p>
                 <div class="border rounded p-3">
-                    {{product.translations[0].longDescription}}
+                    {{(product.translations | find:'language.id':currentLanguage?.id)?.longDescription}}
                 </div>
             </div>
             <div class="col-3">
@@ -21,23 +21,23 @@
                     <h4 class="fw-light">{{elements['properties']}}</h4>
                     <p class="d-flex justify-content-between mb-2">
                         <strong>{{elements['weight']}}</strong>
-                        <em>{{product.weight}}</em>
+                        <em>{{product.weight}} {{(product.translations | find:'language.id':currentLanguage?.id)?.language?.measurement?.weight}}</em>
                     </p>
                     <p class="d-flex justify-content-between mb-2">
                         <strong class="fw-bold"><abbr title="{{elements['height']}}, {{elements['width']}}, {{elements['depth']}}">{{elements['height'][0]}}, {{elements['width'][0]}}, {{elements['depth'][0]}}</abbr></strong>
-                        <em>{{product.height}}, {{product.width}}, {{product.width}}</em>
+                        <em>{{product.height}}, {{product.width}}, {{product.width}} {{(product.translations | find:'language.id':currentLanguage?.id)?.language?.measurement?.width}}</em>
                     </p>
                     <p class="d-flex justify-content-between mb-2">
                         <strong>{{elements['price']}}</strong>
-                        <em>{{product.price}}</em>
+                        <em>{{product.price}} {{(product.translations | find:'language.id':currentLanguage?.id)?.language?.currency?.symbol}}</em>
                     </p>
                     <p class="d-flex justify-content-between mb-2">
                         <strong>{{elements['colors']}}</strong>
-                        <em *ngFor="let color of product.colors; last as isLast">{{color}} <span *ngIf="!isLast">,</span></em>
+                        <em *ngFor="let color of product.colors; last as isLast">{{color.name}} <span *ngIf="!isLast">,</span></em>
                     </p>
                     <p class="d-flex justify-content-between mb-2">
                         <strong>{{elements['categories']}}</strong>
-                        <em *ngFor="let category of product.categories; last as isLast">{{category}} <span *ngIf="!isLast">,</span></em>
+                        <em *ngFor="let category of product.categories; last as isLast">{{category.name}} <span *ngIf="!isLast">,</span></em>
                     </p>
                 </div>
                 <div style="height: 250px;" class="d-flex border rounded justify-content-center align-items-center">

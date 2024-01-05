@@ -9,10 +9,10 @@ import { Observable } from 'rxjs';
 export class I18nService extends HttpService {
 
   constructor(httpClient: HttpClient) {
-    super(httpClient)
+    super(httpClient);
   }
 
-  translate(elements: Object): Observable<Object> {
-    return this.httpClient.post<Object>(this.url + 'api/translations/i18n', elements);
+  translate(elements: any, isoCode: string): Observable<any> {
+    return this.post<any>('api/translations/i18n', elements, isoCode);
   }
 }

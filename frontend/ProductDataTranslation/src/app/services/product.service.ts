@@ -15,11 +15,11 @@ export class ProductService extends HttpService {
     super(httpClient);
   }
 
-  getProducts(): Observable<Product[]> {
-    return this.httpClient.get<Product[]>(this.url + this.productsUri);
+  getProducts(isoCode: string): Observable<Product[]> {
+    return this.get<Product[]>(this.productsUri, isoCode);
   }
 
-  getProduct(id: number): Observable<Product> {
-    return this.httpClient.get<Product>(this.url + this.productsUri + '/' + id);
+  getProduct(id: number, isoCode: string): Observable<Product> {
+    return this.get<Product>(this.productsUri + '/' + id, isoCode);
   }
 }
