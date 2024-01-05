@@ -88,7 +88,7 @@ public class ProductDto implements CompositeTranslatable {
      * <br>
      * The ProductDto implements {@link Translatable#translate(TranslationVisitor, String, String)}
      * and doesn't use the default implementation in order to take care of its
-     * compound nature and the containing {@link Translatable Translatables}.
+     * composite nature and the containing {@link Translatable Translatables}.
      *
      * @param visitor The visiting {@link TranslationVisitor}.
      * @param from    The tag of the current locale.
