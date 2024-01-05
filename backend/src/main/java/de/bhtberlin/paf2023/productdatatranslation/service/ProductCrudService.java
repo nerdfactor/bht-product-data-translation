@@ -2,6 +2,7 @@ package de.bhtberlin.paf2023.productdatatranslation.service;
 
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Translation;
+import de.bhtberlin.paf2023.productdatatranslation.exception.TranslationException;
 import de.bhtberlin.paf2023.productdatatranslation.repo.ProductRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -51,8 +52,13 @@ public class ProductCrudService {
                     if (!tag.isEmpty()) {
                         product.removeTranslationsNotInLocale(tag);
                         if (!product.hasTranslations()) {
-                            this.translationService.translateProduct(product, tag);
-                            log.info("Auto translated Product: " + product.getName() + " into " + tag);
+                            try{
+                                this.translationService.translateProduct(product, tag);
+                                log.info("Auto translated Product: " + product.getName() + " into " + tag);
+                            }catch(TranslationException e){
+                                // could not be translated automatically and can remain empty.
+                            }
+
                         }
                     }
                 })
@@ -94,7 +100,12 @@ public class ProductCrudService {
                 }
             }
             if (!hasCorrectTranslation) {
-                product = this.translationService.translateProduct(product, tag);
+                try{
+                    product = this.translationService.translateProduct(product, tag);
+                    log.info("Auto translated Product: " + product.getName() + " into " + tag);
+                }catch(TranslationException e){
+                    // could not be translated automatically and can remain empty.
+                }
             }
         }
         return Optional.ofNullable(product);
