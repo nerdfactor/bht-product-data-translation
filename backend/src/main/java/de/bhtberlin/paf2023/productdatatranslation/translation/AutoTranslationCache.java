@@ -37,6 +37,17 @@ public class AutoTranslationCache {
     }
 
     /**
+     * Clear a specific cached value.
+     *
+     * @param text The text.
+     * @param from The tag of the current locale.
+     * @param to   The tag of the target locale.
+     */
+    public void clearCache(String text, String from, String to) {
+        this.cache.put(this.createCacheId(text, from, to), null);
+    }
+
+    /**
      * Check if the translation for a text is cached.
      *
      * @param text The text.
@@ -57,7 +68,7 @@ public class AutoTranslationCache {
      * @param value The translated value.
      */
     public void addToCache(@NotNull String text, @NotNull String from, @NotNull String to, @NotNull String value) {
-        this.cache.put(this.createCacheId(text, from, to), text);
+        this.cache.put(this.createCacheId(text, from, to), value);
     }
 
     /**
