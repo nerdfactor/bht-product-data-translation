@@ -43,6 +43,10 @@ public class DeeplTranslationApi implements ExternalTranslationApi {
         if (text == null || text.isEmpty()) {
             return "";
         }
+        // Deepl does only support en-US or en-GB.
+        if (to.equalsIgnoreCase("en")) {
+            to = "en-US";
+        }
         try {
             TextResult result = translator.translateText(text, from, to);
             return result.getText();
