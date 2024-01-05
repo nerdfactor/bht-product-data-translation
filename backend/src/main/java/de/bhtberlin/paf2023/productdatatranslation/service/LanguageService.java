@@ -51,6 +51,11 @@ public class LanguageService {
                 tag = parts[0];
             }
         }
+        if (tag.equalsIgnoreCase("en-gb") || tag.equalsIgnoreCase("en-us")) {
+            // dirty fix for different tags für en-GB and en-US until we also
+            // support multiple languages for them.
+            tag = "en";
+        }
         return Locale.forLanguageTag(tag).toLanguageTag();
     }
 }
