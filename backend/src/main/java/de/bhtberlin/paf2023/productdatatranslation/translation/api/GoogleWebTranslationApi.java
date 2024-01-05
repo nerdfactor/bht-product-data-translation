@@ -53,7 +53,7 @@ public class GoogleWebTranslationApi implements ExternalTranslationApi {
         }
         RestTemplate restTemplate = new RestTemplate();
 
-        String uri = apiUrl.formatted(from, to, URLEncoder.encode(text, StandardCharsets.UTF_8));
+        String uri = apiUrl.formatted(from, to, text);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
