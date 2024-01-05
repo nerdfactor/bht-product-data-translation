@@ -3,7 +3,6 @@ package de.bhtberlin.paf2023.productdatatranslation.translation.strategy;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.Translate.TranslateOption;
 import com.google.cloud.translate.Translation;
-import de.bhtberlin.paf2023.productdatatranslation.exception.ExternalTranslationApiException;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +38,7 @@ public class GoogleCloudTranslationStrategy implements ExternalTranslationApiStr
      * {@inheritDoc}
      */
     @Override
-    public @NotNull String translateText(@Nullable String text, @NotNull String from, @NotNull String to) throws ExternalTranslationApiException {
+    public @NotNull String translateText(@Nullable String text, @NotNull String from, @NotNull String to) {
         if (text == null || text.isEmpty()) {
             return "";
         }
