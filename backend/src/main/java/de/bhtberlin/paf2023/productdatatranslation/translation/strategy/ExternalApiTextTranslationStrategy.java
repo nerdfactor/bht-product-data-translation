@@ -7,7 +7,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Text translation strategy that will use an external api for translation.
+ * Text translation strategy that acts as a bridge to an {@link ExternalTranslationApi}
+ * that will be used for translation.
+ * <br>
+ * The different implementations of {@link ExternalTranslationApi} could also be
+ * implemented als different {@link ExternalApiTextTranslationStrategy} but separating
+ * the api from the strategy may make the api also reusable in different classes
+ * that are not a {@link TextTranslationStrategy}.
  */
 @RequiredArgsConstructor
 public class ExternalApiTextTranslationStrategy implements TextTranslationStrategy {
