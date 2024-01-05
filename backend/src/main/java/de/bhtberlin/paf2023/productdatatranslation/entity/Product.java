@@ -77,7 +77,7 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    private Set<Category> categories;
+    private Set<Category> categories = new HashSet<>();
 
     /**
      * The {@link Color Colors} for this {@link Product}.
@@ -87,19 +87,19 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "color_id")
     )
-    private Set<Color> colors;
+    private Set<Color> colors = new HashSet<>();
 
     /**
      * The {@link Picture Pictures} for this {@link Product}.
      */
     @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    private Set<Picture> pictures;
+    private Set<Picture> pictures = new HashSet<>();
 
     /**
      * The {@link Translation ranslations} for this {@link Product}.
      */
     @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    private Set<Translation> translations;
+    private Set<Translation> translations = new HashSet<>();
 
     /**
      * Basic constructor with all data fields in order to create new {@link Product Products}.

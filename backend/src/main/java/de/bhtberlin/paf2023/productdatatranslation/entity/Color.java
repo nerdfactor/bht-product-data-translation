@@ -38,7 +38,7 @@ public class Color {
      */
     @JsonIgnore
     @ManyToMany(mappedBy = "colors")
-    private Set<Product> products;
+    private Set<Product> products = new HashSet<>();
 
     /**
      * Basic constructor with all data fields in order to create new {@link Color Colors}.

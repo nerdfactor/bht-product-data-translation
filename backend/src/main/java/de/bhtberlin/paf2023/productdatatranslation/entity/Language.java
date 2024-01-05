@@ -57,7 +57,7 @@ public class Language {
      * All {@link Translation Translations} that are in this {@link Language}.
      */
     @OneToMany(mappedBy = "language", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    private Set<Translation> translations;
+    private Set<Translation> translations = new HashSet<>();
 
     /**
      * Basic constructor with all data fields in order to create new {@link Language Languages}.

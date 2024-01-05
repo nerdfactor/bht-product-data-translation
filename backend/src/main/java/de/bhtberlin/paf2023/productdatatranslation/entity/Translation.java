@@ -50,7 +50,7 @@ public class Translation {
      * Multiple {@link Revision Revisions} for this {@link Translation}.
      */
     @OneToMany(mappedBy = "translation", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    private Set<Revision> revisions;
+    private Set<Revision> revisions = new HashSet<>();
 
     /**
      * The {@link Language} for this {@link Translation}.
