@@ -1,9 +1,9 @@
-insert into "language" ("name","currency","measure","iso_code") values ('Deutsch', 'euro','metric','de');
-insert into "language" ("name","currency","measure","iso_code") values ('Englisch', 'dollar','imperial','en');
-insert into "language" ("name","currency","measure","iso_code") values ('Französisch', 'euro','metric','fr');
-insert into "color" ("name") values ('rot');
-insert into "color" ("name") values ('blau');
-insert into "color" ("name") values ('grün');
+insert into "language" ("name","currency","measure","iso_code") values ('Deutsch', 'Euro','metric','de');
+insert into "language" ("name","currency","measure","iso_code") values ('Englisch', 'Dollar','imperial','en');
+insert into "language" ("name","currency","measure","iso_code") values ('Französisch', 'Euro','metric','fr');
+insert into "color" ("name") values ('Rot');
+insert into "color" ("name") values ('Blau');
+insert into "color" ("name") values ('Grün');
 insert into "category" ("name") values('Stuhl');
 
 -- Insert additional data into product table
@@ -47,5 +47,5 @@ INSERT INTO "translation" ("product_id", "language_id", "short_description", "lo
 INSERT INTO "translation" ("product_id", "language_id", "short_description", "long_description") VALUES (17, 1, 'Bleiben Sie fit mit unserer Smartwatch und dem integrierten Fitness-Tracker.', 'Die Smartwatch bietet nicht nur stilvolles Design, sondern auch praktische Funktionen für Ihre Gesundheit und Fitness.');
 INSERT INTO "translation" ("product_id", "language_id", "short_description", "long_description") VALUES (18, 1, 'Schneiden Sie mühelos mit unserem multifunktionalen Küchenmesser-Set.', 'Das Küchenmesser-Set vereint Funktionalität und Präzision. Perfekt für jede kulinarische Herausforderung in der Küche.');
 
-INSERT INTO "product_categories" (category_id, product_id) VALUES(1, 1);
-INSERT INTO "product_colors" (color_id, product_id) VALUES (1, 1);
+INSERT INTO "product_categories" ("category_id", "product_id") VALUES(1, 1);
+INSERT INTO "product_colors" ("color_id", "product_id") VALUES (1, 1);
