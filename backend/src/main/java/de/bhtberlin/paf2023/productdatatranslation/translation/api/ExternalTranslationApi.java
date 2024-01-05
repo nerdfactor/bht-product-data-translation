@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 
 /**
- * Facade for external translations Apis.
+ * External Api that translates texts.
  */
 @Component
 public interface ExternalTranslationApi {

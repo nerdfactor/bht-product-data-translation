@@ -6,9 +6,14 @@ import java.util.regex.Pattern;
 
 /**
  * Fakes the translation of Strings by adding prefixes for the
- * translated language This {@link Translator} could be used during
+ * translated language. This {@link Translator} could be used during
  * testing or development.
+ *
+ * @deprecated This could also be implemented as a FakeTextTranslationStrategy used
+ * by the {@link StrategyTranslator}. This remains as an  example implementation
+ * of a simple {@link Translator} without strategies.
  */
+@Deprecated
 public class FakeStringTranslator extends BaseTranslator {
 
     /**

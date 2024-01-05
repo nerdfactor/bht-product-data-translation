@@ -15,7 +15,5 @@ public interface CurrencyConversionStrategy {
      * @param to       The tag of the target locale.
      * @return The converted value.
      */
-    default double convertCurrency(double currency, @NotNull String from, @NotNull String to) {
-        return currency;
-    }
+    double convertCurrency(double currency, @NotNull String from, @NotNull String to);
 }

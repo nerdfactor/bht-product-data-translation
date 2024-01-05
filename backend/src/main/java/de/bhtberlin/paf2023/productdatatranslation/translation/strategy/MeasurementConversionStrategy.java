@@ -15,7 +15,5 @@ public interface MeasurementConversionStrategy {
      * @param to          The tag of the target locale.
      * @return The converted value.
      */
-    default double convertMeasurement(double measurement, @NotNull String from, @NotNull String to) {
-        return measurement;
-    }
+    double convertMeasurement(double measurement, @NotNull String from, @NotNull String to);
 }
