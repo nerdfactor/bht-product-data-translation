@@ -9,19 +9,17 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class LanguageDto {
+public class MeasurementDto {
 
     private int id;
 
     private String name;
 
-    private String isoCode;
+    private String weight;
 
-    private CurrencyDto currency;
+    private String height;
 
-    private MeasurementDto measurement;
+    private String width;
 
-    public LanguageDto(int id) {
-        this.id = id;
-    }
+    private String depth;
 }

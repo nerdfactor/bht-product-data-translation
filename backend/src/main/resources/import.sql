@@ -1,9 +1,13 @@
-insert into "language" ("name","currency","measure","iso_code") values ('Deutsch', 'euro','metric','de');
-insert into "language" ("name","currency","measure","iso_code") values ('Englisch', 'dollar','imperial','en');
-insert into "language" ("name","currency","measure","iso_code") values ('Französisch', 'euro','metric','fr');
-insert into "color" ("name") values ('rot');
-insert into "color" ("name") values ('blau');
-insert into "color" ("name") values ('grün');
+insert into "currency" ("name","symbol") values ('Euro', '€');
+insert into "currency" ("name","symbol") values ('Dollar', '$');
+insert into "measurement" ("name","weight","height","width","depth") values ('metrisch', 'kg', 'cm', 'cm', 'cm');
+insert into "measurement" ("name","weight","height","width","depth") values ('imperial', 'lb', 'in', 'in', 'in');
+insert into "language" ("name","currency_id","measurement_id","iso_code") values ('Deutsch', 1, 1,'de');
+insert into "language" ("name","currency_id","measurement_id","iso_code") values ('English', 2, 2,'en');
+insert into "language" ("name","currency_id","measurement_id","iso_code") values ('Français', 1, 1,'fr');
+insert into "color" ("name") values ('Rot');
+insert into "color" ("name") values ('Blau');
+insert into "color" ("name") values ('Grün');
 insert into "category" ("name") values('Stuhl');
 
 -- Insert additional data into product table

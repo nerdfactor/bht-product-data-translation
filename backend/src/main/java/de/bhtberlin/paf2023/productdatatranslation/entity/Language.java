@@ -34,39 +34,37 @@ public class Language {
     private String name;
 
     /**
-     * The default currency for this {@link Language}.
-     * todo: May be changed into entity if more complex features are needed.
-     */
-    private String currency;
-
-    /**
-     * The default system of measurement for this
-     * {@link Language}..
-     * todo: May be changed into enum if systems should be predefined.
-     * todo: May be changed into entity if more complex features are needed.
-     */
-    private String measure;
-
-    /**
      * The iso code for this {@link Language}.
      * todo: May be changed into enum if isoCodes should be predefined.
      */
     private String isoCode;
 
     /**
+     * The default currency for this {@link Language}.
+     */
+    @ManyToOne
+    @JoinColumn(name = "currency_id")
+    private Currency currency;
+
+    /**
+     * The default system of measurement for this {@link Language}.
+     */
+    @ManyToOne
+    @JoinColumn(name = "measurement_id")
+    private Measurement measurement;
+
+    /**
      * All {@link Translation Translations} that are in this {@link Language}.
      */
     @OneToMany(mappedBy = "language", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    private Set<Translation> translations;
+    private Set<Translation> translations = new HashSet<>();
 
     /**
      * Basic constructor with all data fields in order to create new {@link Language Languages}.
      * The id will be set during creation of the object in the database.
      */
-    public Language(String name, String currency, String measure, String isoCode) {
+    public Language(String name, String isoCode) {
         this.name = name;
-        this.currency = currency;
-        this.measure = measure;
         this.isoCode = isoCode;
     }
 

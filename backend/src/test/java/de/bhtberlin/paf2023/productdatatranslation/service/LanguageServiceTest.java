@@ -13,6 +13,7 @@ class LanguageServiceTest {
         Assertions.assertEquals("de", LanguageService.normalizeLanguageTag("de"));
         Assertions.assertEquals("de", LanguageService.normalizeLanguageTag("de-DE"));
         Assertions.assertEquals("de", LanguageService.normalizeLanguageTag("de_DE"));
-        Assertions.assertEquals("en-US", LanguageService.normalizeLanguageTag("en_US"));
+        Assertions.assertEquals("zh-CN", LanguageService.normalizeLanguageTag("zh_CN"));
+        Assertions.assertEquals("en", LanguageService.normalizeLanguageTag("en_US"));
     }
 }

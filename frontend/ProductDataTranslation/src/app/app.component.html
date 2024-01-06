@@ -3,10 +3,10 @@
   <span class="flex-grow-1"></span>
   <button mat-button [matMenuTriggerFor]="languagesMenu">
     <mat-icon>translate</mat-icon>
-    <span>{{currentLanguage?.name}}</span>
+    <span>{{languageService.currentLanguage?.name}}</span>
   </button>
   <mat-menu #languagesMenu="matMenu">
-    <button mat-menu-item *ngFor="let language of languages$ | async" (click)="onLanguageSwitch(language)">{{language.name}}</button>
+    <button mat-menu-item *ngFor="let language of languages" (click)="onLanguageSwitch(language)">{{language.name}}</button>
   </mat-menu>
 </mat-toolbar>
 <div style="padding: 70px 50px;">

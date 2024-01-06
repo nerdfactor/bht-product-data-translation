@@ -44,7 +44,7 @@ public class AutoTranslateAdvice implements ResponseBodyAdvice<Translatable> {
                                         @NotNull ServerHttpRequest request,
                                         @NotNull ServerHttpResponse response) {
         if (body != null) {
-            this.translationService.translate(body, AppConfig.DEFAULT_LANGUAGE, LocaleContextHolder.getLocale().toLanguageTag());
+            body = this.translationService.translateTranslatable(body, AppConfig.DEFAULT_LANGUAGE, LocaleContextHolder.getLocale().toLanguageTag());
         }
         return body;
     }

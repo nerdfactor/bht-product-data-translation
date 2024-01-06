@@ -1,27 +1,33 @@
 <div class="container-fluid mat-body text-body-secondary">
     <div *ngIf="product; else elseBlock">
-        <form>
+        <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
             <div class="d-flex align-items-baseline">
-                <a mat-mini-fab color="primary" class="me-2 shadow-none" routerLink="/search">
+                <a mat-mini-fab color="primary" class="me-2 shadow-none" routerLink="/product/{{product.id}}">
                     <mat-icon fontIcon="chevron_left" aria-label="Zurück"></mat-icon>
                 </a>
-                <h1 class="display-4">{{product.name}}</h1>
-                <mat-form-field class="w-100">
-                    <mat-label>Titel</mat-label>
-                    <input matInput >
+                <mat-form-field class="flex-grow-1">
+                    <mat-label>Name</mat-label>
+                    <input matInput formControlName="name">
                 </mat-form-field>
+                <button type="submit" mat-icon-button [disabled]="!productForm.valid">
+                    <mat-icon>save</mat-icon>
+                </button>
             </div>
             <div class="row">
                 <div class="col-9">
+                    <mat-form-field class="w-100">
+                        <mat-label>Seriennummer</mat-label>
+                        <input matInput formControlName="serial"/>
+                    </mat-form-field>
                     <div class="border rounded p-3">
                         <h4>Beschreibungen</h4>
                         <mat-form-field class="w-100">
                             <mat-label>Kurzbeschreibung</mat-label>
-                            <input matInput/>
+                            <input matInput formControlName="shortDescription"/>
                         </mat-form-field>
-                        <mat-form-field class="w-100" style="height: 250px">
+                        <mat-form-field class="w-100">
                             <mat-label>Langbeschreibung</mat-label>
-                            <textarea matInput></textarea>
+                            <textarea matInput style="height: 250px;" formControlName="longDescription"></textarea>
                         </mat-form-field>
                     </div>
                 </div>
@@ -30,19 +36,19 @@
                         <h4 class="fw-light">Eigenschaften</h4>
                         <p class="d-flex justify-content-between mb-2">
                             <strong>Gewicht</strong>
-                            <input/>
+                            <input formControlName="weight"/>
                         </p>
                         <p class="d-flex justify-content-between mb-2">
                             <strong class="fw-bold"><abbr title="Höhe, Breite, Tiefe">H, B, T</abbr></strong>
                             <span class="d-flex">
-                                <input style="width: 55px"/>
-                                <input style="width: 55px"/>
-                                <input style="width: 55px"/>
+                                <input style="width: 55px" formControlName="height"/>
+                                <input style="width: 55px" formControlName="width"/>
+                                <input style="width: 55px" formControlName="depth"/>
                             </span>
                         </p>
                         <p class="d-flex justify-content-between mb-2">
                             <strong>Preis</strong>
-                            <input/>
+                            <input formControlName="price"/>
                         </p>
                         <p class="d-flex justify-content-between mb-2">
                             <strong>Farben</strong>

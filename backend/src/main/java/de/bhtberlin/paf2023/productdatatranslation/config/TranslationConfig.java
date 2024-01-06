@@ -3,14 +3,12 @@ package de.bhtberlin.paf2023.productdatatranslation.config;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.TranslateOptions;
-import de.bhtberlin.paf2023.productdatatranslation.translation.BaseTranslator;
-import de.bhtberlin.paf2023.productdatatranslation.translation.MultiStrategyTranslator;
+import de.bhtberlin.paf2023.productdatatranslation.translation.AutoTranslationCache;
+import de.bhtberlin.paf2023.productdatatranslation.translation.StrategyTranslator;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
-import de.bhtberlin.paf2023.productdatatranslation.translation.api.ExternalTranslationApi;
-import de.bhtberlin.paf2023.productdatatranslation.translation.api.GoogleWebTranslationApi;
-import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.ExternalApiTextTranslationStrategy;
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.FakeCurrencyConversionStrategy;
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.FakeMeasurementConversionStrategy;
+import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.GoogleWebTranslationStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,22 +22,22 @@ public class TranslationConfig {
 
     @Bean
     @Primary
-    public BaseTranslator getTranslator() {
+    public Translator getTranslator() {
         // todo: get from configuration.
         // todo: somehow change during runtime?
-        return MultiStrategyTranslator.builder()
-                .withTextStrategy(new ExternalApiTextTranslationStrategy(getExternalTranslationApi()))
+        // todo: make cache configurable?
+        return StrategyTranslator.builder()
+                .withTextStrategy(new GoogleWebTranslationStrategy(new JsonMapper()))
                 .withCurrencyStrategy(new FakeCurrencyConversionStrategy())
                 .withMeasurementStrategy(new FakeMeasurementConversionStrategy())
+                .withTranslationCache(getAutoTranslationCache())
                 .build();
     }
 
     @Bean
-    @Primary
-    public ExternalTranslationApi getExternalTranslationApi() {
-        // todo: get api from configuration.
-        // todo: somehow change api during runtime?
-        return new GoogleWebTranslationApi(new JsonMapper());
+    public AutoTranslationCache getAutoTranslationCache() {
+        // todo: make cache configurable?
+        return new AutoTranslationCache();
     }
 
     @Bean

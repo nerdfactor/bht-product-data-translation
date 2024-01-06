@@ -52,7 +52,7 @@ public class AutoTranslateListAdvice implements ResponseBodyAdvice<List<Translat
                                               @NotNull ServerHttpResponse response) {
         if (body != null) {
             body.forEach(translatable -> {
-                this.translationService.translate(translatable, AppConfig.DEFAULT_LANGUAGE, LocaleContextHolder.getLocale().toLanguageTag());
+                translatable = this.translationService.translateTranslatable(translatable, AppConfig.DEFAULT_LANGUAGE, LocaleContextHolder.getLocale().toLanguageTag());
             });
         }
         return body;

@@ -17,7 +17,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.List;
 
 @ControllerAdvice
 @RequiredArgsConstructor
@@ -53,7 +52,7 @@ public class AutoTranslatePageAdvice implements ResponseBodyAdvice<Page<Translat
                                               @NotNull ServerHttpResponse response) {
         if (body != null) {
             body.getContent().forEach(translatable -> {
-                this.translationService.translate(translatable, AppConfig.DEFAULT_LANGUAGE, LocaleContextHolder.getLocale().toLanguageTag());
+                translatable = this.translationService.translateTranslatable(translatable, AppConfig.DEFAULT_LANGUAGE, LocaleContextHolder.getLocale().toLanguageTag());
             });
         }
         return body;

@@ -1,18 +1,16 @@
-package de.bhtberlin.paf2023.productdatatranslation.translation.api;
+package de.bhtberlin.paf2023.productdatatranslation.translation.strategy;
 
-import de.bhtberlin.paf2023.productdatatranslation.exception.ExternalTranslationApiException;
 import de.bhtberlin.paf2023.productdatatranslation.service.LanguageService;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
 /**
- * Facade for external translations Apis.
+ * External Api that translates texts.
  */
 @Component
-public interface ExternalTranslationApi {
+public interface ExternalTranslationApiStrategy extends TextTranslationStrategy {
 
     /**
      * Get a {@link Set} of language tags of the supported locales.
@@ -40,15 +38,4 @@ public interface ExternalTranslationApi {
     default boolean isNotSupportedLocale(@NotNull String locale) {
         return !this.isSupportedLocale(locale);
     }
-
-    /**
-     * Will translate a text from a specified language to a different specified language.
-     *
-     * @param text The original string.
-     * @param from The original language.
-     * @param to   The target language.
-     * @return The translated string.
-     * @throws ExternalTranslationApiException If something did not work during translation.
-     */
-    @NotNull String translate(@Nullable String text, @NotNull String from, @NotNull String to) throws ExternalTranslationApiException;
 }

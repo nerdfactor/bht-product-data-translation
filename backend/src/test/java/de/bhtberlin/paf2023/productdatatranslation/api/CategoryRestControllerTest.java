@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bhtberlin.paf2023.productdatatranslation.dto.CategoryDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Category;
 import de.bhtberlin.paf2023.productdatatranslation.service.CategoryCrudService;
-import de.bhtberlin.paf2023.productdatatranslation.translation.BaseTranslator;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -55,7 +54,7 @@ class CategoryRestControllerTest {
     CategoryCrudService categoryCrudService;
 
     @Autowired
-    BaseTranslator translator;
+    Translator translator;
 
     /**
      * Check if {@link Category Categories} can be listed.

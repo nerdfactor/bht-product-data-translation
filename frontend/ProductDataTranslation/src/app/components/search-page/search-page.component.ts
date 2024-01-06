@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product';
-import { Observable, map } from 'rxjs';
+import { Observable, map, of } from 'rxjs';
 import { AppComponent } from '../../app.component';
+import { I18nService } from '../../services/i18n.service';
+import { LanguageService } from '../../services/language.service';
+import { Language } from '../../models/language';
 
 @Component({
   selector: 'app-search-page',
@@ -13,15 +16,29 @@ export class SearchPageComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'name', 'description', 'action'];
   products$!: Observable<Product[]>;
-  displayedProducts$!: Observable<Product[]>
+  displayedProducts$!: Observable<Product[]>;
+  elements$!: Observable<any>;
+  currentLanguage!: Language;
   search: string = '';
 
-  constructor(private productService: ProductService) { }
+  constructor(private productService: ProductService, private languageService: LanguageService, private i18nService: I18nService) { }
 
   ngOnInit(): void {
-    this.products$ = this.productService.getProducts();
-    this.displayedProducts$ = this.products$;
-    console.log(AppComponent.getUsersLocale("de-DE"));
+    let elements = {
+      id: 'ID',
+      name: 'Name',
+      description: 'Beschreibung',
+      search: 'Suchen'
+    };
+
+    this.languageService.onLanguageChanged.subscribe(language => {
+      this.currentLanguage = language;
+      this.elements$ = this.i18nService.translate(elements, language.isoCode);
+      this.products$ = this.productService.getProducts(language.isoCode);
+      this.onProductSearch();
+    })
+
+    this.elements$ = of(elements);
   }
 
   onProductSearch(): void {

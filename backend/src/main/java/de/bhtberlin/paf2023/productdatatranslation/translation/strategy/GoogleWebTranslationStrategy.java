@@ -1,9 +1,8 @@
-package de.bhtberlin.paf2023.productdatatranslation.translation.api;
+package de.bhtberlin.paf2023.productdatatranslation.translation.strategy;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.bhtberlin.paf2023.productdatatranslation.exception.ExternalTranslationApiException;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,8 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Set;
 
@@ -24,7 +21,7 @@ import java.util.Set;
  */
 @Component
 @RequiredArgsConstructor
-public class GoogleWebTranslationApi implements ExternalTranslationApi {
+public class GoogleWebTranslationStrategy implements ExternalTranslationApiStrategy {
 
     private static final String apiUrl = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=%s&tl=%s&dt=t&q=%s";
 
@@ -38,7 +35,6 @@ public class GoogleWebTranslationApi implements ExternalTranslationApi {
     /**
      * {@inheritDoc}
      */
-    @Override
     public @NotNull Set<String> getSupportedLocales() {
         return supportedLocales;
     }
@@ -47,13 +43,18 @@ public class GoogleWebTranslationApi implements ExternalTranslationApi {
      * {@inheritDoc}
      */
     @Override
-    public @NotNull String translate(@Nullable String text, @NotNull String from, @NotNull String to) throws ExternalTranslationApiException {
+    public @NotNull String translateText(@Nullable String text, @NotNull String from, @NotNull String to) {
         if (text == null || text.isEmpty()) {
             return "";
         }
+
+        if (isNotSupportedLocale(from) || isNotSupportedLocale(to)) {
+            return text;
+        }
+
         RestTemplate restTemplate = new RestTemplate();
 
-        String uri = apiUrl.formatted(from, to, URLEncoder.encode(text, StandardCharsets.UTF_8));
+        String uri = apiUrl.formatted(from, to, text);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -64,7 +65,7 @@ public class GoogleWebTranslationApi implements ExternalTranslationApi {
             JsonNode root = this.mapper.readTree(json);
             return root.path(0).path(0).path(0).asText(text);
         } catch (JsonProcessingException e) {
-            throw new ExternalTranslationApiException("Exception during Google Web Api translation", e);
+            return text;
         }
     }
 }

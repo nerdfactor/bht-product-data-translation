@@ -1,8 +1,7 @@
-package de.bhtberlin.paf2023.productdatatranslation.translation.api;
+package de.bhtberlin.paf2023.productdatatranslation.translation.strategy;
 
 import com.deepl.api.TextResult;
 import com.deepl.api.Translator;
-import de.bhtberlin.paf2023.productdatatranslation.exception.ExternalTranslationApiException;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,7 +14,7 @@ import java.util.Set;
  */
 @Component
 @RequiredArgsConstructor
-public class DeeplTranslationApi implements ExternalTranslationApi {
+public class DeeplTranslationStrategy implements ExternalTranslationApiStrategy {
 
     /**
      * The internal Deepl {@link Translator}.
@@ -30,7 +29,6 @@ public class DeeplTranslationApi implements ExternalTranslationApi {
     /**
      * {@inheritDoc}
      */
-    @Override
     public @NotNull Set<String> getSupportedLocales() {
         return supportedLocales;
     }
@@ -39,15 +37,25 @@ public class DeeplTranslationApi implements ExternalTranslationApi {
      * {@inheritDoc}
      */
     @Override
-    public @NotNull String translate(@Nullable String text, @NotNull String from, @NotNull String to) throws ExternalTranslationApiException {
+    public @NotNull String translateText(@Nullable String text, @NotNull String from, @NotNull String to) {
         if (text == null || text.isEmpty()) {
             return "";
         }
+
+        if (isNotSupportedLocale(from) || isNotSupportedLocale(to)) {
+            return text;
+        }
+
+        // Deepl does only support en-US or en-GB.
+        if (to.equalsIgnoreCase("en")) {
+            to = "en-US";
+        }
+
         try {
             TextResult result = translator.translateText(text, from, to);
             return result.getText();
         } catch (Exception e) {
-            throw new ExternalTranslationApiException("Exception during Deepl Api translation", e);
+            return text;
         }
     }
 }

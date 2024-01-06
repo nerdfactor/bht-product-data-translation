@@ -1,9 +1,8 @@
-package de.bhtberlin.paf2023.productdatatranslation.translation.api;
+package de.bhtberlin.paf2023.productdatatranslation.translation.strategy;
 
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.Translate.TranslateOption;
 import com.google.cloud.translate.Translation;
-import de.bhtberlin.paf2023.productdatatranslation.exception.ExternalTranslationApiException;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,7 +15,7 @@ import java.util.Set;
  */
 @Component
 @RequiredArgsConstructor
-public class GoogleCloudTranslationApi implements ExternalTranslationApi {
+public class GoogleCloudTranslationStrategy implements ExternalTranslationApiStrategy {
 
     /**
      * The internal Google Cloud {@link Translate}.
@@ -31,7 +30,6 @@ public class GoogleCloudTranslationApi implements ExternalTranslationApi {
     /**
      * {@inheritDoc}
      */
-    @Override
     public @NotNull Set<String> getSupportedLocales() {
         return supportedLocales;
     }
@@ -40,10 +38,15 @@ public class GoogleCloudTranslationApi implements ExternalTranslationApi {
      * {@inheritDoc}
      */
     @Override
-    public @NotNull String translate(@Nullable String text, @NotNull String from, @NotNull String to) throws ExternalTranslationApiException {
+    public @NotNull String translateText(@Nullable String text, @NotNull String from, @NotNull String to) {
         if (text == null || text.isEmpty()) {
             return "";
         }
+
+        if (isNotSupportedLocale(from) || isNotSupportedLocale(to)) {
+            return text;
+        }
+
         try {
             Translation translation = translate.translate(
                     text,
@@ -52,7 +55,7 @@ public class GoogleCloudTranslationApi implements ExternalTranslationApi {
             );
             return translation.getTranslatedText();
         } catch (Exception e) {
-            throw new ExternalTranslationApiException("Exception during Google Cloud Api translation", e);
+            return text;
         }
     }
 }

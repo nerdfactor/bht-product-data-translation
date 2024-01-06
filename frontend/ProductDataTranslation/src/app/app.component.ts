@@ -10,19 +10,20 @@ import { Language } from './models/language';
 })
 export class AppComponent implements OnInit {
 
-  languages$!: Observable<Language[]>
-  currentLanguage?: Language;
-  constructor(private languageService: LanguageService) { }
+  languages!: Language[];
+  constructor(public languageService: LanguageService) { }
 
   ngOnInit(): void {
-    this.languages$ = this.languageService.getLanguages();
     let locale = AppComponent.getUsersLocale('de_DE');
-    this.languages$.pipe(mergeMap(languages => languages), first(language => language.isoCode.startsWith(locale)))
-      .subscribe(language => this.currentLanguage = language);
+    this.languageService.getLanguages()
+      .subscribe(languages => {
+        this.languageService.changeLanguage(languages.find(language => language.isoCode.startsWith(locale))!);
+        this.languages = languages;
+      });
   }
 
   onLanguageSwitch(language: Language): void {
-    this.currentLanguage = language;
+    this.languageService.changeLanguage(language);
   }
 
   static getUsersLocale(defaultValue: string): string {
@@ -34,4 +35,5 @@ export class AppComponent implements OnInit {
     lang = lang || wn.language || wn.browserLanguage || wn.userLanguage;
     return lang;
   }
+
 }

@@ -44,7 +44,7 @@ public class ProductSearchService {
      * @return A {@link Page} with the search results.
      */
     public @NonNull Page<Product> searchAllProducts(String search, String locale, Pageable page) {
-        String defaultLanguageSearch = this.translationService.translate(search, locale, AppConfig.DEFAULT_LANGUAGE);
+        String defaultLanguageSearch = this.translationService.translateString(search, locale, AppConfig.DEFAULT_LANGUAGE);
         defaultLanguageSearch = "%" + defaultLanguageSearch.trim().toLowerCase() + "%";
         search = "%" + search.trim().toLowerCase() + "%";
         Page<Product> products = this.productRepository.searchAllProductsMultiSearch(search, defaultLanguageSearch, page);

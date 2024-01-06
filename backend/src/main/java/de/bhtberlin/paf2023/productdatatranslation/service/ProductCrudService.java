@@ -2,6 +2,7 @@ package de.bhtberlin.paf2023.productdatatranslation.service;
 
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Translation;
+import de.bhtberlin.paf2023.productdatatranslation.exception.TranslationException;
 import de.bhtberlin.paf2023.productdatatranslation.repo.ProductRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -45,12 +46,19 @@ public class ProductCrudService {
     }
 
     public @NonNull List<Product> listAllProducts(@NotNull final String locale) {
+        final String tag = LanguageService.normalizeLanguageTag(locale);
         return this.productRepository.findAll().stream().
                 peek(product -> {
-                    if (!locale.isEmpty()) {
-                        product.removeTranslationsNotInLocale(locale);
+                    if (!tag.isEmpty()) {
+                        product.removeTranslationsNotInLocale(tag);
                         if (!product.hasTranslations()) {
-                            this.translationService.translateProduct(product, locale);
+                            try{
+                                this.translationService.translateProduct(product, tag);
+                                log.info("Auto translated Product: " + product.getName() + " into " + tag);
+                            }catch(TranslationException e){
+                                // could not be translated automatically and can remain empty.
+                            }
+
                         }
                     }
                 })
@@ -82,16 +90,22 @@ public class ProductCrudService {
     }
 
     public @NotNull Optional<Product> readProduct(int id, @NotNull String locale) {
+        final String tag = LanguageService.normalizeLanguageTag(locale);
         Product product = this.productRepository.findById(id).orElse(null);
-        if (product != null && !locale.isEmpty()) {
+        if (product != null && !tag.isEmpty()) {
             boolean hasCorrectTranslation = false;
             for (Translation translation : product.getTranslations()) {
-                if (translation.getLanguage().getIsoCode().equalsIgnoreCase(locale)) {
+                if (translation.getLanguage().getIsoCode().equalsIgnoreCase(tag)) {
                     hasCorrectTranslation = true;
                 }
             }
             if (!hasCorrectTranslation) {
-                product = this.translationService.translateProduct(product, locale);
+                try{
+                    product = this.translationService.translateProduct(product, tag);
+                    log.info("Auto translated Product: " + product.getName() + " into " + tag);
+                }catch(TranslationException e){
+                    // could not be translated automatically and can remain empty.
+                }
             }
         }
         return Optional.ofNullable(product);
