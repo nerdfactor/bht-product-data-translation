@@ -39,11 +39,11 @@ public class TranslationCrudService {
     /**
      * Create a Translation.
      *
-     * @param Translation The Translation, that should be created.
+     * @param translation The Translation, that should be created.
      * @return The Translation, that was created.
      */
-    public @NotNull Translation createTranslation(@NotNull Translation Translation) {
-        return this.translationRepository.save(Translation);
+    public @NotNull Translation createTranslation(@NotNull Translation translation) {
+        return this.translationRepository.save(translation);
     }
 
     /**
@@ -59,20 +59,20 @@ public class TranslationCrudService {
     /**
      * Update a Translation.
      *
-     * @param Translation The Translation with updated values.
+     * @param translation The Translation with updated values.
      * @return The updated Translation.
      */
-    public @NotNull Translation updateTranslation(@NotNull Translation Translation) {
-        return this.translationRepository.save(Translation);
+    public @NotNull Translation updateTranslation(@NotNull Translation translation) {
+        return this.translationRepository.save(translation);
     }
 
     /**
      * Delete a Translation.
      *
-     * @param Translation The Translation to delete.
+     * @param translation The Translation to delete.
      */
-    public void deleteTranslation(@NotNull Translation Translation) {
-        this.translationRepository.delete(Translation);
+    public void deleteTranslation(@NotNull Translation translation) {
+        this.translationRepository.delete(translation);
     }
 
     /**
