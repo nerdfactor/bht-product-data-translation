@@ -60,7 +60,7 @@ public class SearchProductTest {
     @Test
     @Transactional
     public void shouldFindSearchedProductInNonExistingLanguage() throws Exception {
-        String search = "ambiance";
+        String search = "confortable";
 
         String response = mockMvc.perform(get(API_PATH + "/search?query=" + search)
                         .header("Accept-Language", Locale.FRENCH))
