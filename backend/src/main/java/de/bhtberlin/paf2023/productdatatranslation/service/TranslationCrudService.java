@@ -1,5 +1,6 @@
 package de.bhtberlin.paf2023.productdatatranslation.service;
 
+import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Translation;
 import de.bhtberlin.paf2023.productdatatranslation.repo.TranslationRepository;
 import lombok.NonNull;
@@ -25,6 +26,8 @@ public class TranslationCrudService {
      * For example a specific JpaRepository for access to database layer.
      */
     final TranslationRepository translationRepository;
+
+    final TranslationService translationService;
 
     /**
      * Will return a list of all {@link Translation Translations}.
@@ -63,7 +66,18 @@ public class TranslationCrudService {
      * @return The updated Translation.
      */
     public @NotNull Translation updateTranslation(@NotNull Translation translation) {
-        return this.translationRepository.save(translation);
+        Translation updated = this.translationRepository.save(translation);
+        // check if the translation was in the default language and change
+        // all other translations
+        if (translation.getLanguage() != null && translation.getLanguage().getIsoCode().equalsIgnoreCase(AppConfig.DEFAULT_LANGUAGE)) {
+            // todo: should TranslationService take care of Product translation or delegate to ProductService?
+            updated.getProduct().getTranslations().forEach(t -> {
+                if (!t.getLanguage().getIsoCode().equalsIgnoreCase(AppConfig.DEFAULT_LANGUAGE)) {
+                    this.translationService.translateProduct(updated.getProduct(), t.getLanguage().getIsoCode());
+                }
+            });
+        }
+        return updated;
     }
 
     /**
