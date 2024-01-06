@@ -45,12 +45,16 @@ public class TranslationService {
 
     /**
      * Translate a {@link Product} into a specific language.
+     * <br>
      * This will take the default {@link Translation}, translate it to the
      * desired language and add it to the list of translations for the {@link Product}.
+     * <br>
+     * If the {@link Translation} for this language already exists, it will be
+     * updated.
      *
      * @param product The {@link Product} to translate.
      * @param to      The tag of the target locale.
-     * @return The {@link Product} with the new {@link Translation}.
+     * @return The {@link Product} with the new/updated {@link Translation}.
      * @throws TranslationException If there was a problem during translation.
      */
     public Product translateProduct(Product product, String to) throws TranslationException {
@@ -66,9 +70,17 @@ public class TranslationService {
         // get default translation from the product
         Translation defaultTranslation = this.translationRepository.getOneByProductAndLanguage(product, defaultLanguage);
 
-        // create new translation with the default content
-        Translation translation = new Translation();
-        translation.setLanguage(language);
+        Translation translation = this.translationRepository.getOneByProductAndLanguage(product, language);
+
+        if (translation == null) {
+            // create new translation
+            translation = new Translation();
+            translation.setLanguage(language);
+            product.addTranslation(translation);
+            translation.setProduct(product);
+        }
+
+        // set the descriptions to the descriptions of the default translation.
         translation.setShortDescription(defaultTranslation.getShortDescription());
         translation.setLongDescription(defaultTranslation.getLongDescription());
 
@@ -84,10 +96,6 @@ public class TranslationService {
                 defaultTranslation.getLanguage().getIsoCode(),
                 to, translator
         ));
-
-        // add the new translation to the product
-        product.addTranslation(translation);
-        translation.setProduct(product);
 
         // save the translation
         this.translationRepository.save(translation);

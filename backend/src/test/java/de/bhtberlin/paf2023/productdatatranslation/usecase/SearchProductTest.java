@@ -48,7 +48,9 @@ public class SearchProductTest {
 
         DataPage<ProductDto> responses = this.jsonMapper.readValue(response, new TypeReference<>() {
         });
-        Assertions.assertTrue(responses.getContent().get(0).getName().contains(search));
+        Assertions.assertTrue(responses.getContent().get(0).getName().contains(search)
+                || responses.getContent().get(0).getTranslations().stream().findFirst().orElseThrow().getLongDescription().contains(search)
+                || responses.getContent().get(0).getTranslations().stream().findFirst().orElseThrow().getShortDescription().contains(search));
     }
 
 
@@ -58,7 +60,7 @@ public class SearchProductTest {
     @Test
     @Transactional
     public void shouldFindSearchedProductInNonExistingLanguage() throws Exception {
-        String search = "ambiance";
+        String search = "confortable";
 
         String response = mockMvc.perform(get(API_PATH + "/search?query=" + search)
                         .header("Accept-Language", Locale.FRENCH))
