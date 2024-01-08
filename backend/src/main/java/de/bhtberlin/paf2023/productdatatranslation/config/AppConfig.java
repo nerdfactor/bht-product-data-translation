@@ -23,6 +23,11 @@ public class AppConfig {
     private String version;
 
     /**
+     * The directory in which pictures will be stored.
+     */
+    private String picturePath;
+
+    /**
      * The configuration for external Apis.
      */
     private ExternalApiConfig apiConfig;
