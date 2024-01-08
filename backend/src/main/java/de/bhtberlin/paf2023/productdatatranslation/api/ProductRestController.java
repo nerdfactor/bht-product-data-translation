@@ -10,6 +10,7 @@ import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.exception.EntityNotFoundException;
 import de.bhtberlin.paf2023.productdatatranslation.exception.UnprocessableEntityException;
 import de.bhtberlin.paf2023.productdatatranslation.service.ProductCrudService;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -78,6 +79,7 @@ public class ProductRestController {
         if (id != dto.getId()) {
             throw new UnprocessableEntityException(String.format("Mismatch between provided Ids (%d - %d).", id, dto.getId()));
         }
+        dto.setTranslations(null);
         Product updated = this.productCrudService.updateProduct(this.mapper.map(dto, Product.class));
         return ResponseEntity.ok(this.mapper.map(updated, ProductDto.class));
     }
@@ -111,6 +113,7 @@ public class ProductRestController {
             // if colors where not send, fill with existing relations.
             dto.setColors(Optional.ofNullable(entity.getColors()).orElse(new HashSet<>()).stream().map(c -> new ColorDto(c.getId())).collect(Collectors.toSet()));
         }
+        dto.setTranslations(null);
         Product updated = this.productCrudService.updateProduct(this.mapper.map(dto, Product.class));
         return ResponseEntity.ok(this.mapper.map(updated, ProductDto.class));
     }
