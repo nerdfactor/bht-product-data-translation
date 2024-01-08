@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { ProductService } from '../../services/product.service';
-import { Product } from '../../models/product';
-import { Observable, map, of } from 'rxjs';
-import { AppComponent } from '../../app.component';
-import { I18nService } from '../../services/i18n.service';
-import { LanguageService } from '../../services/language.service';
-import { Language } from '../../models/language';
+import {Component, OnInit} from '@angular/core';
+import {ProductService} from '../../services/product.service';
+import {Product} from '../../models/product';
+import {debounceTime, distinctUntilChanged, Observable, of, Subject, switchMap} from 'rxjs';
+import {I18nService} from '../../services/i18n.service';
+import {LanguageService} from '../../services/language.service';
+import {Language} from '../../models/language';
 
 @Component({
   selector: 'app-search-page',
@@ -19,9 +18,10 @@ export class SearchPageComponent implements OnInit {
   displayedProducts$!: Observable<Product[]>;
   elements$!: Observable<any>;
   currentLanguage!: Language;
-  search: string = '';
+  searchTerm$ = new Subject<string>();
 
-  constructor(private productService: ProductService, private languageService: LanguageService, private i18nService: I18nService) { }
+  constructor(private productService: ProductService, private languageService: LanguageService, private i18nService: I18nService) {
+  }
 
   ngOnInit(): void {
     let elements = {
@@ -34,16 +34,32 @@ export class SearchPageComponent implements OnInit {
     this.languageService.onLanguageChanged.subscribe(language => this.init(elements, language));
     if (this.languageService.currentLanguage)
       this.init(elements, this.languageService.currentLanguage);
+
+    // Debounce the reaction to changes in the search term in order
+    // not to send to many requests to the backend.
+    this.searchTerm$.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(value => {
+      this.onProductSearch(value)
+    })
   }
 
   init(elements: any, language: Language): void {
     this.currentLanguage = language;
     this.elements$ = this.i18nService.translate(elements, language.isoCode);
     this.products$ = this.productService.getProducts(language.isoCode);
-    this.onProductSearch();
+    this.onProductSearch("");
   }
 
-  onProductSearch(): void {
-    this.displayedProducts$ = this.products$.pipe(map(products => products.filter(product => product.name.toLowerCase().startsWith(this.search.toLowerCase()))))
+  onProductSearch(search: string): void {
+    this.productService.searchProducts(search, this.currentLanguage?.isoCode).subscribe(response => {
+      this.displayedProducts$ = of(response.content);
+    });
+  }
+
+  onSearchChanged(event: string){
+    this.onProductSearch(event)
+    this.searchTerm$.next(event)
   }
 }

@@ -2,7 +2,7 @@
     <div class="d-flex align-items-baseline">
         <mat-form-field class="w-100 flex-grow-1">
             <mat-label>{{elements['search']}}...</mat-label>
-            <input type="text" matInput [(ngModel)]="search" (keyup)="onProductSearch()">
+            <input type="text" matInput [ngModel]="searchTerm$ | async" (ngModelChange)="searchTerm$.next($event)">
         </mat-form-field>
     </div>
     <table mat-table [dataSource]="displayedProducts$">
