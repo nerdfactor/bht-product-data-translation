@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product';
-import { Observable, of } from 'rxjs';
+import { Observable, first } from 'rxjs';
 import { I18nService } from '../../services/i18n.service';
 import { LanguageService } from '../../services/language.service';
 import { Language } from '../../models/language';
@@ -44,6 +44,6 @@ export class DetailPageComponent implements OnInit {
   init(elements: any, productId: number, language: Language): void {
     this.currentLanguage = language;
     this.elements$ = this.i18nService.translate(elements, language.isoCode);
-    this.product$ = this.productService.getProduct(productId, language.isoCode);
+    this.product$ = this.productService.getProduct(productId, language.isoCode).pipe(first());
   }
 }
