@@ -1,7 +1,7 @@
 import { Product } from "./product";
 
-export class Color {
-    id!: number;
-    name!: string;
-    products!: Product[];
+export interface Color {
+    id: number;
+    name: string;
+    products: Product[];
 }
