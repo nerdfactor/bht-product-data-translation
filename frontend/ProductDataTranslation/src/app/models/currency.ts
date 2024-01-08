@@ -1,5 +1,5 @@
-export interface Currency {
-    id: number;
-    name: string;
-    symbol: string;
+export class Currency {
+    id!: number;
+    name!: string;
+    symbol!: string;
 }

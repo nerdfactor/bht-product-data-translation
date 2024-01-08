@@ -31,14 +31,16 @@ export class SearchPageComponent implements OnInit {
       search: 'Suchen'
     };
 
-    this.languageService.onLanguageChanged.subscribe(language => {
-      this.currentLanguage = language;
-      this.elements$ = this.i18nService.translate(elements, language.isoCode);
-      this.products$ = this.productService.getProducts(language.isoCode);
-      this.onProductSearch();
-    })
+    this.languageService.onLanguageChanged.subscribe(language => this.init(elements, language));
+    if (this.languageService.currentLanguage)
+      this.init(elements, this.languageService.currentLanguage);
+  }
 
-    this.elements$ = of(elements);
+  init(elements: any, language: Language): void {
+    this.currentLanguage = language;
+    this.elements$ = this.i18nService.translate(elements, language.isoCode);
+    this.products$ = this.productService.getProducts(language.isoCode);
+    this.onProductSearch();
   }
 
   onProductSearch(): void {

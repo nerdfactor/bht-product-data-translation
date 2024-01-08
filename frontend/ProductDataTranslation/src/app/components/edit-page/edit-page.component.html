@@ -1,4 +1,4 @@
-<div class="container-fluid mat-body text-body-secondary">
+<div class="container-fluid mat-body text-body-secondary" *ngIf="(elements$ | async) as elements; else loadingBlock">
     <div *ngIf="product; else elseBlock">
         <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
             <div class="d-flex align-items-baseline">
@@ -6,7 +6,7 @@
                     <mat-icon fontIcon="chevron_left" aria-label="Zurück"></mat-icon>
                 </a>
                 <mat-form-field class="flex-grow-1">
-                    <mat-label>Name</mat-label>
+                    <mat-label>{{ elements['name'] }}</mat-label>
                     <input matInput formControlName="name">
                 </mat-form-field>
                 <button type="submit" mat-icon-button [disabled]="!productForm.valid">
@@ -16,30 +16,34 @@
             <div class="row">
                 <div class="col-9">
                     <mat-form-field class="w-100">
-                        <mat-label>Seriennummer</mat-label>
+                        <mat-label>{{ elements['serial'] }}</mat-label>
                         <input matInput formControlName="serial"/>
                     </mat-form-field>
                     <div class="border rounded p-3">
-                        <h4>Beschreibungen</h4>
+                        <h4>{{ elements['descriptions'] }}</h4>
                         <mat-form-field class="w-100">
-                            <mat-label>Kurzbeschreibung</mat-label>
+                            <mat-label>{{ elements['shortDescription'] }}</mat-label>
                             <input matInput formControlName="shortDescription"/>
                         </mat-form-field>
                         <mat-form-field class="w-100">
-                            <mat-label>Langbeschreibung</mat-label>
+                            <mat-label>{{ elements['longDescription'] }}</mat-label>
                             <textarea matInput style="height: 250px;" formControlName="longDescription"></textarea>
                         </mat-form-field>
                     </div>
                 </div>
                 <div class="col-3">
                     <div class="border rounded p-3 mb-3">
-                        <h4 class="fw-light">Eigenschaften</h4>
+                        <h4 class="fw-light">{{ elements['properties'] }}</h4>
                         <p class="d-flex justify-content-between mb-2">
-                            <strong>Gewicht</strong>
+                            <strong>{{ elements['weight'] }}</strong>
                             <input formControlName="weight"/>
                         </p>
                         <p class="d-flex justify-content-between mb-2">
-                            <strong class="fw-bold"><abbr title="Höhe, Breite, Tiefe">H, B, T</abbr></strong>
+                            <strong class="fw-bold">
+                                <abbr title="{{elements['height']}}, {{ elements['width'] }}, {{ elements['depth'] }}">
+                                    {{ elements['height'][0] }}, {{ elements['width'][0] }}, {{ elements['depth'][0] }}
+                                </abbr>
+                            </strong>
                             <span class="d-flex">
                                 <input style="width: 55px" formControlName="height"/>
                                 <input style="width: 55px" formControlName="width"/>
@@ -47,21 +51,20 @@
                             </span>
                         </p>
                         <p class="d-flex justify-content-between mb-2">
-                            <strong>Preis</strong>
+                            <strong>{{ elements['price'] }}</strong>
                             <input formControlName="price"/>
                         </p>
                         <p class="d-flex justify-content-between mb-2">
-                            <strong>Farben</strong>
+                            <strong>{{ elements['colors'] }}</strong>
                             
                         </p>
                         <p class="d-flex justify-content-between mb-2">
-                            <strong>Kategorien</strong>
+                            <strong>{{ elements['categories'] }}</strong>
                         </p>
                     </div>
                     <div style="height: 250px;" class="">
                         <label for="picInput" role="button" class="w-100 h-100 d-flex border rounded justify-content-center align-items-center">
-                            Foto
-
+                            {{ elements['photo'] }}
                         </label>
                         <input id="picInput" class="invisible" type="file"/>
                     </div>
@@ -71,6 +74,11 @@
     </div>
     
     <ng-template #elseBlock>
-        <div class="">Produkt kann nicht geladen werden</div>
+        <div class="">{{ elements['notLoaded'] }}</div>
     </ng-template>
 </div>
+<ng-template #loadingBlock>
+    <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center">
+        <mat-icon>hourglass_empty</mat-icon>
+    </div>
+</ng-template>
