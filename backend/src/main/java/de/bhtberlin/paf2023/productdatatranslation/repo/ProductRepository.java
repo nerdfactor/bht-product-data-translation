@@ -21,7 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
      * @param pageable The {@link Pageable} restricting the amount of results.
      * @return A {@link Page} containing the results.
      */
-    @Query("SELECT product FROM Product product " +
+    @Query("SELECT DISTINCT product FROM Product product " +
             "LEFT JOIN Translation translation ON translation.product = product " +
             "WHERE lower(product.name) LIKE :search " +
             "OR lower(translation.shortDescription) LIKE :search " +
@@ -41,7 +41,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
      * @param pageable              The {@link Pageable} restricting the amount of results.
      * @return A {@link Page} containing the results.
      */
-    @Query("SELECT product FROM Product product " +
+    @Query("SELECT DISTINCT product FROM Product product " +
             "LEFT JOIN Translation translation ON translation.product = product " +
             "WHERE lower(product.name) LIKE :search " +
             "OR lower(translation.shortDescription) LIKE :search " +
