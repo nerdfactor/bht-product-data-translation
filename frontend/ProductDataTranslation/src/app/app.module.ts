@@ -23,8 +23,8 @@ import {DetailPageComponent} from './components/detail-page/detail-page.componen
 import {EditPageComponent} from './components/edit-page/edit-page.component';
 import {FilterPipe} from './pipes/filter.pipe';
 import {FindPipe} from './pipes/find.pipe';
-import {MatPaginatorModule} from "@angular/material/paginator";
-import {MatSortModule} from "@angular/material/sort";
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatSortModule} from '@angular/material/sort';
 
 @NgModule({
   declarations: [

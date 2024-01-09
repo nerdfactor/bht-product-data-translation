@@ -5,7 +5,8 @@
       <input type="text" matInput [ngModel]="searchTerm$ | async" (ngModelChange)="searchTerm$.next($event)">
     </mat-form-field>
   </div>
-  <table mat-table [dataSource]="displayedProducts$" matSort matSortDirection="asc" (matSortChange)="onSortChanged($event)">
+  <table mat-table [dataSource]="displayedProducts$" matSort matSortDirection="asc"
+         (matSortChange)="onSortChanged($event)">
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ elements['id'] }}</th>
       <td mat-cell *matCellDef="let element">{{ element.id }}</td>
@@ -32,7 +33,8 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 </div>
-<mat-paginator class="d-flex justify-content-center" (page)="onPageChanged($event)" [pageSizeOptions]="[10, 50, 100, 1000]"></mat-paginator>
+<mat-paginator class="d-flex justify-content-center" (page)="onPageChanged($event)"
+               [pageSizeOptions]="[10, 50, 100, 1000]"></mat-paginator>
 
 <ng-template #elseBlock>
   <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center">
