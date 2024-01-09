@@ -19,8 +19,9 @@ export class ProductService extends HttpService {
     return this.get<Product[]>(this.productsUri, isoCode);
   }
 
-  searchProducts(search: String, isoCode: string): Observable<Page<Product>> {
-    return this.get<Page<Product>>(this.productsUri + '/search?query=' + search, isoCode);
+  searchProducts(search: String, isoCode: string, page: number = 0, size: number = 10, sort: string = "id", direction: string = "asc"): Observable<Page<Product>> {
+    let url = this.productsUri + `/search?page=${page}&size=${size}&sort=${sort},${direction}&query=${search}`
+    return this.get<Page<Product>>(url, isoCode);
   }
 
   getProduct(id: number, isoCode: string): Observable<Product> {

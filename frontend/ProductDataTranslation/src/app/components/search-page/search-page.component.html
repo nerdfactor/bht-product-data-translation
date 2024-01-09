@@ -1,38 +1,41 @@
 <div *ngIf="(elements$ | async) as elements; else elseBlock">
-    <div class="d-flex align-items-baseline">
-        <mat-form-field class="w-100 flex-grow-1">
-            <mat-label>{{elements['search']}}...</mat-label>
-            <input type="text" matInput [ngModel]="searchTerm$ | async" (ngModelChange)="searchTerm$.next($event)">
-        </mat-form-field>
-    </div>
-    <table mat-table [dataSource]="displayedProducts$">
-        <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef>{{elements['id']}}</th>
-            <td mat-cell *matCellDef="let element">{{element.id}}</td>
-        </ng-container>
-        <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>{{elements['name']}}</th>
-            <td mat-cell *matCellDef="let element">{{element.name}}</td>
-        </ng-container>
-        <ng-container matColumnDef="description">
-            <th mat-header-cell *matHeaderCellDef>{{elements['description']}}</th>
-            <td mat-cell *matCellDef="let element">{{(element.translations | find:'language.id':currentLanguage.id)?.shortDescription}}</td>
-        </ng-container>
-        <ng-container matColumnDef="action">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let element">
-                <a mat-button routerLink="/product/{{element.id}}" class="float-end">
-                    <mat-icon>open_in_new</mat-icon>
-                </a>
-            </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+  <div class="d-flex align-items-baseline">
+    <mat-form-field class="w-100 flex-grow-1">
+      <mat-label>{{ elements['search'] }}...</mat-label>
+      <input type="text" matInput [ngModel]="searchTerm$ | async" (ngModelChange)="searchTerm$.next($event)">
+    </mat-form-field>
+  </div>
+  <table mat-table [dataSource]="displayedProducts$">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>{{ elements['id'] }}</th>
+      <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+    </ng-container>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>{{ elements['name'] }}</th>
+      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+    </ng-container>
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef>{{ elements['description'] }}</th>
+      <td mat-cell
+          *matCellDef="let element">{{ (element.translations | find:'language.id':currentLanguage.id)?.shortDescription }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element">
+        <a mat-button routerLink="/product/{{element.id}}" class="float-end">
+          <mat-icon>open_in_new</mat-icon>
+        </a>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
 </div>
+<mat-paginator class="d-flex justify-content-center" (page)="onPageChanged($event)" [pageSizeOptions]="[10, 50, 100, 1000]"></mat-paginator>
 
 <ng-template #elseBlock>
-    <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center">
-        <mat-icon>hourglass_empty</mat-icon>
-    </div>
+  <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center">
+    <mat-icon>hourglass_empty</mat-icon>
+  </div>
 </ng-template>
