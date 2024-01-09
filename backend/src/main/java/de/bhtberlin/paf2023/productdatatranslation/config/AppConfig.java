@@ -33,5 +33,7 @@ public class AppConfig {
 
         private String deeplApiKey;
         private String googleCloudApiKey;
+        private String microsoftApiKey;
+        private String microsoftApiRegion;
     }
 }

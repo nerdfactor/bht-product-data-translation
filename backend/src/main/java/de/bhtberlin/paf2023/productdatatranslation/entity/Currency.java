@@ -20,6 +20,8 @@ public class Currency {
 
     private String name;
 
+    private String normalized;
+
     private String symbol;
 
     @OneToMany(mappedBy = "currency", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
