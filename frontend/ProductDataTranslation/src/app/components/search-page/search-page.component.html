@@ -5,13 +5,13 @@
       <input type="text" matInput [ngModel]="searchTerm$ | async" (ngModelChange)="searchTerm$.next($event)">
     </mat-form-field>
   </div>
-  <table mat-table [dataSource]="displayedProducts$">
+  <table mat-table [dataSource]="displayedProducts$" matSort matSortDirection="asc" (matSortChange)="onSortChanged($event)">
     <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef>{{ elements['id'] }}</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ elements['id'] }}</th>
       <td mat-cell *matCellDef="let element">{{ element.id }}</td>
     </ng-container>
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>{{ elements['name'] }}</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ elements['name'] }}</th>
       <td mat-cell *matCellDef="let element">{{ element.name }}</td>
     </ng-container>
     <ng-container matColumnDef="description">

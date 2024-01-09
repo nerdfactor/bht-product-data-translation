@@ -24,6 +24,7 @@ import {EditPageComponent} from './components/edit-page/edit-page.component';
 import {FilterPipe} from './pipes/filter.pipe';
 import {FindPipe} from './pipes/find.pipe';
 import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatSortModule} from "@angular/material/sort";
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import {MatPaginatorModule} from "@angular/material/paginator";
     MatTableModule,
     MatIconModule,
     MatMenuModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatSortModule
   ],
   providers: [],
   bootstrap: [AppComponent]

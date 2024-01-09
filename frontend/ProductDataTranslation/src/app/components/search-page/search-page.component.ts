@@ -6,6 +6,7 @@ import {I18nService} from '../../services/i18n.service';
 import {LanguageService} from '../../services/language.service';
 import {Language} from '../../models/language';
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
+import {MatSort, Sort} from "@angular/material/sort";
 
 @Component({
   selector: 'app-search-page',
@@ -20,9 +21,11 @@ export class SearchPageComponent implements OnInit {
   elements$!: Observable<any>;
   currentLanguage!: Language;
   searchTerm$ = new Subject<string>();
+  currentSearch: string = ""
   totalProducts: number = 0
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
 
   constructor(private productService: ProductService, private languageService: LanguageService, private i18nService: I18nService) {
@@ -51,7 +54,8 @@ export class SearchPageComponent implements OnInit {
       debounceTime(300),
       distinctUntilChanged()
     ).subscribe(value => {
-      this.onProductSearch(value, 0)
+      this.currentSearch = value
+      this.onProductSearch(value, 0, this.paginator?.pageSize || 10, this.sort?.active || 'id', this.sort?.direction || 'asc')
     })
   }
 
@@ -61,9 +65,8 @@ export class SearchPageComponent implements OnInit {
     this.elements$.subscribe(value => {
       this.onPaginatorI18n(value)
     })
-    this.products$ = this.productService.getProducts(language.isoCode);
-    this.onProductSearch("");
-    //this.onPaginatorI18n(elements)
+    this.searchTerm$.next("")
+    //this.onProductSearch("");
   }
 
   onProductSearch(search: string = "", page: number = 0, size: number = 10, sort: string = "id", direction: string = "asc"): void {
@@ -71,11 +74,17 @@ export class SearchPageComponent implements OnInit {
       this.displayedProducts$ = of(response.content);
       this.totalProducts = response.totalElements
       this.paginator.length = response.totalElements
+      this.paginator.pageIndex = response.number
+      this.paginator.pageSize = response.size
     });
   }
 
+  onSortChanged(event: Sort) {
+    this.onProductSearch(this.currentSearch, 0, this.paginator.pageSize, event.active, event.direction)
+  }
+
   onPageChanged(event: PageEvent) {
-    this.onProductSearch("", event.pageIndex, event.pageSize)
+    this.onProductSearch("", event.pageIndex, event.pageSize, this.sort.active, this.sort.direction)
   }
 
   onPaginatorI18n(elements: any) {
@@ -84,7 +93,7 @@ export class SearchPageComponent implements OnInit {
     this.paginator._intl.previousPageLabel = elements.previousPageLabel
     this.paginator._intl.getRangeLabel = (page: number, pageSize: number, length: number) => {
       const start = page * pageSize + 1;
-      const end = (page + 1) * pageSize;
+      const end = Math.min((page + 1) * pageSize, length);
       return `${start} - ${end} (${elements.rangeOf} ${length})`;
     };
   }
