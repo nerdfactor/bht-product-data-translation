@@ -23,6 +23,7 @@ app:
     api-config:
       deepl-api-key: ${PDT_DEEPL_API_KEY}
       google-cloud-api-key: ${PDT_GOOGLE_CLOUD_API_KEY}
+      google-clout-api-project: "bht-product-data-translation"
       microsoft-api-key: ${PDT_MICROSOFT_API_KEY}
       microsoft-api-region: "westeurope"
     factory: "StrategyTranslatorFactory"
