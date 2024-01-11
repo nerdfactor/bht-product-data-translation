@@ -87,8 +87,7 @@ public class SearchProductTest {
 
         DataPage<ProductDto> responses = this.jsonMapper.readValue(response, new TypeReference<>() {
         });
-        // todo: there is a strange behavior, where the result size is exactly 1 less than the requested page??
-        Assertions.assertEquals(amount - 1, responses.getNumberOfElements());
+        Assertions.assertEquals(amount, responses.getNumberOfElements());
     }
 
 }

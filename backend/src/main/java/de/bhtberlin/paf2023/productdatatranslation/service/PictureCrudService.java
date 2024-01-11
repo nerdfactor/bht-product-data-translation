@@ -37,6 +37,16 @@ public class PictureCrudService {
     }
 
     /**
+     * Creates a new Picture.
+     *
+     * @return The Picture, that was created.
+     */
+    public @NotNull Picture createNewPicture() {
+        Picture picture = new Picture();
+        return this.pictureRepository.save(picture);
+    }
+
+    /**
      * Create a Picture.
      *
      * @param Picture The Picture, that should be created.

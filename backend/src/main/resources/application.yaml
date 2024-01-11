@@ -19,7 +19,17 @@ spring:
 
 app:
   version: ^project.version^
-  api-config:
-    deepl-api-key: ${PDT_DEEPL_API_KEY}
-    google-cloud-api-key: ${PDT_GOOGLE_CLOUD_API_KEY}
-  picture-path: pictures
+  picture-config:
+    picture-path: pictures
+    store-in: memory
+  translator-config:
+    api-config:
+      deepl-api-key: ${PDT_DEEPL_API_KEY}
+      google-cloud-api-key: ${PDT_GOOGLE_CLOUD_API_KEY}
+      google-clout-api-project: "bht-product-data-translation"
+      microsoft-api-key: ${PDT_MICROSOFT_API_KEY}
+      microsoft-api-region: "westeurope"
+    factory: "StrategyTranslatorFactory"
+    translator: "StrategyTranslator"
+    strategy-config:
+      text-translation-strategy: "GoogleWebTranslationStrategy"

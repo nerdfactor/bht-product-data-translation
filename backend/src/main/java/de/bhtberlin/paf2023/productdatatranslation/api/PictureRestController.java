@@ -2,14 +2,21 @@ package de.bhtberlin.paf2023.productdatatranslation.api;
 
 import de.bhtberlin.paf2023.productdatatranslation.dto.PictureDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Picture;
+import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.exception.EntityNotFoundException;
 import de.bhtberlin.paf2023.productdatatranslation.exception.UnprocessableEntityException;
 import de.bhtberlin.paf2023.productdatatranslation.service.PictureCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.PictureService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import java.util.List;
 
@@ -20,6 +27,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/pictures")
 public class PictureRestController {
+
+    final PictureService pictureService;
 
     final PictureCrudService pictureCrudService;
 
@@ -33,10 +42,13 @@ public class PictureRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PictureDto> readPicture(@PathVariable final int id) {
+    public ResponseEntity<byte[]> readPicture(@PathVariable final int id) {
         Picture picture = this.pictureCrudService.readPicture(id).
                 orElseThrow(() -> new EntityNotFoundException("Picture with Id " + id + " was not found."));
-        return ResponseEntity.ok(this.mapper.map(picture, PictureDto.class));
+        byte[] raw = this.pictureService.loadImageForPicture(picture);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.valueOf(picture.getFormat()));
+        return new ResponseEntity<>(raw, headers, HttpStatus.OK);
     }
 
     /**
@@ -44,24 +56,28 @@ public class PictureRestController {
      * <p>
      * This method will enforce plain {@link Picture} creation by removing all linked entities.
      */
-    @PostMapping("")
-    public ResponseEntity<PictureDto> createPicture(@RequestBody final PictureDto dto) {
-        dto.setProduct(null);
-        Picture created = this.pictureCrudService.createPicture(this.mapper.map(dto, Picture.class));
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.mapper.map(created, PictureDto.class));
+    @PostMapping(value = "", consumes = MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<PictureDto> createPicture(@RequestPart("file") MultipartFile file) {
+        Picture picture = this.pictureCrudService.createNewPicture();
+        picture = this.pictureService.storeImageForPicture(picture, file);
+        return ResponseEntity.ofNullable(this.mapper.map(picture, PictureDto.class));
     }
 
     @RequestMapping(value = "/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
-    public ResponseEntity<PictureDto> setPicture(@PathVariable final int id, @RequestBody final PictureDto dto) {
-        if (id != dto.getId()) {
-            throw new UnprocessableEntityException(String.format("Mismatch between provided Ids (%d - %d).", id, dto.getId()));
-        }
-        Picture updated = this.pictureCrudService.updatePicture(this.mapper.map(dto, Picture.class));
+    public ResponseEntity<PictureDto> setPicture(@PathVariable final int id, @RequestPart("file") MultipartFile file) {
+        Picture picture = this.pictureCrudService.readPicture(id)
+                .orElseThrow(() -> new EntityNotFoundException("Picture with Id " + id + " was not found."));
+        this.pictureService.deleteImageForPicture(picture);
+        picture = this.pictureService.storeImageForPicture(picture, file);
+        Picture updated = this.pictureCrudService.updatePicture(picture);
         return ResponseEntity.ok(this.mapper.map(updated, PictureDto.class));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePicture(@PathVariable final int id) {
+        Picture picture = this.pictureCrudService.readPicture(id)
+                .orElseThrow(() -> new EntityNotFoundException("Picture with Id " + id + " was not found."));
+        this.pictureService.deleteImageForPicture(picture);
         this.pictureCrudService.deletePictureById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
