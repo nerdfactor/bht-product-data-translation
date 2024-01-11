@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * of a simple {@link Translator} without strategies.
  */
 @Deprecated
-public class FakeStringTranslator extends BaseTranslator {
+public class FakeStringTranslator extends BasicTranslator {
 
     /**
      * {@inheritDoc}

@@ -1,5 +1,15 @@
 package de.bhtberlin.paf2023.productdatatranslation.config;
 
+import de.bhtberlin.paf2023.productdatatranslation.translation.AutoTranslationCache;
+import de.bhtberlin.paf2023.productdatatranslation.translation.BasicTranslator;
+import de.bhtberlin.paf2023.productdatatranslation.translation.StrategyTranslator;
+import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
+import de.bhtberlin.paf2023.productdatatranslation.translation.factory.BasicTranslatorFactory;
+import de.bhtberlin.paf2023.productdatatranslation.translation.factory.StrategyTranslatorFactory;
+import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.FakeCurrencyConversionStrategy;
+import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.FakeMeasurementConversionStrategy;
+import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.GoogleWebTranslationStrategy;
+import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.TextTranslationStrategy;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -23,17 +33,56 @@ public class AppConfig {
     private String version;
 
     /**
-     * The configuration for external Apis.
+     * The configuration used for translation.
      */
-    private ExternalApiConfig apiConfig;
+    private TranslatorConfig translatorConfig = new TranslatorConfig();
 
     @Getter
     @Setter
-    public static class ExternalApiConfig {
+    public static class TranslatorConfig {
 
-        private String deeplApiKey;
-        private String googleCloudApiKey;
-        private String microsoftApiKey;
-        private String microsoftApiRegion;
+        // specify a different factory class to create more complex translators.
+        private String factory = BasicTranslatorFactory.class.getCanonicalName();
+
+        private String translatorPackage = Translator.class.getPackageName();
+
+        private String strategyPackage = TextTranslationStrategy.class.getPackageName();
+
+        private String translator = BasicTranslator.class.getSimpleName();
+
+        /**
+         * The configuration for the translation strategies.
+         * This will only be used if the translator is a {@link StrategyTranslator}
+         * created by a {@link StrategyTranslatorFactory}.
+         */
+        private StrategyConfig strategyConfig = new StrategyConfig();
+
+        /**
+         * The configuration for external Apis.
+         */
+        private ExternalApiConfig apiConfig = new ExternalApiConfig();
+
+
+        @Getter
+        @Setter
+        public static class StrategyConfig {
+            private String textTranslationStrategy = GoogleWebTranslationStrategy.class.getSimpleName();
+
+            private String currencyConversionStrategy = FakeCurrencyConversionStrategy.class.getSimpleName();
+
+            private String measurementConversionStrategy = FakeMeasurementConversionStrategy.class.getSimpleName();
+
+            private String translationCache = AutoTranslationCache.class.getSimpleName();
+        }
+
+        @Getter
+        @Setter
+        public static class ExternalApiConfig {
+            // todo: combine to one field apiKey instead of object with multiple keys?
+            private String deeplApiKey;
+            private String googleCloudApiKey;
+            private String microsoftApiKey;
+            private String microsoftApiRegion;
+        }
     }
 }
