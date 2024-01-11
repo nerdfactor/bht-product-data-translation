@@ -62,11 +62,12 @@
                             <strong>{{ elements['categories'] }}</strong>
                         </p>
                     </div>
-                    <div style="height: 250px;" class="">
+                    <div style="height: 250px;" class="border rounded">
                         <label for="picInput" role="button" class="w-100 h-100 d-flex border rounded justify-content-center align-items-center">
                             {{ elements['photo'] }}
                         </label>
-                        <input id="picInput" class="invisible" type="file"/>
+                        <input id="picInput" class="invisible" type="file" accept="image/*" (change)="selectPicture($event)"/>
+                        <img [src]="imagePreview" class="w-100 h-100" alt="{{ elements['photo'] }}">
                     </div>
                 </div>
             </div>

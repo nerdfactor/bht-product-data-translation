@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Product } from '../../models/product';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ProductService } from '../../services/product.service';
@@ -7,6 +7,7 @@ import { Observable, first } from 'rxjs';
 import { LanguageService } from '../../services/language.service';
 import { Language } from '../../models/language';
 import { I18nService } from '../../services/i18n.service';
+import { PictureService } from '../../services/picture.service';
 
 @Component({
   selector: 'app-edit-page',
@@ -14,6 +15,9 @@ import { I18nService } from '../../services/i18n.service';
   styleUrl: './edit-page.component.scss'
 })
 export class EditPageComponent {
+
+  @ViewChild('picInput')
+  picInput!: ElementRef;
 
   product!: Product;
   elements$!: Observable<any>;
@@ -29,11 +33,14 @@ export class EditPageComponent {
     shortDescription: [''],
     longDescription: ['']
   });
+  imagePreview: any;
+  image: any;
 
   constructor(private route: ActivatedRoute,
     private productService: ProductService,
     private languageService: LanguageService,
     private i18nService: I18nService,
+    private pictureService: PictureService,
     private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
@@ -73,15 +80,31 @@ export class EditPageComponent {
         height: product.height,
         price: product.price,
         serial: product.serial,
-        weight: product.weight,
+        weight: product.weight, 
         width: product.width,
         shortDescription: translation?.shortDescription,
         longDescription: translation?.longDescription
       });
+
+      if (product.pictures.length > 0) {
+        this.pictureService.download(product.pictures[0].id).subscribe(picture => this.imagePreview = URL.createObjectURL(picture));
+      }
     });
   }
 
+  selectPicture(event: any) {
+    let selectedFiles = event.target.files;
+    if (!selectedFiles) 
+      return;
+
+    const picture = selectedFiles.item(0);
+    const selectedFileUrl = URL.createObjectURL(picture);
+    this.imagePreview = selectedFileUrl;
+    this.image = picture;
+  }
+
   onSubmit() {
+    this.pictureService.upload(this.image).subscribe();
     const formValue = this.productForm.value;
     this.product.name = formValue.name!;
     this.product.serial = formValue.serial!;
@@ -93,6 +116,6 @@ export class EditPageComponent {
     translation.shortDescription = formValue.shortDescription!;
     translation.longDescription = formValue.longDescription!;
     console.log('submitting', this.product);
-    this.productService.updateProduct(this.product, this.currentLanguage!.isoCode).subscribe();
+    // this.productService.updateProduct(this.product, this.currentLanguage!.isoCode).subscribe();
   }
 }
