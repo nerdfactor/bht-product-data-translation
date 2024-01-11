@@ -73,7 +73,7 @@ public class BaseTranslator implements Translator {
     public ProductDto visit(ProductDto dto, String from, String to) {
         dto.setName(this.translateText(dto.getName(), from, to));
         // assume there are more steps for translating a ProductDto and not
-        // jus the same as the other Translatable implementations.
+        // just the same as the other Translatable implementations.
         return dto;
     }
 
@@ -84,7 +84,7 @@ public class BaseTranslator implements Translator {
     public ColorDto visit(ColorDto dto, String from, String to) {
         dto.setName(this.translateText(dto.getName(), from, to));
         // assume there are more steps for translating a ColorDto and not
-        // jus the same as the other Translatable implementations.
+        // just the same as the other Translatable implementations.
         return dto;
     }
 
@@ -95,7 +95,7 @@ public class BaseTranslator implements Translator {
     public CategoryDto visit(CategoryDto dto, String from, String to) {
         dto.setName(this.translateText(dto.getName(), from, to));
         // assume there are more steps for translating a CategoryDto and not
-        // jus the same as the other Translatable implementations.
+        // just the same as the other Translatable implementations.
         return dto;
     }
 }
