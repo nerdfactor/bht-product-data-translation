@@ -9,9 +9,16 @@ import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.Measurem
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.TextTranslationStrategy;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.context.annotation.Bean;
 
 import java.lang.reflect.Method;
 
+/**
+ * Factory for creating {@link StrategyTranslator StrategyTranslators} and all
+ * inheriting classes. This will use the configured strategies in addition to
+ * what {@link BasicTranslatorFactory} does.
+ * Change the Creation of the {@link Translator} by adding a {@link Bean} for it.
+ */
 public class StrategyTranslatorFactory extends BasicTranslatorFactory {
 
     @Override
@@ -23,6 +30,7 @@ public class StrategyTranslatorFactory extends BasicTranslatorFactory {
         String translationCacheClassName = createClassName(config.getStrategyConfig().getTranslationCache(), config.getTranslatorPackage());
 
         try {
+            // The factory assumes that all {@link StrategyTranslator StrategyTranslators} have a static builder method.
             Class<?> translatorClass = Class.forName(translatorClassName);
             Method builderMethod = translatorClass.getMethod("builder");
             StrategyTranslator.StrategyTranslatorBuilder builder = (StrategyTranslator.StrategyTranslatorBuilder) builderMethod.invoke(null);
