@@ -19,8 +19,13 @@ spring:
 
 app:
   version: ^project.version^
-  api-config:
-    deepl-api-key: ${PDT_DEEPL_API_KEY}
-    google-cloud-api-key: ${PDT_GOOGLE_CLOUD_API_KEY}
-    microsoft-api-key: ${PDT_MICROSOFT_API_KEY}
-    microsoft-api-region: "westeurope"
+  translator-config:
+    api-config:
+      deepl-api-key: ${PDT_DEEPL_API_KEY}
+      google-cloud-api-key: ${PDT_GOOGLE_CLOUD_API_KEY}
+      microsoft-api-key: ${PDT_MICROSOFT_API_KEY}
+      microsoft-api-region: "westeurope"
+    factory: "de.bhtberlin.paf2023.productdatatranslation.translation.factory.StrategyTranslatorFactory"
+    translator: "StrategyTranslator"
+    strategy-config:
+      text-translation-strategy: "GoogleWebTranslationStrategy"
