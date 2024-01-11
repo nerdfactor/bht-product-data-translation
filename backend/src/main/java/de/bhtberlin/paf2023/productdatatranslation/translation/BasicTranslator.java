@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
  * Extend this Translator in order to reuse the visiting but do concrete
  * translations.
  */
-public class BaseTranslator implements Translator {
+public class BasicTranslator implements Translator {
 
     /**
      * {@inheritDoc}
