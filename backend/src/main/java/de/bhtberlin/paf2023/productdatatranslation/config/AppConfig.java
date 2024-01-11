@@ -6,6 +6,7 @@ import de.bhtberlin.paf2023.productdatatranslation.translation.StrategyTranslato
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
 import de.bhtberlin.paf2023.productdatatranslation.translation.factory.BasicTranslatorFactory;
 import de.bhtberlin.paf2023.productdatatranslation.translation.factory.StrategyTranslatorFactory;
+import de.bhtberlin.paf2023.productdatatranslation.translation.factory.TranslatorFactory;
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.FakeCurrencyConversionStrategy;
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.FakeMeasurementConversionStrategy;
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.GoogleWebTranslationStrategy;
@@ -41,12 +42,13 @@ public class AppConfig {
     @Setter
     public static class TranslatorConfig {
 
-        // specify a different factory class to create more complex translators.
-        private String factory = BasicTranslatorFactory.class.getCanonicalName();
+        private String factoryPackage = TranslatorFactory.class.getPackageName();
 
         private String translatorPackage = Translator.class.getPackageName();
 
         private String strategyPackage = TextTranslationStrategy.class.getPackageName();
+
+        private String factory = BasicTranslatorFactory.class.getCanonicalName();
 
         private String translator = BasicTranslator.class.getSimpleName();
 

@@ -9,6 +9,7 @@ import de.bhtberlin.paf2023.productdatatranslation.translation.factory.Translato
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.MicrosoftTranslationStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +28,8 @@ public class TranslationConfig {
     @Primary
     public Translator getTranslator() {
         try {
-            Class<?> cls = Class.forName(this.appConfig.getTranslatorConfig().getFactory());
+            String factoryClass = this.createClassName(this.appConfig.getTranslatorConfig().getFactory(), this.appConfig.getTranslatorConfig().getFactoryPackage());
+            Class<?> cls = Class.forName(factoryClass);
             TranslatorFactory factory = (TranslatorFactory) cls.getDeclaredConstructor().newInstance();
             return factory.getTranslator(this.appConfig.getTranslatorConfig(), context);
         } catch (Exception e) {
@@ -58,5 +60,12 @@ public class TranslationConfig {
         return new MicrosoftTranslationStrategy(this.appConfig.getTranslatorConfig().getApiConfig().getMicrosoftApiKey(),
                 this.appConfig.getTranslatorConfig().getApiConfig().getMicrosoftApiRegion(),
                 new ObjectMapper());
+    }
+
+    protected @NotNull String createClassName(@NotNull String className, String packageName) {
+        if (className.contains(".")) {
+            return className;
+        }
+        return packageName + "." + className;
     }
 }
