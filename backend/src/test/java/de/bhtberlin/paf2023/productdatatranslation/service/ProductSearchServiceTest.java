@@ -90,7 +90,6 @@ public class ProductSearchServiceTest {
         int amount = 5;
         String search = "";
         Page<Product> products = this.productSearchService.searchAllProducts(search, Locale.GERMAN, Pageable.ofSize(amount));
-        // todo: there is a strange behavior, where the result size is exactly 1 less than the requested page??
-        Assertions.assertEquals(amount - 1, products.getNumberOfElements());
+        Assertions.assertEquals(amount, products.getNumberOfElements());
     }
 }
