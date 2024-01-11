@@ -46,8 +46,10 @@ public class TranslationConfig {
     @Bean
     public Translate getGoogleCloudTranslate() {
         return TranslateOptions.newBuilder()
-                .setProjectId("bht-product-data-translation ")
-                .setApiKey(this.appConfig.getTranslatorConfig().getApiConfig().getGoogleCloudApiKey()).build().getService();
+                .setProjectId(this.appConfig.getTranslatorConfig().getApiConfig().getGoogleCloutApiProject())
+                .setApiKey(this.appConfig.getTranslatorConfig().getApiConfig().getGoogleCloudApiKey())
+                .build()
+                .getService();
     }
 
     @Bean

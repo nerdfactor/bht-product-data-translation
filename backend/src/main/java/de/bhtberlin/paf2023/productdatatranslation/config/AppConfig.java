@@ -83,6 +83,7 @@ public class AppConfig {
             // todo: combine to one field apiKey instead of object with multiple keys?
             private String deeplApiKey;
             private String googleCloudApiKey;
+            private String googleCloutApiProject;
             private String microsoftApiKey;
             private String microsoftApiRegion;
         }
