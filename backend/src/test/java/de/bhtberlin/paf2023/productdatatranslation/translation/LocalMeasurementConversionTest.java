@@ -4,7 +4,7 @@ import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.LocalMea
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class LocalMeasurementConversionTest {
+class LocalMeasurementConversionTest {
 
     LocalMeasurementConversionStrategy api = new LocalMeasurementConversionStrategy();
 

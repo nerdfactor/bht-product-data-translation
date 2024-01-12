@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Locale;
 
 @SpringBootTest
-public class AutoTranslationCacheTest {
+class AutoTranslationCacheTest {
 
     @Autowired
     AutoTranslationCache autoTranslationCache;

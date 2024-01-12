@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("integration")
-public class ShowProductTest {
+class ShowProductTest {
 
     private static final String API_PATH = "/api/products";
 
@@ -35,7 +35,7 @@ public class ShowProductTest {
      */
     @Test
     @Transactional
-    public void shouldReturnProductInExistingLanguage() throws Exception {
+    void shouldReturnProductInExistingLanguage() throws Exception {
         int id = 1;
         String response = mockMvc.perform(get(API_PATH + "/" + id)
                         .header("Accept-Language", Locale.GERMAN))
@@ -51,7 +51,7 @@ public class ShowProductTest {
      */
     @Test
     @Transactional
-    public void shouldReturnProductInNonExistingLanguage() throws Exception {
+    void shouldReturnProductInNonExistingLanguage() throws Exception {
         int id = 1;
         String response = mockMvc.perform(get(API_PATH + "/" + id)
                         .header("Accept-Language", Locale.FRENCH))

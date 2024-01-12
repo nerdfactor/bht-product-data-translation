@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("integration")
-public class SearchProductTest {
+class SearchProductTest {
 
     private static final String API_PATH = "/api/products";
 
@@ -38,7 +38,7 @@ public class SearchProductTest {
      */
     @Test
     @Transactional
-    public void shouldFindSearchedProductInExistingLanguage() throws Exception {
+    void shouldFindSearchedProductInExistingLanguage() throws Exception {
         String search = "Premium";
 
         String response = mockMvc.perform(get(API_PATH + "/search?query=" + search)
@@ -59,7 +59,7 @@ public class SearchProductTest {
      */
     @Test
     @Transactional
-    public void shouldFindSearchedProductInNonExistingLanguage() throws Exception {
+    void shouldFindSearchedProductInNonExistingLanguage() throws Exception {
         String search = "confortable";
 
         String response = mockMvc.perform(get(API_PATH + "/search?query=" + search)
@@ -77,7 +77,7 @@ public class SearchProductTest {
      */
     @Test
     @Transactional
-    public void shouldFindLimitedAmountOfProducts() throws Exception {
+    void shouldFindLimitedAmountOfProducts() throws Exception {
         int amount = 5;
         String search = "";
         String response = mockMvc.perform(get(API_PATH + "/search?query=" + search + "&size=" + amount)

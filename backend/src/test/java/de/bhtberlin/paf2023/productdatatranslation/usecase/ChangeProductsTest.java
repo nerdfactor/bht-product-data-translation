@@ -32,13 +32,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("integration")
-public class ChangeProductsTest {
+class ChangeProductsTest {
 
     private static final String API_PATH_PRODUCTS = "/api/products";
 
     private static final String API_PATH_TRANSLATIONS = "/api/translations";
-
-    private static final String API_PATH_CATEGORIES = "/api/categories";
 
     @Autowired
     private MockMvc mockMvc;
@@ -68,7 +66,7 @@ public class ChangeProductsTest {
      * Should change an existing product.
      */
     @Test
-    public void shouldChangeProductInSystem() throws Exception {
+    void shouldChangeProductInSystem() throws Exception {
         // load a product
         Product product = this.productService.readProduct(2).orElseThrow();
         String originalName = product.getName();
@@ -108,7 +106,7 @@ public class ChangeProductsTest {
      * Should change an existing product and its colors.
      */
     @Test
-    public void shouldChangeProductAndColorsInSystem() throws Exception {
+    void shouldChangeProductAndColorsInSystem() throws Exception {
         // load a product
         Product product = this.productService.readProduct(2).orElseThrow();
         String originalName = product.getName();
@@ -146,7 +144,7 @@ public class ChangeProductsTest {
      * Should change the translation of an existing product.
      */
     @Test
-    public void shouldChangeProductsTranslationInSystem() throws Exception {
+    void shouldChangeProductsTranslationInSystem() throws Exception {
         // load a product and its translation.
         Product product = this.productService.readProduct(3).orElseThrow();
         Translation translation = product.getTranslations().stream().findFirst().orElseThrow();
@@ -178,7 +176,7 @@ public class ChangeProductsTest {
      * Should change one of multiple translations of an existing product.
      */
     @Test
-    public void shouldChangeSecondaryTranslationOfProductInSystem() throws Exception {
+    void shouldChangeSecondaryTranslationOfProductInSystem() throws Exception {
         // load a product and its translation.
         Product product = this.productService.readProduct(4).orElseThrow();
         Translation translation = product.getTranslations().stream().filter(t -> t.getLanguage().getIsoCode().equalsIgnoreCase("en")).toList().get(0);
@@ -212,7 +210,7 @@ public class ChangeProductsTest {
      * Should change one of multiple translations of an existing product.
      */
     @Test
-    public void shouldChangeDefaultTranslationOfProductInSystem() throws Exception {
+    void shouldChangeDefaultTranslationOfProductInSystem() throws Exception {
         // load a product and its translation.
         Product product = this.productService.readProduct(4).orElseThrow();
         Translation translation = product.getTranslations().stream().filter(t -> t.getLanguage().getIsoCode().equalsIgnoreCase("de")).toList().get(0);
@@ -254,7 +252,7 @@ public class ChangeProductsTest {
      * Should change the product with all the transferred relationships.
      */
     @Test
-    public void shouldChangeProductWithAllRelations() throws Exception {
+    void shouldChangeProductWithAllRelations() throws Exception {
         Product product = this.productService.readProduct(6).orElseThrow();
         ProductDto dto = this.modelMapper.map(product, ProductDto.class);
         // change the name of a category to make sure, it is changed.
