@@ -24,6 +24,9 @@ public class Currency {
 
     private String symbol;
 
+    //  ISO 4217 currency code
+    private String isoCode;
+
     @OneToMany(mappedBy = "currency", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Set<Language> languages = new HashSet<>();
 }

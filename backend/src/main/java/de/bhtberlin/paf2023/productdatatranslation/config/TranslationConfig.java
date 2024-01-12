@@ -6,6 +6,7 @@ import com.google.cloud.translate.TranslateOptions;
 import de.bhtberlin.paf2023.productdatatranslation.translation.AutoTranslationCache;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
 import de.bhtberlin.paf2023.productdatatranslation.translation.factory.TranslatorFactory;
+import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.CurrencyLayerConversionStrategy;
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.MicrosoftTranslationStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +63,14 @@ public class TranslationConfig {
         return new MicrosoftTranslationStrategy(this.appConfig.getTranslatorConfig().getApiConfig().getMicrosoftApiKey(),
                 this.appConfig.getTranslatorConfig().getApiConfig().getMicrosoftApiRegion(),
                 new ObjectMapper());
+    }
+
+    @Bean
+    public CurrencyLayerConversionStrategy getCurrencyConversionApiStrategy() {
+        return new CurrencyLayerConversionStrategy(
+                this.appConfig.getTranslatorConfig().getApiConfig().getCurrencyLayerApiKey(),
+                new ObjectMapper()
+        );
     }
 
     protected @NotNull String createClassName(@NotNull String className, String packageName) {
