@@ -82,6 +82,8 @@ INSERT INTO "translation" ("product_id", "language_id", "short_description", "lo
 INSERT INTO "translation" ("product_id", "language_id", "short_description", "long_description") VALUES (5, 1, 'Schaffen Sie eine moderne Atmosphäre mit unserer LED-Stehlampe.', 'Mit unserer LED-Stehlampe setzen Sie stilvolle Akzente in Ihrem Zuhause. Das moderne Design und die energiesparende LED-Technologie vereinen sich zu einem perfekten Lichterlebnis.');
 INSERT INTO "translation" ("product_id", "language_id", "short_description", "long_description") VALUES (5, 3, 'Créez une atmosphère moderne avec notre lampadaire à LED.', 'Avec notre lampadaire LED, vous mettez des accents élégants dans votre maison. Le design moderne et la technologie LED à faible consommation d''énergie s''unissent pour créer une expérience d''éclairage parfaite.');
 INSERT INTO "translation" ("product_id", "language_id", "short_description", "long_description") VALUES (6, 1, 'Erleben Sie Entertainment in Ultra HD-Qualität mit unserem Smart TV.', 'Tauchen Sie ein in die Welt des hochauflösenden Fernsehens mit unserem Ultra HD Smart TV. Genießen Sie klare Bilder und smarte Funktionen für ein ultimatives Fernseherlebnis.');
+INSERT INTO "translation" ("product_id", "language_id", "short_description", "long_description") VALUES (6, 2, 'Experience entertainment in Ultra HD quality with our Smart TV.', 'Immerse yourself in the world of high-resolution television with our Ultra HD Smart TV. Enjoy clear images and smart features for an ultimate TV viewing experience.');
+INSERT INTO "translation" ("product_id", "language_id", "short_description", "long_description") VALUES (6, 3, 'Vivez le divertissement en qualité Ultra HD avec notre Smart TV.', 'Plongez dans le monde de la télévision haute définition avec notre Smart TV Ultra HD. Profitez d''images claires et de fonctions intelligentes pour une expérience télévisuelle ultime.');
 INSERT INTO "translation" ("product_id", "language_id", "short_description", "long_description") VALUES (7, 1, 'Genießen Sie entspannte Stunden auf unserer gemütlichen Sofagarnitur.', 'Unsere Sofagarnitur lädt zum Verweilen ein. Hochwertige Materialien und bequeme Polsterung sorgen für maximalen Komfort.');
 INSERT INTO "translation" ("product_id", "language_id", "short_description", "long_description") VALUES (8, 1, 'Essen Sie stilvoll mit unserem Designer Esstisch aus Eiche.', 'Mit unserem Esstisch aus Eiche setzen Sie elegante Akzente in Ihrem Essbereich. Das zeitlose Design passt zu jeder Einrichtung.');
 INSERT INTO "translation" ("product_id", "language_id", "short_description", "long_description") VALUES (9, 1, 'Bereiten Sie köstlichen Kaffee mit unserem kompakten Kaffeevollautomaten zu.', 'Der Kaffeevollautomat kombiniert Kompaktheit mit Leistung. Genießen Sie perfekten Kaffee auf Knopfdruck.');
@@ -101,3 +103,7 @@ INSERT INTO "product_colors" ("color_id", "product_id") VALUES (1, 1);
 INSERT INTO "product_categories" ("category_id", "product_id") VALUES(1, 2);
 INSERT INTO "product_colors" ("color_id", "product_id") VALUES (2, 2);
 INSERT INTO "product_colors" ("color_id", "product_id") VALUES (3, 2);
+
+INSERT INTO "product_categories" ("category_id", "product_id") VALUES(1, 6);
+INSERT INTO "product_colors" ("color_id", "product_id") VALUES (2, 6);
+INSERT INTO "product_colors" ("color_id", "product_id") VALUES (3, 6);
