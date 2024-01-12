@@ -7,18 +7,21 @@ import de.bhtberlin.paf2023.productdatatranslation.exception.EntityNotFoundExcep
 import de.bhtberlin.paf2023.productdatatranslation.exception.UnprocessableEntityException;
 import de.bhtberlin.paf2023.productdatatranslation.service.PictureCrudService;
 import de.bhtberlin.paf2023.productdatatranslation.service.PictureService;
+import de.bhtberlin.paf2023.productdatatranslation.service.ProductCrudService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingRequestValueException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Controller for {@link Picture} related REST operations.
@@ -32,6 +35,8 @@ public class PictureRestController {
 
     final PictureCrudService pictureCrudService;
 
+    final ProductCrudService productCrudService;
+
     final ModelMapper mapper;
 
     @GetMapping(value = {"", "/"})
@@ -43,8 +48,8 @@ public class PictureRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<byte[]> readPicture(@PathVariable final int id) {
-        Picture picture = this.pictureCrudService.readPicture(id).
-                orElseThrow(() -> new EntityNotFoundException("Picture with Id " + id + " was not found."));
+        Picture picture = this.pictureCrudService.readPicture(id)
+                .orElseThrow(() -> new EntityNotFoundException("Picture with Id " + id + " was not found."));
         byte[] raw = this.pictureService.loadImageForPicture(picture);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf(picture.getFormat()));
@@ -57,8 +62,11 @@ public class PictureRestController {
      * This method will enforce plain {@link Picture} creation by removing all linked entities.
      */
     @PostMapping(value = "", consumes = MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<PictureDto> createPicture(@RequestPart("file") MultipartFile file) {
-        Picture picture = this.pictureCrudService.createNewPicture();
+    public ResponseEntity<PictureDto> createPicture(@RequestPart("file") MultipartFile file, @RequestParam("productId") Optional<Integer> productIdParam) {
+        int productId = productIdParam.orElseThrow(() -> new RuntimeException("Product ID is missing"));
+        Product product = this.productCrudService.readProduct(productId)
+                .orElseThrow(() -> new EntityNotFoundException("Picture with Id " + productId + " was not found."));
+        Picture picture = this.pictureCrudService.createNewPicture(product);
         picture = this.pictureService.storeImageForPicture(picture, file);
         return ResponseEntity.ofNullable(this.mapper.map(picture, PictureDto.class));
     }

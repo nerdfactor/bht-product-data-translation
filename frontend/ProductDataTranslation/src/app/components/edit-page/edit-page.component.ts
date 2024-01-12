@@ -34,6 +34,7 @@ export class EditPageComponent {
     longDescription: ['']
   });
   imagePreview: any;
+  imageChanged: boolean = false;
   image: any;
 
   constructor(private route: ActivatedRoute,
@@ -86,8 +87,8 @@ export class EditPageComponent {
         longDescription: translation?.longDescription
       });
 
-      if (product.pictures.length > 0) {
-        this.pictureService.download(product.pictures[0].id).subscribe(picture => this.imagePreview = URL.createObjectURL(picture));
+      if (product.pictures?.length > 0) {
+        this.imagePreview = this.pictureService.getPictureUrl(product.pictures[0].id);
       }
     });
   }
@@ -98,13 +99,28 @@ export class EditPageComponent {
       return;
 
     const picture = selectedFiles.item(0);
-    const selectedFileUrl = URL.createObjectURL(picture);
-    this.imagePreview = selectedFileUrl;
+    this.imagePreview = URL.createObjectURL(picture);
     this.image = picture;
+    this.imageChanged = true;
+  }
+
+  deletePicture() {
+    this.imagePreview = undefined;
+    if (this.product.pictures?.length > 0) {
+      this.pictureService.remove(this.product.pictures[0]).subscribe();
+      this.product.pictures = [];
+    }
   }
 
   onSubmit() {
-    this.pictureService.upload(this.image).subscribe();
+    if (this.imageChanged) {
+      if (this.product.pictures?.length > 0)
+        this.pictureService.update(this.product.pictures[0], this.image).subscribe(picture => this.product.pictures = [picture]);
+      else
+        this.pictureService.upload(this.image, this.product).subscribe((response: any) => this.product.pictures = [response.body]);
+      this.imageChanged = false;
+    }
+
     const formValue = this.productForm.value;
     this.product.name = formValue.name!;
     this.product.serial = formValue.serial!;
@@ -116,6 +132,6 @@ export class EditPageComponent {
     translation.shortDescription = formValue.shortDescription!;
     translation.longDescription = formValue.longDescription!;
     console.log('submitting', this.product);
-    // this.productService.updateProduct(this.product, this.currentLanguage!.isoCode).subscribe();
+    this.productService.updateProduct(this.product, this.currentLanguage!.isoCode).subscribe();
   }
 }

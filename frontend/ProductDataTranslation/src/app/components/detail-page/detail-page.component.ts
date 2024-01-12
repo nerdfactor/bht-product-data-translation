@@ -6,6 +6,7 @@ import { Observable, first } from 'rxjs';
 import { I18nService } from '../../services/i18n.service';
 import { LanguageService } from '../../services/language.service';
 import { Language } from '../../models/language';
+import { PictureService } from '../../services/picture.service';
 
 @Component({
   selector: 'app-detail-page',
@@ -14,11 +15,16 @@ import { Language } from '../../models/language';
 })
 export class DetailPageComponent implements OnInit {
 
-  product$?: Observable<Product>;
+  product!: Product;
   elements$?: Observable<any>;
   currentLanguage?: Language;
+  image: any;
 
-  constructor(private route: ActivatedRoute, private productService: ProductService, private languageService: LanguageService, private i18nService: I18nService) { }
+  constructor(private route: ActivatedRoute,
+    private productService: ProductService,
+    private languageService: LanguageService,
+    private pictureService: PictureService,
+    private i18nService: I18nService) { }
 
   ngOnInit(): void {
     const productId = Number(this.route.snapshot.paramMap.get('id'));
@@ -44,6 +50,10 @@ export class DetailPageComponent implements OnInit {
   init(elements: any, productId: number, language: Language): void {
     this.currentLanguage = language;
     this.elements$ = this.i18nService.translate(elements, language.isoCode);
-    this.product$ = this.productService.getProduct(productId, language.isoCode).pipe(first());
+    this.productService.getProduct(productId, language.isoCode).pipe(first()).subscribe(product => {
+      this.product = product;
+      if (product.pictures?.length > 0)
+        this.image = this.pictureService.getPictureUrl(product.pictures[0].id)
+    });
   }
 }
