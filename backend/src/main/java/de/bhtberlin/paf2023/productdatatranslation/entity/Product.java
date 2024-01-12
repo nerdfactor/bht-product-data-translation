@@ -72,7 +72,7 @@ public class Product {
     /**
      * The {@link Category Categories} for this {@link Product}.
      */
-    @ManyToMany()
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinTable(
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
@@ -82,7 +82,7 @@ public class Product {
     /**
      * The {@link Color Colors} for this {@link Product}.
      */
-    @ManyToMany()
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinTable(
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "color_id")
