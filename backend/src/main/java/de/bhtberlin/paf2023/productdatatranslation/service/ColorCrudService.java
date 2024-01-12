@@ -39,11 +39,11 @@ public class ColorCrudService {
     /**
      * Create a Color.
      *
-     * @param Color The Color, that should be created.
+     * @param color The Color, that should be created.
      * @return The Color, that was created.
      */
-    public @NotNull Color createColor(@NotNull Color Color) {
-        return this.colorRepository.save(Color);
+    public @NotNull Color createColor(@NotNull Color color) {
+        return this.colorRepository.save(color);
     }
 
     /**
@@ -69,10 +69,10 @@ public class ColorCrudService {
     /**
      * Delete a Color.
      *
-     * @param Color The Color to delete.
+     * @param color The Color to delete.
      */
-    public void deleteColor(@NotNull Color Color) {
-        this.colorRepository.delete(Color);
+    public void deleteColor(@NotNull Color color) {
+        this.colorRepository.delete(color);
     }
 
     /**

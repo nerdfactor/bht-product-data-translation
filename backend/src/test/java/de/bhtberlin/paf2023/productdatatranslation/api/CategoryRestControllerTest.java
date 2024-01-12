@@ -3,8 +3,13 @@ package de.bhtberlin.paf2023.productdatatranslation.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bhtberlin.paf2023.productdatatranslation.dto.CategoryDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Category;
+import de.bhtberlin.paf2023.productdatatranslation.entity.Currency;
+import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
+import de.bhtberlin.paf2023.productdatatranslation.entity.Measurement;
+import de.bhtberlin.paf2023.productdatatranslation.repo.LanguageRepository;
 import de.bhtberlin.paf2023.productdatatranslation.service.CategoryCrudService;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
@@ -53,8 +58,22 @@ class CategoryRestControllerTest {
     @MockBean
     CategoryCrudService categoryCrudService;
 
+    @MockBean
+    LanguageRepository languageRepository;
+
     @Autowired
     Translator translator;
+    
+    Language de = createTestLanguage("de", "EUR", "kg", "cm");
+    Language en = createTestLanguage("en", "USD", "lb", "in");
+
+    @BeforeEach
+    public void setup() {
+        Mockito.when(languageRepository.findOneByIsoCode("de"))
+                .thenReturn(Optional.of(this.de));
+        Mockito.when(languageRepository.findOneByIsoCode("en"))
+                .thenReturn(Optional.of(this.en));
+    }
 
     /**
      * Check if {@link Category Categories} can be listed.
@@ -69,7 +88,7 @@ class CategoryRestControllerTest {
         Mockito.when(categoryCrudService.listAllCategories())
                 .thenReturn(mockEntities);
 
-        mockDtos.forEach(dto -> dto.translate(translator, "de", "en"));
+        mockDtos.forEach(dto -> dto.translate(translator, this.de, this.en));
         mockMvc.perform(get(API_PATH))
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonMapper.writeValueAsString(mockDtos)));
@@ -84,7 +103,7 @@ class CategoryRestControllerTest {
         Mockito.when(categoryCrudService.createCategory(any(Category.class)))
                 .thenReturn(this.modelMapper.map(mockDto, Category.class));
 
-        mockDto.translate(translator, "de", "en");
+        mockDto.translate(translator, this.de, this.en);
         mockMvc.perform(post(API_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(this.jsonMapper.writeValueAsString(new Category()))
@@ -101,7 +120,7 @@ class CategoryRestControllerTest {
         Mockito.when(categoryCrudService.readCategory(any(int.class)))
                 .thenReturn(Optional.of(this.modelMapper.map(mockDto, Category.class)));
 
-        mockDto.translate(translator, "de", "en");
+        mockDto.translate(translator, this.de, this.en);
         mockMvc.perform(get(API_PATH + "/" + mockDto.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonMapper.writeValueAsString(mockDto)));
@@ -116,7 +135,7 @@ class CategoryRestControllerTest {
         Mockito.when(categoryCrudService.updateCategory(argThat(argument -> argument.getId() == mockDto.getId())))
                 .thenReturn(this.modelMapper.map(mockDto, Category.class));
 
-        mockDto.translate(translator, "de", "en");
+        mockDto.translate(translator, this.de, this.en);
         mockMvc.perform(put(API_PATH + "/" + mockDto.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(this.jsonMapper.writeValueAsString(mockDto))
@@ -143,5 +162,20 @@ class CategoryRestControllerTest {
         CategoryDto dto = createTestCategory();
         dto.setId(id);
         return dto;
+    }
+
+    private Language createTestLanguage(String lang, String cur, String weight, String distance) {
+        Language language = new Language();
+        language.setIsoCode(lang);
+        Currency currency = new Currency();
+        currency.setIsoCode(cur);
+        language.setCurrency(currency);
+        Measurement measurement = new Measurement();
+        measurement.setWeight(weight);
+        measurement.setDepth(distance);
+        measurement.setHeight(distance);
+        measurement.setWidth(distance);
+        language.setMeasurement(measurement);
+        return language;
     }
 }

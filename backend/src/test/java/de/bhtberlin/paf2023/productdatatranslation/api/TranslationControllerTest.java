@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -18,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class TranslationControllerTest {
+class TranslationControllerTest {
 
     private static final String API_PATH = "/api/translations";
 
@@ -36,7 +37,7 @@ public class TranslationControllerTest {
      */
     @Test
     void shouldTranslateI18nData() throws Exception {
-        HashMap<String, String> i18n = new HashMap<>();
+        Map<String, String> i18n = new HashMap<>();
         i18n.put("test", "some testable string");
         mockMvc.perform(post(API_PATH + "/i18n")
                         .contentType(MediaType.APPLICATION_JSON)

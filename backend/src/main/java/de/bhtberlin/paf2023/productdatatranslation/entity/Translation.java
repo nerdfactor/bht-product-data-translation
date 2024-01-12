@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * A {@link Translation} contains the description for a {@link Product}
  * in a specific language.
- * todo: rename to Description in order not to confuse translated Data in {@link Translation} with actual translation functionality.
+ * todo: rename to Description in order not to confuse translated Data in {@link Translation} with actual translation functionality?
  */
 @Getter
 @Setter

@@ -1,6 +1,7 @@
 package de.bhtberlin.paf2023.productdatatranslation.translation.factory;
 
 import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
+import de.bhtberlin.paf2023.productdatatranslation.exception.TranslationException;
 import de.bhtberlin.paf2023.productdatatranslation.translation.AutoTranslationCache;
 import de.bhtberlin.paf2023.productdatatranslation.translation.StrategyTranslator;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
@@ -22,7 +23,7 @@ import java.lang.reflect.Method;
 public class StrategyTranslatorFactory extends BasicTranslatorFactory {
 
     @Override
-    public Translator getTranslator(AppConfig.@NotNull TranslatorConfig config, ListableBeanFactory beanFactory) {
+    public Translator getTranslator(AppConfig.@NotNull TranslatorConfig config, ListableBeanFactory beanFactory) throws ClassNotFoundException {
         String translatorClassName = createClassName(config.getTranslator(), config.getTranslatorPackage());
         String textTranslationStrategyClassName = createClassName(config.getStrategyConfig().getTextTranslationStrategy(), config.getStrategyPackage());
         String currencyConversionStrategyClassName = createClassName(config.getStrategyConfig().getCurrencyConversionStrategy(), config.getStrategyPackage());
@@ -41,7 +42,7 @@ public class StrategyTranslatorFactory extends BasicTranslatorFactory {
                     .withTranslationCache((AutoTranslationCache) createClass(Class.forName(translationCacheClassName), beanFactory))
                     .build();
         } catch (Exception e) {
-            throw new RuntimeException("Could not create translator.", e);
+            throw new ClassNotFoundException("Could not create translator.", e);
         }
     }
 }

@@ -32,7 +32,6 @@ public class Picture {
     /**
      * The file format of the {@link Picture}. This will be set to the
      * original file format from the upload.
-     * todo: May be changed into enum if formats should be predefined.
      */
     private String format;
 

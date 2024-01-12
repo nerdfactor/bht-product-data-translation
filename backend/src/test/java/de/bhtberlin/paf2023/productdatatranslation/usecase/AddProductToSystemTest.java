@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("integration")
-public class AddProductToSystemTest {
+class AddProductToSystemTest {
 
     private static final String API_PATH_PRODUCTS = "/api/products";
 
@@ -68,7 +68,7 @@ public class AddProductToSystemTest {
     @Test
     @Transactional
     @Rollback
-    public void shouldAddSimpleProductToSystem() throws Exception {
+    void shouldAddSimpleProductToSystem() throws Exception {
         Product product = createTestProduct();
         ProductDto dto = this.modelMapper.map(product, ProductDto.class);
 
@@ -87,7 +87,7 @@ public class AddProductToSystemTest {
     @Test
     @Transactional
     @Rollback
-    public void shouldAddProductWithExistingColorAndCategoryToSystem() throws Exception {
+    void shouldAddProductWithExistingColorAndCategoryToSystem() throws Exception {
         // load existing color and category
         Color color = this.colorService.readColor(1).orElseThrow();
         Category category = this.categoryService.readCategory(1).orElseThrow();
@@ -130,7 +130,7 @@ public class AddProductToSystemTest {
     @Test
     @Transactional
     @Rollback
-    public void shouldAddProductWithNewCategoryToSystem() throws Exception {
+    void shouldAddProductWithNewCategoryToSystem() throws Exception {
         // create a test product
         Product product = createTestProduct();
 
@@ -181,7 +181,7 @@ public class AddProductToSystemTest {
     @Test
     @Transactional
     @Rollback
-    public void shouldAddProductWithDescriptionToSystem() throws Exception {
+    void shouldAddProductWithDescriptionToSystem() throws Exception {
         // create a test product with those color and category
         Product product = createTestProduct();
 

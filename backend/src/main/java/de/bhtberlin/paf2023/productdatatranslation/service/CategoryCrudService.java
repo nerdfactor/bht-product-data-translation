@@ -39,11 +39,11 @@ public class CategoryCrudService {
     /**
      * Create a Category.
      *
-     * @param Category The Category, that should be created.
+     * @param category The Category, that should be created.
      * @return The Category, that was created.
      */
-    public @NotNull Category createCategory(@NotNull Category Category) {
-        return this.categoryRepository.save(Category);
+    public @NotNull Category createCategory(@NotNull Category category) {
+        return this.categoryRepository.save(category);
     }
 
     /**
@@ -59,20 +59,20 @@ public class CategoryCrudService {
     /**
      * Update a Category.
      *
-     * @param Category The Category with updated values.
+     * @param category The Category with updated values.
      * @return The updated Category.
      */
-    public @NotNull Category updateCategory(@NotNull Category Category) {
-        return this.categoryRepository.save(Category);
+    public @NotNull Category updateCategory(@NotNull Category category) {
+        return this.categoryRepository.save(category);
     }
 
     /**
      * Delete a Category.
      *
-     * @param Category The Category to delete.
+     * @param category The Category to delete.
      */
-    public void deleteCategory(@NotNull Category Category) {
-        this.categoryRepository.delete(Category);
+    public void deleteCategory(@NotNull Category category) {
+        this.categoryRepository.delete(category);
     }
 
     /**

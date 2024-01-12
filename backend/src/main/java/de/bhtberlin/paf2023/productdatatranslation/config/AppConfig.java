@@ -27,6 +27,7 @@ public class AppConfig {
 
     // todo: where to put this?
     public static final String DEFAULT_LANGUAGE = "de";
+    public static final String DEFAULT_CURRENCY = "EUR";
 
     /**
      * The current application version.
@@ -92,12 +93,12 @@ public class AppConfig {
         @Getter
         @Setter
         public static class ExternalApiConfig {
-            // todo: combine to one field apiKey instead of object with multiple keys?
             private String deeplApiKey;
             private String googleCloudApiKey;
             private String googleCloutApiProject;
             private String microsoftApiKey;
             private String microsoftApiRegion;
+            private String currencyLayerApiKey;
         }
     }
 }

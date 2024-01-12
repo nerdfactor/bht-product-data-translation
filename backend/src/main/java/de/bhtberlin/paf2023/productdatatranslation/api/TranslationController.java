@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,11 +20,9 @@ public class TranslationController {
     final Translator translator;
 
     @PostMapping("/i18n")
-    public ResponseEntity<HashMap<String, String>> i18n(@RequestBody final HashMap<String, String> values) {
+    public ResponseEntity<Map<String, String>> i18n(@RequestBody final Map<String, String> values) {
         final String locale = LocaleContextHolder.getLocale().toLanguageTag().replace("-", "_");
-        values.forEach((s, s2) -> {
-            values.put(s, translator.translateText(s2, AppConfig.DEFAULT_LANGUAGE, locale));
-        });
+        values.forEach((s, s2) -> values.put(s, translator.translateText(s2, AppConfig.DEFAULT_LANGUAGE, locale)));
         return ResponseEntity.ok(values);
     }
 }

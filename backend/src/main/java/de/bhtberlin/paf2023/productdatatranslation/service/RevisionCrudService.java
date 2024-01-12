@@ -39,11 +39,11 @@ public class RevisionCrudService {
     /**
      * Create a Revision.
      *
-     * @param Revision The Revision, that should be created.
+     * @param revision The Revision, that should be created.
      * @return The Revision, that was created.
      */
-    public @NotNull Revision createRevision(@NotNull Revision Revision) {
-        return this.revisionRepository.save(Revision);
+    public @NotNull Revision createRevision(@NotNull Revision revision) {
+        return this.revisionRepository.save(revision);
     }
 
     /**
@@ -59,20 +59,20 @@ public class RevisionCrudService {
     /**
      * Update a Revision.
      *
-     * @param Revision The Revision with updated values.
+     * @param revision The Revision with updated values.
      * @return The updated Revision.
      */
-    public @NotNull Revision updateRevision(@NotNull Revision Revision) {
-        return this.revisionRepository.save(Revision);
+    public @NotNull Revision updateRevision(@NotNull Revision revision) {
+        return this.revisionRepository.save(revision);
     }
 
     /**
      * Delete a Revision.
      *
-     * @param Revision The Revision to delete.
+     * @param revision The Revision to delete.
      */
-    public void deleteRevision(@NotNull Revision Revision) {
-        this.revisionRepository.delete(Revision);
+    public void deleteRevision(@NotNull Revision revision) {
+        this.revisionRepository.delete(revision);
     }
 
     /**

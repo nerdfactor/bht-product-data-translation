@@ -23,7 +23,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class GoogleWebTranslationStrategy implements ExternalTranslationApiStrategy {
 
-    private static final String apiUrl = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=%s&tl=%s&dt=t&q=%s";
+    private final static String apiUrl = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=%s&tl=%s&dt=t&q=%s";
 
     private final ObjectMapper mapper;
 
