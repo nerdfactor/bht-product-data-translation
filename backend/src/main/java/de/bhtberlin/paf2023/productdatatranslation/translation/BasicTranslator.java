@@ -74,8 +74,10 @@ public class BasicTranslator implements Translator {
     public ProductDto visit(ProductDto dto, Language from, Language to) {
         dto.setName(this.translateText(dto.getName(), from.getIsoCode(), to.getIsoCode()));
         dto.setPrice(this.convertCurrency(dto.getPrice(), from.getCurrency().getIsoCode(), to.getCurrency().getIsoCode()));
-        // assume there are more steps for translating a ProductDto and not
-        // just the same as the other Translatable implementations.
+        dto.setDepth(this.convertMeasurement(dto.getDepth(), from.getMeasurement().getDepth(), to.getMeasurement().getDepth()));
+        dto.setHeight(this.convertMeasurement(dto.getHeight(), from.getMeasurement().getHeight(), to.getMeasurement().getHeight()));
+        dto.setWidth(this.convertMeasurement(dto.getWidth(), from.getMeasurement().getWidth(), to.getMeasurement().getWidth()));
+        dto.setWeight(this.convertMeasurement(dto.getWeight(), from.getMeasurement().getWeight(), to.getMeasurement().getWeight()));
         return dto;
     }
 

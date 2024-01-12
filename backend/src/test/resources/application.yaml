@@ -32,3 +32,4 @@ app:
     strategy-config:
       text-translation-strategy: "GoogleWebTranslationStrategy"
       currency-conversion-strategy: "FakeCurrencyConversionStrategy"
+      measurement-conversion-strategy: "LocalMeasurementConversionStrategy"
