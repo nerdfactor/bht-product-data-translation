@@ -53,8 +53,7 @@ export class SearchPageComponent implements OnInit {
       debounceTime(300),
       distinctUntilChanged()
     ).subscribe(value => {
-      this.currentSearch = value;
-      this.onProductSearch(value, 0, this.paginator?.pageSize || 10, this.sort?.active || 'id', this.sort?.direction || 'asc');
+      this.onSetProductSearch(value)
     });
   }
 
@@ -64,7 +63,12 @@ export class SearchPageComponent implements OnInit {
     this.elements$.subscribe(value => {
       this.onPaginatorI18n(value);
     });
-    this.searchTerm$.next('');
+    this.onSetProductSearch('')
+  }
+
+  onSetProductSearch(search: string) {
+    this.currentSearch = search;
+    this.onProductSearch(search, 0, this.paginator?.pageSize || 10, this.sort?.active || 'id', this.sort?.direction || 'asc');
   }
 
   onProductSearch(search: string = '', page: number = 0, size: number = 10, sort: string = 'id', direction: string = 'asc'): void {
