@@ -2,6 +2,7 @@ package de.bhtberlin.paf2023.productdatatranslation.usecase;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bhtberlin.paf2023.productdatatranslation.dto.ColorDto;
+import de.bhtberlin.paf2023.productdatatranslation.dto.PictureDto;
 import de.bhtberlin.paf2023.productdatatranslation.dto.ProductDto;
 import de.bhtberlin.paf2023.productdatatranslation.dto.TranslationDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
@@ -25,6 +26,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -159,9 +161,9 @@ public class ChangeProductsTest {
 
         // update the translation.
         mockMvc.perform(patch(API_PATH_TRANSLATIONS + "/" + dto.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(this.jsonMapper.writeValueAsString(dto))
-                ).andExpect(status().isOk());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.jsonMapper.writeValueAsString(dto))
+        ).andExpect(status().isOk());
 
         // reload data from database and make sure, changes where actually made.
         product = this.productService.readProduct(3).orElseThrow();
@@ -192,9 +194,9 @@ public class ChangeProductsTest {
 
         // update the translation.
         mockMvc.perform(patch(API_PATH_TRANSLATIONS + "/" + dto.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(this.jsonMapper.writeValueAsString(dto))
-                ).andExpect(status().isOk());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.jsonMapper.writeValueAsString(dto))
+        ).andExpect(status().isOk());
 
         // reload data from database and make sure, changes where actually made.
         product = this.productService.readProduct(4).orElseThrow();
@@ -246,5 +248,33 @@ public class ChangeProductsTest {
         Assertions.assertNotEquals(originalSecondaryShortDescription, secondaryTranslation.getShortDescription());
         Assertions.assertNotEquals(originalSecondaryLongDescription, secondaryTranslation.getLongDescription());
         Assertions.assertEquals(originalAmountOfTranslations, product.getTranslations().size());
+    }
+
+    /**
+     * Should change the product with all the transferred relationships.
+     */
+    @Test
+    public void shouldChangeProductWithAllRelations() throws Exception {
+        Product product = this.productService.readProduct(6).orElseThrow();
+        ProductDto dto = this.modelMapper.map(product, ProductDto.class);
+        // change the name of a category to make sure, it is changed.
+        String originalCategoryName = dto.getCategories().stream().findFirst().orElseThrow().getName();
+        dto.getCategories().stream().findFirst().orElseThrow().setName(UUID.randomUUID().toString());
+        // change the relations to colors to make sure, they are updated.
+        dto.setColors(Set.of(new ColorDto(1), new ColorDto(2)));
+        // change the amount of translations to make sure, the old ones are removed.
+        dto.setTranslations(Set.of(dto.getTranslations().stream().findFirst().orElseThrow()));
+        // add non-existing picture to make sure, it is added.
+        PictureDto pictureDto = new PictureDto();
+        pictureDto.setId(1);
+        dto.setPictures(Set.of(pictureDto));
+        mockMvc.perform(put(API_PATH_PRODUCTS + "/" + dto.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.jsonMapper.writeValueAsString(dto))
+        ).andExpect(status().isOk());
+        product = this.productService.readProduct(6).orElseThrow();
+        Assertions.assertNotEquals(originalCategoryName, product.getCategories().stream().findFirst().orElseThrow().getName());
+        Assertions.assertEquals(dto.getTranslations().size(), product.getTranslations().size());
+        Assertions.assertEquals(1, product.getPictures().size());
     }
 }

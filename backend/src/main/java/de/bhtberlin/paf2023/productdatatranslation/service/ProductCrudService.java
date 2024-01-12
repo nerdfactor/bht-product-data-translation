@@ -1,18 +1,25 @@
 package de.bhtberlin.paf2023.productdatatranslation.service;
 
+import de.bhtberlin.paf2023.productdatatranslation.dto.CategoryDto;
+import de.bhtberlin.paf2023.productdatatranslation.dto.ColorDto;
+import de.bhtberlin.paf2023.productdatatranslation.dto.ProductDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Translation;
+import de.bhtberlin.paf2023.productdatatranslation.exception.EntityNotFoundException;
 import de.bhtberlin.paf2023.productdatatranslation.exception.TranslationException;
 import de.bhtberlin.paf2023.productdatatranslation.repo.ProductRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 /**
@@ -24,6 +31,8 @@ import java.util.Optional;
 public class ProductCrudService {
 
     final TranslationService translationService;
+
+    final ModelMapper mapper;
 
     /**
      * An implementation of a {@link ProductRepository} for data access.
@@ -52,10 +61,10 @@ public class ProductCrudService {
                     if (!tag.isEmpty()) {
                         product.removeTranslationsNotInLocale(tag);
                         if (!product.hasTranslations()) {
-                            try{
+                            try {
                                 this.translationService.translateProduct(product, tag);
                                 log.info("Auto translated Product: " + product.getName() + " into " + tag);
-                            }catch(TranslationException e){
+                            } catch (TranslationException e) {
                                 // could not be translated automatically and can remain empty.
                             }
 
@@ -100,10 +109,10 @@ public class ProductCrudService {
                 }
             }
             if (!hasCorrectTranslation) {
-                try{
+                try {
                     product = this.translationService.translateProduct(product, tag);
                     log.info("Auto translated Product: " + product.getName() + " into " + tag);
-                }catch(TranslationException e){
+                } catch (TranslationException e) {
                     // could not be translated automatically and can remain empty.
                 }
             }
@@ -119,6 +128,35 @@ public class ProductCrudService {
      */
     public @NotNull Product updateProduct(@NotNull Product product) {
         return this.productRepository.save(product);
+    }
+
+    public @NotNull ProductDto mergeWithExistingRelationships(@NotNull ProductDto dto) {
+        Product entity = this.readProduct(dto.getId()).orElseThrow(() -> new EntityNotFoundException("Product with Id " + dto.getId() + " was not found."));
+        if (dto.getCategories() == null) {
+            // if categories where not send, fill with existing relations.
+            dto.setCategories(Optional.ofNullable(entity.getCategories()).orElse(new HashSet<>()).stream().map(c -> new CategoryDto(c.getId())).collect(Collectors.toSet()));
+        }
+        if (dto.getColors() == null) {
+            // if colors where not send, fill with existing relations.
+            dto.setColors(Optional.ofNullable(entity.getColors()).orElse(new HashSet<>()).stream().map(c -> new ColorDto(c.getId())).collect(Collectors.toSet()));
+        }
+        if (dto.getPictures() != null) {
+            dto.getPictures().forEach(pictureDto -> pictureDto.setProduct(new ProductDto(dto.getId())));
+            entity.getPictures().forEach(picture -> {
+                if (dto.getPictures().stream().noneMatch(pictureDto -> pictureDto.getId() == picture.getId())) {
+                    picture.setProduct(null);
+                }
+            });
+        }
+        if (dto.getTranslations() != null) {
+            dto.getTranslations().forEach(translationDto -> translationDto.setProduct(new ProductDto(dto.getId())));
+            entity.getTranslations().forEach(translation -> {
+                if (dto.getTranslations().stream().noneMatch(translationDto -> translationDto.getId() == translation.getId())) {
+                    translation.setProduct(null);
+                }
+            });
+        }
+        return dto;
     }
 
     /**

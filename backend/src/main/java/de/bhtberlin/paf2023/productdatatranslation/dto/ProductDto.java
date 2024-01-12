@@ -40,16 +40,16 @@ public class ProductDto implements CompositeTranslatable {
 
     private double price;
 
-    @JsonIgnoreProperties({"products"})
+    @JsonIgnoreProperties(value = {"products"}, allowSetters = true)
     private Set<CategoryDto> categories;
 
-    @JsonIgnoreProperties({"products"})
+    @JsonIgnoreProperties(value = {"products"}, allowSetters = true)
     private Set<ColorDto> colors;
 
-    @JsonIgnoreProperties({"product"})
+    @JsonIgnoreProperties(value = {"product"}, allowSetters = true)
     private Set<PictureDto> pictures;
 
-    @JsonIgnoreProperties({"product", "revisions"})
+    @JsonIgnoreProperties(value = {"product", "revisions"}, allowSetters = true)
     private Set<TranslationDto> translations;
 
     public ProductDto(int id) {

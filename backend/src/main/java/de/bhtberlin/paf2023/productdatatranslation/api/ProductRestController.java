@@ -10,7 +10,6 @@ import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.exception.EntityNotFoundException;
 import de.bhtberlin.paf2023.productdatatranslation.exception.UnprocessableEntityException;
 import de.bhtberlin.paf2023.productdatatranslation.service.ProductCrudService;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -65,10 +64,8 @@ public class ProductRestController {
     }
 
     /**
-     * Set a {@link Product} to the data in the DTO. This will override the data
-     * of the existing entity. So make sure the DTO contains everything.
-     * <br>
-     * Update connected {@link Translation Translations} from other side of relationship.
+     * Set or Update a {@link Product} to the data in the DTO. This will merge the data
+     * with the data of the existing entity.
      *
      * @param id  The id of the {@link Product}.
      * @param dto The {@link ProductDto} containing the new data.
@@ -79,7 +76,7 @@ public class ProductRestController {
         if (id != dto.getId()) {
             throw new UnprocessableEntityException(String.format("Mismatch between provided Ids (%d - %d).", id, dto.getId()));
         }
-        dto.setTranslations(null);
+        this.productCrudService.mergeWithExistingRelationships(dto);
         Product updated = this.productCrudService.updateProduct(this.mapper.map(dto, Product.class));
         return ResponseEntity.ok(this.mapper.map(updated, ProductDto.class));
     }
