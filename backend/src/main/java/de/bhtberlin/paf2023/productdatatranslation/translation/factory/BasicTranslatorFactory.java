@@ -1,6 +1,7 @@
 package de.bhtberlin.paf2023.productdatatranslation.translation.factory;
 
 import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
+import de.bhtberlin.paf2023.productdatatranslation.exception.TranslationException;
 import de.bhtberlin.paf2023.productdatatranslation.translation.BasicTranslator;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
 import org.jetbrains.annotations.NotNull;
@@ -16,12 +17,12 @@ import org.springframework.context.annotation.Bean;
 public class BasicTranslatorFactory implements TranslatorFactory {
 
     @Override
-    public Translator getTranslator(AppConfig.@NotNull TranslatorConfig config, ListableBeanFactory beanFactory) {
+    public Translator getTranslator(AppConfig.@NotNull TranslatorConfig config, ListableBeanFactory beanFactory) throws ClassNotFoundException {
         String translatorClassName = createClassName(config.getTranslator(), config.getTranslatorPackage());
         try {
             return (Translator) this.createClass(Class.forName(translatorClassName), beanFactory);
         } catch (Exception e) {
-            throw new RuntimeException("Could not create translator.", e);
+            throw new ClassNotFoundException("Could not create translator.", e);
         }
     }
 
@@ -48,14 +49,14 @@ public class BasicTranslatorFactory implements TranslatorFactory {
      * @param <T>         The type of the class.
      * @return The created class.
      */
-    protected <T> T createClass(@NotNull Class<T> cls, ListableBeanFactory beanFactory) {
+    protected <T> T createClass(@NotNull Class<T> cls, ListableBeanFactory beanFactory) throws ClassNotFoundException {
         try {
             return BeanFactoryUtils.beanOfType(beanFactory, cls);
         } catch (Exception e) {
             try {
                 return cls.getDeclaredConstructor().newInstance();
             } catch (Exception ex) {
-                throw new RuntimeException("Could not create class.", e);
+                throw new ClassNotFoundException("Could not create class.", e);
             }
         }
     }

@@ -10,5 +10,5 @@ import org.springframework.beans.factory.ListableBeanFactory;
  */
 public interface TranslatorFactory {
 
-    Translator getTranslator(@NotNull AppConfig.TranslatorConfig config, ListableBeanFactory beanFactory);
+    Translator getTranslator(@NotNull AppConfig.TranslatorConfig config, ListableBeanFactory beanFactory) throws ClassNotFoundException;
 }

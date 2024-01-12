@@ -4,11 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
+import de.bhtberlin.paf2023.productdatatranslation.exception.TranslationException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -17,10 +17,10 @@ import java.util.Map;
  */
 public class CurrencyLayerConversionStrategy implements CurrencyConversionStrategy {
 
-    final private Map<String, Double> rates = new HashMap<>();
+    private final Map<String, Double> rates = new HashMap<>();
     private long lastCacheUpdate = 0;
 
-    final String apiURL = "http://api.currencylayer.com/live?access_key=%s&source=%s";
+    private static final String apiURL = "http://api.currencylayer.com/live?access_key=%s&source=%s";
 
     private final String apiKey;
 
@@ -37,7 +37,7 @@ public class CurrencyLayerConversionStrategy implements CurrencyConversionStrate
     @Override
     public double convertCurrency(double currency, @NotNull String from, @NotNull String to) {
         if (!from.equalsIgnoreCase(AppConfig.DEFAULT_CURRENCY)) {
-            throw new RuntimeException("Currency conversion only works from default currency");
+            throw new TranslationException("Currency conversion only works from default currency");
         }
         // check if last cache update is older than 24 hours. External Api only
         // updates once a day.
@@ -59,9 +59,8 @@ public class CurrencyLayerConversionStrategy implements CurrencyConversionStrate
 
         try {
             JsonNode root = this.mapper.readTree(json);
-            JsonNode rates = root.path("quotes");
-            Iterator<Map.Entry<String, JsonNode>> fields = rates.fields();
-            rates.fields().forEachRemaining(stringJsonNodeEntry -> {
+            JsonNode quotes = root.path("quotes");
+            quotes.fields().forEachRemaining(stringJsonNodeEntry -> {
                 String currency = stringJsonNodeEntry.getKey().substring(3);
                 double value = stringJsonNodeEntry.getValue().asDouble();
                 this.rates.put(AppConfig.DEFAULT_CURRENCY + currency.toUpperCase(), value);

@@ -39,11 +39,11 @@ public class PictureCrudService {
     /**
      * Create a Picture.
      *
-     * @param Picture The Picture, that should be created.
+     * @param picture The Picture, that should be created.
      * @return The Picture, that was created.
      */
-    public @NotNull Picture createPicture(@NotNull Picture Picture) {
-        return this.pictureRepository.save(Picture);
+    public @NotNull Picture createPicture(@NotNull Picture picture) {
+        return this.pictureRepository.save(picture);
     }
 
     /**
@@ -59,20 +59,20 @@ public class PictureCrudService {
     /**
      * Update a Picture.
      *
-     * @param Picture The Picture with updated values.
+     * @param picture The Picture with updated values.
      * @return The updated Picture.
      */
-    public @NotNull Picture updatePicture(@NotNull Picture Picture) {
-        return this.pictureRepository.save(Picture);
+    public @NotNull Picture updatePicture(@NotNull Picture picture) {
+        return this.pictureRepository.save(picture);
     }
 
     /**
      * Delete a Picture.
      *
-     * @param Picture The Picture to delete.
+     * @param picture The Picture to delete.
      */
-    public void deletePicture(@NotNull Picture Picture) {
-        this.pictureRepository.delete(Picture);
+    public void deletePicture(@NotNull Picture picture) {
+        this.pictureRepository.delete(picture);
     }
 
     /**

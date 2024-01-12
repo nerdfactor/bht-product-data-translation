@@ -25,9 +25,9 @@ public class AutoTranslateAdvice implements ResponseBodyAdvice<Translatable> {
 
     @Override
     public boolean supports(MethodParameter returnType, @NotNull Class<? extends HttpMessageConverter<?>> converterType) {
-        if (returnType.getGenericParameterType() instanceof ParameterizedType) {
+        if (returnType.getGenericParameterType() instanceof ParameterizedType parameterizedType) {
             try {
-                Type[] args = ((ParameterizedType) returnType.getGenericParameterType()).getActualTypeArguments();
+                Type[] args = parameterizedType.getActualTypeArguments();
                 return Translatable.class.isAssignableFrom((Class<?>) args[0]);
             } catch (Exception e) {
                 return false;

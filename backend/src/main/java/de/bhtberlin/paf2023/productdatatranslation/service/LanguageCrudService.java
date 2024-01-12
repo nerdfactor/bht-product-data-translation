@@ -39,11 +39,11 @@ public class LanguageCrudService {
     /**
      * Create a Language.
      *
-     * @param Language The Language, that should be created.
+     * @param language The Language, that should be created.
      * @return The Language, that was created.
      */
-    public @NotNull Language createLanguage(@NotNull Language Language) {
-        return this.languageRepository.save(Language);
+    public @NotNull Language createLanguage(@NotNull Language language) {
+        return this.languageRepository.save(language);
     }
 
     /**
@@ -59,20 +59,20 @@ public class LanguageCrudService {
     /**
      * Update a Language.
      *
-     * @param Language The Language with updated values.
+     * @param language The Language with updated values.
      * @return The updated Language.
      */
-    public @NotNull Language updateLanguage(@NotNull Language Language) {
-        return this.languageRepository.save(Language);
+    public @NotNull Language updateLanguage(@NotNull Language language) {
+        return this.languageRepository.save(language);
     }
 
     /**
      * Delete a Language.
      *
-     * @param Language The Language to delete.
+     * @param language The Language to delete.
      */
-    public void deleteLanguage(@NotNull Language Language) {
-        this.languageRepository.delete(Language);
+    public void deleteLanguage(@NotNull Language language) {
+        this.languageRepository.delete(language);
     }
 
     /**

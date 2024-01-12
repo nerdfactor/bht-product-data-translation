@@ -57,7 +57,7 @@ public class ProductCrudService {
     public @NonNull List<Product> listAllProducts(@NotNull final String locale) {
         final String tag = LanguageService.normalizeLanguageTag(locale);
         return this.productRepository.findAll().stream().
-                peek(product -> {
+                map(product -> {
                     if (!tag.isEmpty()) {
                         product.removeTranslationsNotInLocale(tag);
                         if (!product.hasTranslations()) {
@@ -70,6 +70,7 @@ public class ProductCrudService {
 
                         }
                     }
+                    return product;
                 })
                 .toList();
     }

@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class LocalMeasurementConversionStrategy implements MeasurementConversionStrategy {
 
-    final private Map<String, Double> conversions = Map.ofEntries(
+    private final static Map<String, Double> conversions = Map.ofEntries(
             new AbstractMap.SimpleEntry<>("cmin", 0.393701),
             new AbstractMap.SimpleEntry<>("incm", 2.54),
             new AbstractMap.SimpleEntry<>("kglb", 2.20462),

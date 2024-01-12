@@ -26,12 +26,12 @@ public class AutoTranslateListAdvice implements ResponseBodyAdvice<List<Translat
 
     @Override
     public boolean supports(MethodParameter returnType, @NotNull Class<? extends HttpMessageConverter<?>> converterType) {
-        if (returnType.getGenericParameterType() instanceof ParameterizedType) {
+        if (returnType.getGenericParameterType() instanceof ParameterizedType parameterizedType) {
             try {
-                Type[] args = ((ParameterizedType) returnType.getGenericParameterType()).getActualTypeArguments();
-                if (args[0] instanceof ParameterizedType) {
-                    Class<?> cls = (Class<?>) ((ParameterizedType) args[0]).getRawType();
-                    Type[] types = ((ParameterizedType) args[0]).getActualTypeArguments();
+                Type[] args = parameterizedType.getActualTypeArguments();
+                if (args[0] instanceof ParameterizedType parameterizedArg) {
+                    Class<?> cls = (Class<?>) parameterizedArg.getRawType();
+                    Type[] types = parameterizedArg.getActualTypeArguments();
                     if (cls != null && List.class.isAssignableFrom(cls) && types.length > 0 && Translatable.class.isAssignableFrom((Class<?>) types[0])) {
                         return true;
                     }
@@ -51,9 +51,8 @@ public class AutoTranslateListAdvice implements ResponseBodyAdvice<List<Translat
                                               @NotNull ServerHttpRequest request,
                                               @NotNull ServerHttpResponse response) {
         if (body != null) {
-            body.forEach(translatable -> {
-                translatable = this.translationService.translateTranslatable(translatable, AppConfig.DEFAULT_LANGUAGE, LocaleContextHolder.getLocale().toLanguageTag());
-            });
+            body.forEach(translatable ->
+                    translatable = this.translationService.translateTranslatable(translatable, AppConfig.DEFAULT_LANGUAGE, LocaleContextHolder.getLocale().toLanguageTag()));
         }
         return body;
     }

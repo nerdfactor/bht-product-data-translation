@@ -24,7 +24,6 @@ public class Product {
     /**
      * An internal identifier for the {@link Product}.
      * The id will be automatically incremented by the database.
-     * todo: Decide if this and other IDs should be changed to UUID that can be set in frontend instead of in the database?
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

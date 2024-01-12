@@ -27,14 +27,14 @@ public class TranslationConfig {
 
     @Bean
     @Primary
-    public Translator getTranslator() {
+    public Translator getTranslator() throws ClassNotFoundException {
         try {
             String factoryClass = this.createClassName(this.appConfig.getTranslatorConfig().getFactory(), this.appConfig.getTranslatorConfig().getFactoryPackage());
             Class<?> cls = Class.forName(factoryClass);
             TranslatorFactory factory = (TranslatorFactory) cls.getDeclaredConstructor().newInstance();
             return factory.getTranslator(this.appConfig.getTranslatorConfig(), context);
         } catch (Exception e) {
-            throw new RuntimeException("Could not create translator.", e);
+            throw new ClassNotFoundException("Could not create translator.", e);
         }
     }
 

@@ -21,7 +21,7 @@ public interface Translatable {
      * to favor the implementation of the translation inside the visitor. The default
      * implementation helps by casting the {@link Translator} into a {@link TranslationVisitor}.
      */
-    @Deprecated
+    @Deprecated(since = "1.0.0", forRemoval = false)
     default @NotNull Translatable translate(@NotNull Translator translator, @NotNull Language from, @NotNull Language to) {
         return this.translate((TranslationVisitor) translator, from, to);
     }

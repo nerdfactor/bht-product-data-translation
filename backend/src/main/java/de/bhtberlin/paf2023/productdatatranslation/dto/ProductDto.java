@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Getter
@@ -81,7 +80,7 @@ public class ProductDto implements CompositeTranslatable {
         return Stream.concat(
                         Optional.ofNullable(this.categories).orElse(new HashSet<>()).stream(),
                         Optional.ofNullable(this.colors).orElse(new HashSet<>()).stream()).
-                collect(Collectors.toList());
+                toList();
     }
 
     /**

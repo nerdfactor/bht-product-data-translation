@@ -1,5 +1,6 @@
 package de.bhtberlin.paf2023.productdatatranslation.translation.strategy;
 
+import com.deepl.api.DeepLException;
 import com.deepl.api.TextResult;
 import com.deepl.api.Translator;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +55,7 @@ public class DeeplTranslationStrategy implements ExternalTranslationApiStrategy 
         try {
             TextResult result = translator.translateText(text, from, to);
             return result.getText();
-        } catch (Exception e) {
+        } catch (InterruptedException | DeepLException e) {
             return text;
         }
     }

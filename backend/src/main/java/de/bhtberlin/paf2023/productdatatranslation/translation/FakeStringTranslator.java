@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  * by the {@link StrategyTranslator}. This remains as an  example implementation
  * of a simple {@link Translator} without strategies.
  */
-@Deprecated
+@Deprecated(since = "0.1.0", forRemoval = false)
 public class FakeStringTranslator extends BasicTranslator {
 
     /**

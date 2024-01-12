@@ -47,6 +47,7 @@ public interface CompositeTranslatable extends Translatable {
      * @param to      The {@link Language} of the target locale.
      * @return The translated {@link Translatable}.
      */
+    @Override
     default @NotNull Translatable translate(@NotNull TranslationVisitor visitor, @NotNull Language from, @NotNull Language to) {
         return visitor.deferredVisit(this, from, to);
     }

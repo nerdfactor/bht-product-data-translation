@@ -37,7 +37,6 @@ public class Language {
 
     /**
      * The iso code for this {@link Language}.
-     * todo: May be changed into enum if isoCodes should be predefined.
      */
     private String isoCode;
 
