@@ -3,6 +3,7 @@ package de.bhtberlin.paf2023.productdatatranslation.translation;
 import de.bhtberlin.paf2023.productdatatranslation.dto.CategoryDto;
 import de.bhtberlin.paf2023.productdatatranslation.dto.ColorDto;
 import de.bhtberlin.paf2023.productdatatranslation.dto.ProductDto;
+import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,7 +56,7 @@ public class BasicTranslator implements Translator {
      * {@inheritDoc}
      */
     @Override
-    public Translatable deferredVisit(Translatable translatable, String from, String to) {
+    public Translatable deferredVisit(Translatable translatable, Language from, Language to) {
         if (translatable instanceof CategoryDto categoryDto) {
             return this.visit(categoryDto, from, to);
         } else if (translatable instanceof ColorDto colorDto) {
@@ -70,8 +71,9 @@ public class BasicTranslator implements Translator {
      * {@inheritDoc}
      */
     @Override
-    public ProductDto visit(ProductDto dto, String from, String to) {
-        dto.setName(this.translateText(dto.getName(), from, to));
+    public ProductDto visit(ProductDto dto, Language from, Language to) {
+        dto.setName(this.translateText(dto.getName(), from.getIsoCode(), to.getIsoCode()));
+        dto.setPrice(this.convertCurrency(dto.getPrice(), from.getCurrency().getIsoCode(), to.getCurrency().getIsoCode()));
         // assume there are more steps for translating a ProductDto and not
         // just the same as the other Translatable implementations.
         return dto;
@@ -81,8 +83,8 @@ public class BasicTranslator implements Translator {
      * {@inheritDoc}
      */
     @Override
-    public ColorDto visit(ColorDto dto, String from, String to) {
-        dto.setName(this.translateText(dto.getName(), from, to));
+    public ColorDto visit(ColorDto dto, Language from, Language to) {
+        dto.setName(this.translateText(dto.getName(), from.getIsoCode(), to.getIsoCode()));
         // assume there are more steps for translating a ColorDto and not
         // just the same as the other Translatable implementations.
         return dto;
@@ -92,8 +94,8 @@ public class BasicTranslator implements Translator {
      * {@inheritDoc}
      */
     @Override
-    public CategoryDto visit(CategoryDto dto, String from, String to) {
-        dto.setName(this.translateText(dto.getName(), from, to));
+    public CategoryDto visit(CategoryDto dto, Language from, Language to) {
+        dto.setName(this.translateText(dto.getName(), from.getIsoCode(), to.getIsoCode()));
         // assume there are more steps for translating a CategoryDto and not
         // just the same as the other Translatable implementations.
         return dto;

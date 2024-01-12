@@ -110,17 +110,34 @@ public class TranslationService {
      * @return The translated {@link Translatable}.
      */
     public Translatable translateTranslatable(Translatable translatable, String from, String to) {
-        return translatable.translate((TranslationVisitor) translator, from, to);
+        Language fromLang = this.languageRepository.findOneByIsoCode(from)
+                .orElseThrow(() -> new TranslationException("Translation from %s is not supported.".formatted(from)));
+        Language toLang = this.languageRepository.findOneByIsoCode(to)
+                .orElseThrow(() -> new TranslationException("Translation to %s is not supported.".formatted(to)));
+        return translatable.translate((TranslationVisitor) translator, fromLang, toLang);
     }
 
     /**
      * Translate a {@link String} into a specific language.
      *
      * @param string The {@link String} to translate.
+     * @param from   The tag of the current locale.
      * @param to     The tag of the target locale.
      * @return The translated {@link String}.
      */
     public String translateString(String string, String from, String to) {
         return this.translationCache.cachedTranslate(string, from, to, translator);
+    }
+
+    /**
+     * Translate a {@link String} into a specific language.
+     *
+     * @param string The {@link String} to translate.
+     * @param from   The {@link Language} of the current locale.
+     * @param to     The {@link Language} of the target locale.
+     * @return The translated {@link String}.
+     */
+    public String translateString(String string, Language from, Language to) {
+        return translateString(string, from.getIsoCode(), to.getIsoCode());
     }
 }

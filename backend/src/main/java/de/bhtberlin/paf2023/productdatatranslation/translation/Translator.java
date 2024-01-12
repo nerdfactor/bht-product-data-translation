@@ -33,8 +33,8 @@ public interface Translator extends TranslationVisitor {
      * Convert a currency.
      *
      * @param currency The value to convert.
-     * @param from     The tag of the current locale.
-     * @param to       The tag of the target locale.
+     * @param from     The tag of the current currency.
+     * @param to       The tag of the target currency.
      * @return The converted value.
      */
     double convertCurrency(double currency, String from, String to);
@@ -43,8 +43,8 @@ public interface Translator extends TranslationVisitor {
      * Convert a measurement.
      *
      * @param measurement The value to convert.
-     * @param from        The tag of the current locale.
-     * @param to          The tag of the target locale.
+     * @param from        The tag of the current measurement.
+     * @param to          The tag of the target measurement.
      * @return The converted value.
      */
     double convertMeasurement(double measurement, String from, String to);
