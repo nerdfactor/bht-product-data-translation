@@ -5,30 +5,28 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
 import de.bhtberlin.paf2023.productdatatranslation.exception.TranslationException;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * External Api strategy for currency conversion using the CurrencyLayer Api.
+ * External Api strategy for currency conversion using the OpenExchange Api.
  */
-public class CurrencyLayerConversionStrategy implements CurrencyConversionStrategy {
+@RequiredArgsConstructor
+@Component
+public class OpenExchangeConversionStrategy implements CurrencyConversionStrategy {
 
     private final Map<String, Double> rates = new HashMap<>();
     private long lastCacheUpdate = 0;
 
-    private static final String API_URL = "http://api.currencylayer.com/live?access_key=%s&source=%s";
+    private static final String API_URL = "https://open.er-api.com/v6/latest/%s";
 
-    private final String apiKey;
 
     private final ObjectMapper mapper;
-
-    public CurrencyLayerConversionStrategy(String apiKey, ObjectMapper mapper) {
-        this.apiKey = apiKey;
-        this.mapper = mapper;
-    }
 
     /**
      * {@inheritDoc}
@@ -51,16 +49,16 @@ public class CurrencyLayerConversionStrategy implements CurrencyConversionStrate
     }
 
     private void cacheExchangeRates() {
-        String uri = API_URL.formatted(apiKey, AppConfig.DEFAULT_CURRENCY);
+        String uri = API_URL.formatted(AppConfig.DEFAULT_CURRENCY);
 
         RestTemplate restTemplate = new RestTemplate();
         String json = restTemplate.getForObject(uri, String.class);
 
         try {
             JsonNode root = this.mapper.readTree(json);
-            JsonNode quotes = root.path("quotes");
+            JsonNode quotes = root.path("rates");
             quotes.fields().forEachRemaining(stringJsonNodeEntry -> {
-                String currency = stringJsonNodeEntry.getKey().substring(3);
+                String currency = stringJsonNodeEntry.getKey();
                 double value = stringJsonNodeEntry.getValue().asDouble();
                 this.rates.put(AppConfig.DEFAULT_CURRENCY + currency.toUpperCase(), value);
             });
