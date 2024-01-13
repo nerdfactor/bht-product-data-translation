@@ -15,10 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -142,17 +139,17 @@ public class ProductCrudService {
             dto.setColors(Optional.ofNullable(entity.getColors()).orElse(new HashSet<>()).stream().map(c -> new ColorDto(c.getId())).collect(Collectors.toSet()));
         }
         if (dto.getPictures() != null) {
-            dto.getPictures().forEach(pictureDto -> pictureDto.setProduct(new ProductDto(dto.getId())));
+            dto.getPictures().stream().filter(Objects::nonNull).forEach(pictureDto -> pictureDto.setProduct(new ProductDto(dto.getId())));
             entity.getPictures().forEach(picture -> {
-                if (dto.getPictures().stream().noneMatch(pictureDto -> pictureDto.getId() == picture.getId())) {
+                if (dto.getPictures().stream().filter(Objects::nonNull).noneMatch(pictureDto -> pictureDto.getId() == picture.getId())) {
                     picture.setProduct(null);
                 }
             });
         }
         if (dto.getTranslations() != null) {
-            dto.getTranslations().forEach(translationDto -> translationDto.setProduct(new ProductDto(dto.getId())));
+            dto.getTranslations().stream().filter(Objects::nonNull).forEach(translationDto -> translationDto.setProduct(new ProductDto(dto.getId())));
             entity.getTranslations().forEach(translation -> {
-                if (dto.getTranslations().stream().noneMatch(translationDto -> translationDto.getId() == translation.getId())) {
+                if (dto.getTranslations().stream().filter(Objects::nonNull).noneMatch(translationDto -> translationDto.getId() == translation.getId())) {
                     translation.setProduct(null);
                 }
             });
