@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Product } from '../../models/product';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ProductService } from '../../services/product.service';
@@ -13,7 +13,7 @@ import { I18nService } from '../../services/i18n.service';
   templateUrl: './edit-page.component.html',
   styleUrl: './edit-page.component.scss'
 })
-export class EditPageComponent {
+export class EditPageComponent implements OnInit {
 
   product!: Product;
   elements$!: Observable<any>;

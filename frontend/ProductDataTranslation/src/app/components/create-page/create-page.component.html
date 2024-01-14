@@ -1,0 +1,78 @@
+<div class="container-fluid mat-body text-body-secondary" *ngIf="(elements$ | async) as elements; else loadingBlock">
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+        <div class="d-flex align-items-baseline">
+            <a mat-mini-fab color="primary" class="me-2 shadow-none" routerLink="/search">
+                <mat-icon fontIcon="chevron_left" aria-label="Zurück"></mat-icon>
+            </a>
+            <mat-form-field class="flex-grow-1">
+                <mat-label>{{ elements['name'] }}</mat-label>
+                <input matInput formControlName="name">
+            </mat-form-field>
+            <button type="submit" mat-icon-button [disabled]="!productForm.valid">
+                <mat-icon>save</mat-icon>
+            </button>
+        </div>
+        <div class="row">
+            <div class="col-9">
+                <mat-form-field class="w-100">
+                    <mat-label>{{ elements['serial'] }}</mat-label>
+                    <input matInput formControlName="serial"/>
+                </mat-form-field>
+                <div class="border rounded p-3">
+                    <h4>{{ elements['descriptions'] }}</h4>
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ elements['shortDescription'] }}</mat-label>
+                        <input matInput formControlName="shortDescription"/>
+                    </mat-form-field>
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ elements['longDescription'] }}</mat-label>
+                        <textarea matInput style="height: 250px;" formControlName="longDescription"></textarea>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="border rounded p-3 mb-3">
+                    <h4 class="fw-light">{{ elements['properties'] }}</h4>
+                    <p class="d-flex justify-content-between mb-2">
+                        <strong>{{ elements['weight'] }}</strong>
+                        <input formControlName="weight"/>
+                    </p>
+                    <p class="d-flex justify-content-between mb-2">
+                        <strong class="fw-bold">
+                            <abbr title="{{elements['height']}}, {{ elements['width'] }}, {{ elements['depth'] }}">
+                                {{ elements['height'][0] }}, {{ elements['width'][0] }}, {{ elements['depth'][0] }}
+                            </abbr>
+                        </strong>
+                        <span class="d-flex">
+                            <input style="width: 55px" formControlName="height"/>
+                            <input style="width: 55px" formControlName="width"/>
+                            <input style="width: 55px" formControlName="depth"/>
+                        </span>
+                    </p>
+                    <p class="d-flex justify-content-between mb-2">
+                        <strong>{{ elements['price'] }}</strong>
+                        <input formControlName="price"/>
+                    </p>
+                    <p class="d-flex justify-content-between mb-2">
+                        <strong>{{ elements['colors'] }}</strong>
+                        
+                    </p>
+                    <p class="d-flex justify-content-between mb-2">
+                        <strong>{{ elements['categories'] }}</strong>
+                    </p>
+                </div>
+                <div style="height: 250px;" class="">
+                    <label for="picInput" role="button" class="w-100 h-100 d-flex border rounded justify-content-center align-items-center">
+                        {{ elements['photo'] }}
+                    </label>
+                    <input id="picInput" class="invisible" type="file"/>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<ng-template #loadingBlock>
+    <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center">
+        <mat-icon>hourglass_empty</mat-icon>
+    </div>
+</ng-template>

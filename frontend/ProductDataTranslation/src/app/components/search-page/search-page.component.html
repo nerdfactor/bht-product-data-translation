@@ -4,6 +4,9 @@
       <mat-label>{{ elements['search'] }}...</mat-label>
       <input type="text" matInput [ngModel]="searchTerm$ | async" (ngModelChange)="searchTerm$.next($event)">
     </mat-form-field>
+    <a mat-fab routerLink="/create" class="ms-3">
+      <mat-icon>add</mat-icon>
+    </a>
   </div>
   <table mat-table [dataSource]="displayedProducts$" matSort matSortDirection="asc"
          (matSortChange)="onSortChanged($event)">

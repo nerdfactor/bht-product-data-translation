@@ -25,6 +25,7 @@ import {FilterPipe} from './pipes/filter.pipe';
 import {FindPipe} from './pipes/find.pipe';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatSortModule} from '@angular/material/sort';
+import { CreatePageComponent } from './components/create-page/create-page.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import {MatSortModule} from '@angular/material/sort';
     DetailPageComponent,
     EditPageComponent,
     FilterPipe,
-    FindPipe
+    FindPipe,
+    CreatePageComponent
   ],
   imports: [
     HttpClientModule,

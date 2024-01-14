@@ -29,6 +29,10 @@ export class ProductService extends HttpService {
     return this.get<Product>(this.productsUri + '/' + id, isoCode);
   }
 
+  createProduct(product: Product): Observable<Product> {
+    return this.post<Product>(this.productsUri, product, 'de');
+  }
+
   updateProduct(product: Product, isoCode: string): Observable<Product> {
     return this.put<Product>(this.productsUri + '/' + product.id, product, isoCode);
   }
