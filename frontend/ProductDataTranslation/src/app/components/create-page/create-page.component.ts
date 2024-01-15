@@ -51,6 +51,7 @@ export class CreatePageComponent implements OnInit, OnDestroy {
       colors: 'Farben',
       categories: 'Kategorien',
       photo: 'Foto',
+      warning: 'Alle Eingaben müssen auf Deutsch erfolgen.'
     };
 
     this.languageChangedSubscription = this.languageService.onLanguageChanged.subscribe(language => this.init(elements, language));

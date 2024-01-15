@@ -36,7 +36,7 @@
                         <h4 class="fw-light">{{ elements['properties'] }}</h4>
                         <p class="d-flex justify-content-between mb-2">
                             <strong>{{ elements['weight'] }}</strong>
-                            <input formControlName="weight"/>
+                            <input class="text-end" formControlName="weight" type="number"/>
                         </p>
                         <p class="d-flex justify-content-between mb-2">
                             <strong class="fw-bold">
@@ -45,14 +45,14 @@
                                 </abbr>
                             </strong>
                             <span class="d-flex">
-                                <input style="width: 55px" formControlName="height"/>
-                                <input style="width: 55px" formControlName="width"/>
-                                <input style="width: 55px" formControlName="depth"/>
+                                <input style="width: 55px" class="text-end" formControlName="height" type="number"/>
+                                <input style="width: 55px" class="text-end" formControlName="width" type="number"/>
+                                <input style="width: 55px" class="text-end" formControlName="depth" type="number"/>
                             </span>
                         </p>
                         <p class="d-flex justify-content-between mb-2">
                             <strong>{{ elements['price'] }}</strong>
-                            <input formControlName="price"/>
+                            <input class="text-end" formControlName="price" type="number"/>
                         </p>
                         <p class="d-flex justify-content-between mb-2">
                             <strong>{{ elements['colors'] }}</strong>

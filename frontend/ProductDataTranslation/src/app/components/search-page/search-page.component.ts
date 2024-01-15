@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ProductService} from '../../services/product.service';
 import {Product} from '../../models/product';
-import {debounceTime, distinctUntilChanged, Observable, of, Subject} from 'rxjs';
+import {debounceTime, distinctUntilChanged, Subject} from 'rxjs';
 import {I18nService} from '../../services/i18n.service';
 import {LanguageService} from '../../services/language.service';
 import {Language} from '../../models/language';
@@ -16,8 +16,8 @@ import {MatSort, Sort} from '@angular/material/sort';
 export class SearchPageComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'name', 'description', 'action'];
-  displayedProducts$!: Observable<Product[]>;
-  elements$!: Observable<any>;
+  displayedProducts!: Product[];
+  elements: any;
   currentLanguage!: Language;
   searchTerm$: Subject<string> = new Subject<string>();
   currentSearch: string = '';
@@ -59,10 +59,11 @@ export class SearchPageComponent implements OnInit {
 
   init(elements: any, language: Language): void {
     this.currentLanguage = language;
-    this.elements$ = this.i18nService.translate(elements, language.isoCode);
-    this.elements$.subscribe(value => {
-      this.onPaginatorI18n(value);
+    this.i18nService.translate(elements, language.isoCode).subscribe(elements => {
+      this.elements = elements;
+      this.onPaginatorI18n(elements);
     });
+    this.displayedProducts = [];
     this.onSetProductSearch('')
   }
 
@@ -73,7 +74,7 @@ export class SearchPageComponent implements OnInit {
 
   onProductSearch(search: string = '', page: number = 0, size: number = 10, sort: string = 'id', direction: string = 'asc'): void {
     this.productService.searchProducts(search, this.currentLanguage?.isoCode, page, size, sort, direction).subscribe(response => {
-      this.displayedProducts$ = of(response.content);
+      this.displayedProducts = response.content;
       this.totalProducts = response.totalElements;
       this.paginator.length = response.totalElements;
       this.paginator.pageIndex = response.number;
