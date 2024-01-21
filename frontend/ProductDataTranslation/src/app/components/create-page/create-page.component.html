@@ -37,33 +37,30 @@
             <div class="col-3">
                 <div class="border rounded p-3 mb-3">
                     <h4 class="fw-light">{{ elements['properties'] }}</h4>
-                    <p class="d-flex justify-content-between mb-2">
-                        <strong>{{ elements['weight'] }}</strong>
-                        <input class="text-end" formControlName="weight" type="number"/>
-                    </p>
-                    <p class="d-flex justify-content-between mb-2">
-                        <strong class="fw-bold">
-                            <abbr title="{{elements['height']}}, {{ elements['width'] }}, {{ elements['depth'] }}">
-                                {{ elements['height'][0] }}, {{ elements['width'][0] }}, {{ elements['depth'][0] }}
-                            </abbr>
-                        </strong>
-                        <span class="d-flex">
-                            <input style="width: 55px;" class="text-end" formControlName="height" type="number"/>
-                            <input style="width: 55px" class="text-end" formControlName="width" type="number"/>
-                            <input style="width: 55px;" class="text-end" formControlName="depth" type="number"/>
-                        </span>
-                    </p>
-                    <p class="d-flex justify-content-between mb-2">
-                        <strong>{{ elements['price'] }}</strong>
-                        <input class="text-end" formControlName="price" type="number"/>
-                    </p>
-                    <p class="d-flex justify-content-between mb-2">
-                        <strong>{{ elements['colors'] }}</strong>
-                        
-                    </p>
-                    <p class="d-flex justify-content-between mb-2">
-                        <strong>{{ elements['categories'] }}</strong>
-                    </p>
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ elements['weight'] }}</mat-label>
+                        <input matInput type="number" formControlName="weight">
+                    </mat-form-field>
+                    <div class="d-flex">
+                        <mat-form-field class="flex-grow-1">
+                            <mat-label>{{ elements['height'] }}</mat-label>
+                            <input matInput type="number" formControlName="height"/>
+                        </mat-form-field>
+                        <mat-form-field class="flex-grow-1">
+                            <mat-label>{{ elements['width'] }}</mat-label>
+                            <input matInput type="number" formControlName="width"/>
+                        </mat-form-field>
+                        <mat-form-field class="flex-grow-1">
+                            <mat-label>{{ elements['depth'] }}</mat-label>
+                            <input matInput type="number" formControlName="depth"/>
+                        </mat-form-field>
+                    </div>
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ elements['price'] }}</mat-label>
+                        <input matInput type="number" formControlName="price">
+                    </mat-form-field>
+                    <pdt-chooser [label]="elements['colors']" [options]="colors$ | async" [(set)]="productColors"></pdt-chooser>
+                    <pdt-chooser [label]="elements['categories']" [options]="categories$ | async" [(set)]="productCategories"></pdt-chooser>
                 </div>
                 <div style="height: 250px;" class="">
                     <label for="picInput" role="button" class="w-100 h-100 d-flex border rounded justify-content-center align-items-center">
@@ -77,6 +74,6 @@
 </div>
 <ng-template #loadingBlock>
     <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center">
-        <mat-icon>hourglass_empty</mat-icon>
+        <mat-spinner></mat-spinner>
     </div>
 </ng-template>

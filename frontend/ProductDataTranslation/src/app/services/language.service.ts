@@ -11,6 +11,7 @@ export class LanguageService extends HttpService {
 
   languageUrl: string = 'api/languages';
   currentLanguage?: Language;
+  defaultLanguage: string = 'de';
 
   onLanguageChanged: Subject<Language> = new Subject<Language>();
 

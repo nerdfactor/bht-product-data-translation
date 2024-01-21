@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ProductService} from '../../services/product.service';
 import {Product} from '../../models/product';
-import {debounceTime, distinctUntilChanged, Subject} from 'rxjs';
+import {debounceTime, distinctUntilChanged, Observable, of, Subject} from 'rxjs';
 import {I18nService} from '../../services/i18n.service';
 import {LanguageService} from '../../services/language.service';
 import {Language} from '../../models/language';
@@ -16,7 +16,7 @@ import {MatSort, Sort} from '@angular/material/sort';
 export class SearchPageComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'name', 'description', 'action'];
-  displayedProducts!: Product[];
+  displayedProducts$!: Observable<Product[]>;
   elements: any;
   currentLanguage!: Language;
   searchTerm$: Subject<string> = new Subject<string>();
@@ -63,7 +63,7 @@ export class SearchPageComponent implements OnInit {
       this.elements = elements;
       this.onPaginatorI18n(elements);
     });
-    this.displayedProducts = [];
+    this.displayedProducts$ = of([]);
     this.onSetProductSearch('')
   }
 
@@ -74,7 +74,7 @@ export class SearchPageComponent implements OnInit {
 
   onProductSearch(search: string = '', page: number = 0, size: number = 10, sort: string = 'id', direction: string = 'asc'): void {
     this.productService.searchProducts(search, this.currentLanguage?.isoCode, page, size, sort, direction).subscribe(response => {
-      this.displayedProducts = response.content;
+      this.displayedProducts$ = of(response.content);
       this.totalProducts = response.totalElements;
       this.paginator.length = response.totalElements;
       this.paginator.pageIndex = response.number;

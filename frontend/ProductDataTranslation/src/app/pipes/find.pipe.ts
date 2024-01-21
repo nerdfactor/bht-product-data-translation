@@ -5,10 +5,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class FindPipe implements PipeTransform {
 
-  transform(values: any[], ...args: any[]): any {
+  transform(values: any[] | null | undefined, ...args: any[]): any {
     let fieldNames = args[0].split('.');
     let fieldValue = args[1];
-    return values.find(value => fieldNames.reduce((a: any, c: string) => a[c], value) == fieldValue);
+    return values?.find(value => fieldNames.reduce((a: any, c: string) => a[c], value) == fieldValue);
   }
 
 }

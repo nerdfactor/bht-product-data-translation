@@ -4,8 +4,12 @@ import { LanguageService } from '../../services/language.service';
 import { ProductService } from '../../services/product.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Language } from '../../models/language';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, merge, mergeWith, of } from 'rxjs';
 import { Product } from '../../models/product';
+import { Color } from '../../models/color';
+import { ColorService } from '../../services/color.service';
+import { Category } from '../../models/category';
+import { CategoryService } from '../../services/category.service';
 
 @Component({
   selector: 'app-create-page',
@@ -28,10 +32,16 @@ export class CreatePageComponent implements OnInit, OnDestroy {
     shortDescription: [''],
     longDescription: ['']
   });
+  colors$?: Observable<Color[]>;
+  categories$?: Observable<Category[]>;
+  productColors: Color[] = [];
+  productCategories: Category[] = [];
 
   constructor(private productService: ProductService,
     private languageService: LanguageService,
     private i18nService: I18nService,
+    private colorService: ColorService,
+    private categoryService: CategoryService,
     private formBuilder: FormBuilder) { }
   
 
@@ -63,6 +73,8 @@ export class CreatePageComponent implements OnInit, OnDestroy {
   init(elements: any, language: Language) {
     this.currentLanguage = this.languageService.currentLanguage;
     this.elements$ = this.i18nService.translate(elements, language.isoCode);
+    this.colors$ = this.colorService.getColors(language.isoCode);
+    this.categories$ = this.categoryService.getCategories(language.isoCode);
   }
 
   onSubmit() {
@@ -87,7 +99,18 @@ export class CreatePageComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    this.productService.createProduct(product).subscribe();
+    console.log(product);
+    this.productService.createProduct(product).subscribe(p => {
+      p.categories = this.productCategories;
+      p.colors = this.productColors;
+      this.productService.updateProduct(p, this.currentLanguage!.isoCode).subscribe(prod => {
+        this.productForm.reset();
+        this.colors$ = this.colors$?.pipe(mergeWith(of(prod.colors)));
+        this.categories$ = this.categories$?.pipe(mergeWith(of(prod.categories)));
+        this.productCategories = [];
+        this.productColors = [];
+      });
+    });
   }
 
   ngOnDestroy(): void {
