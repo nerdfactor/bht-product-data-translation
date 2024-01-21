@@ -17,7 +17,7 @@ export class SearchPageComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'name', 'description', 'action'];
   displayedProducts$!: Observable<Product[]>;
-  elements$!: Observable<any>;
+  elements: any;
   currentLanguage!: Language;
   searchTerm$: Subject<string> = new Subject<string>();
   currentSearch: string = '';
@@ -59,10 +59,11 @@ export class SearchPageComponent implements OnInit {
 
   init(elements: any, language: Language): void {
     this.currentLanguage = language;
-    this.elements$ = this.i18nService.translate(elements, language.isoCode);
-    this.elements$.subscribe(value => {
-      this.onPaginatorI18n(value);
+    this.i18nService.translate(elements, language.isoCode).subscribe(elements => {
+      this.elements = elements;
+      this.onPaginatorI18n(elements);
     });
+    this.displayedProducts$ = of([]);
     this.onSetProductSearch('')
   }
 

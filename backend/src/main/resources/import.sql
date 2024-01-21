@@ -7,7 +7,7 @@ insert into "currency" ("name", "normalized", "symbol","iso_code") values ('Poun
 insert into "currency" ("name", "normalized", "symbol","iso_code") values ('Forint', 'Forint', 'Ft', 'HUF');
 insert into "currency" ("name", "normalized", "symbol","iso_code") values ('Rupiah', 'Rupiah', 'Rp', 'IDR');
 insert into "currency" ("name", "normalized", "symbol","iso_code") values ('円', 'Yen', '¥', 'JPY');
-insert into "currency" ("name", "normalized", "symbol","iso_code") values ('원', 'Won', '₩', 'KPW');
+insert into "currency" ("name", "normalized", "symbol","iso_code") values ('원', 'Won', '₩', 'KRW');
 insert into "currency" ("name", "normalized", "symbol","iso_code") values ('Norsk krone', 'Norwegische Krone', 'kr' ,'NOK');
 insert into "currency" ("name", "normalized", "symbol","iso_code") values ('Złoty', 'Złoty', 'zł', 'PLN');
 insert into "currency" ("name", "normalized", "symbol","iso_code") values ('Leu', 'Leu', 'lei', 'RON');

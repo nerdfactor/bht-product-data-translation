@@ -19,26 +19,7 @@
             <div class="col-3">
                 <div class="border rounded p-3 mb-3">
                     <h4 class="fw-light">{{elements['properties']}}</h4>
-                    <p class="d-flex justify-content-between mb-2">
-                        <strong>{{elements['weight']}}</strong>
-                        <em>{{product.weight}} {{(product.translations | find:'language.id':currentLanguage?.id)?.language?.measurement?.weight}}</em>
-                    </p>
-                    <p class="d-flex justify-content-between mb-2">
-                        <strong class="fw-bold"><abbr title="{{elements['height']}}, {{elements['width']}}, {{elements['depth']}}">{{elements['height'][0]}}, {{elements['width'][0]}}, {{elements['depth'][0]}}</abbr></strong>
-                        <em>{{product.height}}, {{product.width}}, {{product.width}} {{(product.translations | find:'language.id':currentLanguage?.id)?.language?.measurement?.width}}</em>
-                    </p>
-                    <p class="d-flex justify-content-between mb-2">
-                        <strong>{{elements['price']}}</strong>
-                        <em>{{product.price}} {{(product.translations | find:'language.id':currentLanguage?.id)?.language?.currency?.symbol}}</em>
-                    </p>
-                    <p class="d-flex justify-content-between mb-2">
-                        <strong>{{elements['colors']}}</strong>
-                        <em *ngFor="let color of product.colors; last as isLast">{{color.name}} <span *ngIf="!isLast">,</span></em>
-                    </p>
-                    <p class="d-flex justify-content-between mb-2">
-                        <strong>{{elements['categories']}}</strong>
-                        <em *ngFor="let category of product.categories; last as isLast">{{category.name}} <span *ngIf="!isLast">,</span></em>
-                    </p>
+                    <pdt-property-view [elements]="elements" [product]="product" [language]="currentLanguage"></pdt-property-view>
                 </div>
                 <div style="height: 250px;" class="d-flex position-relative border rounded justify-content-center align-items-center">
                     <div *ngIf="image; else photoText" class="w-100 h-100 d-flex justify-content-center position-absolute top-0 start-0">
@@ -57,6 +38,6 @@
 </div>
 <ng-template #loadingBlock>
     <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center">
-        <mat-icon>hourglass_empty</mat-icon>
+        <mat-spinner></mat-spinner>
     </div>
 </ng-template>

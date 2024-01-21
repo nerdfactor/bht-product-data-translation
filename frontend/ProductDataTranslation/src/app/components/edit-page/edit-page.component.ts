@@ -1,20 +1,24 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Product } from '../../models/product';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ProductService } from '../../services/product.service';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, first } from 'rxjs';
+import { Observable, catchError, first, of, tap } from 'rxjs';
 import { LanguageService } from '../../services/language.service';
 import { Language } from '../../models/language';
 import { I18nService } from '../../services/i18n.service';
 import { PictureService } from '../../services/picture.service';
+import { ColorService } from '../../services/color.service';
+import { CategoryService } from '../../services/category.service';
+import { Color } from '../../models/color';
+import { Category } from '../../models/category';
 
 @Component({
   selector: 'app-edit-page',
   templateUrl: './edit-page.component.html',
   styleUrl: './edit-page.component.scss'
 })
-export class EditPageComponent {
+export class EditPageComponent implements OnInit {
 
   @ViewChild('picInput')
   picInput!: ElementRef;
@@ -22,6 +26,9 @@ export class EditPageComponent {
   product!: Product;
   elements$!: Observable<any>;
   currentLanguage?: Language;
+  colors$?: Observable<Color[]>;
+  categories$?: Observable<Category[]>;
+  colorControl = new FormControl('');
   productForm = this.formBuilder.group({
     name: ['', Validators.required],
     depth: [0],
@@ -31,7 +38,8 @@ export class EditPageComponent {
     weight: [0],
     width: [0],
     shortDescription: [''],
-    longDescription: ['']
+    longDescription: [''],
+    categories: this.formBuilder.group({})
   });
   imagePreview: any;
   imageChanged: boolean = false;
@@ -39,9 +47,11 @@ export class EditPageComponent {
 
   constructor(private route: ActivatedRoute,
     private productService: ProductService,
-    private languageService: LanguageService,
+    public languageService: LanguageService,
     private i18nService: I18nService,
     private pictureService: PictureService,
+    private colorService: ColorService,
+    private categoryService: CategoryService,
     private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
@@ -61,7 +71,7 @@ export class EditPageComponent {
       colors: 'Farben',
       categories: 'Kategorien',
       photo: 'Foto',
-      notLoaded: 'Produkt konnte nicht geladen werden'
+      notLoaded: 'Produkt konnte nicht geladen werden',
     };
 
     this.languageService.onLanguageChanged.subscribe(language => this.init(elements, productId, language));
@@ -72,8 +82,18 @@ export class EditPageComponent {
   init(elements: any, productId: number, language: Language): void {
     this.currentLanguage = language;
     this.elements$ = this.i18nService.translate(elements, language.isoCode);
+    this.colors$ = this.colorService.getColors(language.isoCode);
+    this.categories$ = this.categoryService.getCategories(language.isoCode);
     this.productService.getProduct(productId, language.isoCode).pipe(first()).subscribe(product => {
       this.product = product;
+      if (!this.product.hasOwnProperty('translations'))
+        this.product.translations = [];
+      if (!this.product.hasOwnProperty('categories'))
+        this.product.categories = [];
+      if (!this.product.hasOwnProperty('colors'))
+        this.product.colors = [];
+      if (!this.product.hasOwnProperty('pictures'))
+        this.product.pictures = [];
       const translation = this.product.translations.find(translation => translation.language!.id == language!.id);
       this.productForm.patchValue({
         name: product.name,

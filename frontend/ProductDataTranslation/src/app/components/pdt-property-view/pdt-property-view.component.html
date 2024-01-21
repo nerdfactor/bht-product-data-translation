@@ -1,0 +1,24 @@
+<p class="d-flex justify-content-between mb-2">
+    <strong>{{elements['weight']}}</strong>
+    <em>{{product?.weight | number:'1.0-2':language?.isoCode}} {{(product?.translations | find:'language.id':language?.id)?.language?.measurement?.weight}}</em>
+</p>
+<p class="d-flex justify-content-between mb-2">
+    <strong class="fw-bold"><abbr title="{{elements['height']}}, {{elements['width']}}, {{elements['depth']}}">{{elements['height'][0]}}, {{elements['width'][0]}}, {{elements['depth'][0]}}</abbr></strong>
+    <em>{{product?.height | number:'1.0-2':language?.isoCode}}, {{product?.width | number:'1.0-2':language?.isoCode}}, {{product?.width | number:'1.0-2':language?.isoCode}} {{(product?.translations | find:'language.id':language?.id)?.language?.measurement?.width}}</em>
+</p>
+<p class="d-flex justify-content-between mb-2">
+    <strong>{{elements['price']}}</strong>
+    <em>{{product?.price | number:'1.0-2':language?.isoCode}} {{(product?.translations | find:'language.id':language?.id)?.language?.currency?.symbol}}</em>
+</p>
+<p class="d-flex justify-content-between mb-2">
+    <strong>{{elements['colors']}}</strong>
+    <span>
+        <em *ngFor="let color of product?.colors; last as isLast">{{color.name}}<span *ngIf="!isLast">, </span></em>
+    </span>
+</p>
+<p class="d-flex justify-content-between mb-2">
+    <strong>{{elements['categories']}}</strong>
+    <span>
+        <em *ngFor="let category of product?.categories; last as isLast">{{category.name}}<span *ngIf="!isLast">, </span></em>
+    </span>
+</p>

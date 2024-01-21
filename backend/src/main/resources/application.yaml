@@ -34,5 +34,5 @@ app:
     translator: "StrategyTranslator"
     strategy-config:
       text-translation-strategy: "GoogleWebTranslationStrategy"
-      currency-conversion-strategy: "CurrencyLayerConversionStrategy"
+      currency-conversion-strategy: "OpenExchangeConversionStrategy"
       measurement-conversion-strategy: "LocalMeasurementConversionStrategy"

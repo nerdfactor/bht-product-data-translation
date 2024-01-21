@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpService } from './http.service';
 import { HttpClient } from '@angular/common/http';
 import { Language } from '../models/language';
-import { Observable, Subject, first } from 'rxjs';
+import { Observable, Subject, first, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +11,7 @@ export class LanguageService extends HttpService {
 
   languageUrl: string = 'api/languages';
   currentLanguage?: Language;
+  defaultLanguage?: Language;
 
   onLanguageChanged: Subject<Language> = new Subject<Language>();
 
@@ -19,7 +20,10 @@ export class LanguageService extends HttpService {
    }
 
    getLanguages(): Observable<Language[]> {
-    return this.get<Language[]>(this.languageUrl);
+    return this.get<Language[]>(this.languageUrl).pipe(
+      tap(languages => {
+          this.defaultLanguage = languages.find(language => language.isoCode == 'de');
+      }));
    }
 
    changeLanguage(language: Language) {

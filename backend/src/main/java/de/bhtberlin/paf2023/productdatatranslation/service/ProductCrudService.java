@@ -51,6 +51,14 @@ public class ProductCrudService {
         return this.listAllProducts(locale.toLanguageTag());
     }
 
+    /**
+     * Will return a list of all {@link Product products}.
+     * This list may be empty, if no products are present.
+     * Products will be translated into the given locale.
+     *
+     * @param locale The locale for the products.
+     * @return A List of {@link Product Products}
+     */
     public @NonNull List<Product> listAllProducts(@NotNull final String locale) {
         final String tag = LanguageService.normalizeLanguageTag(locale);
         return this.productRepository.findAll().stream().
@@ -92,10 +100,24 @@ public class ProductCrudService {
         return this.readProduct(id, "");
     }
 
+    /**
+     * Read a product.
+     *
+     * @param id     The id for the product.
+     * @param locale The locale for the product.
+     * @return An optional containing the found product.
+     */
     public @NotNull Optional<Product> readProduct(int id, Locale locale) {
         return this.readProduct(id, locale.toLanguageTag());
     }
 
+    /**
+     * Read a product.
+     *
+     * @param id     The id for the product.
+     * @param locale The locale for the product.
+     * @return An optional containing the found product.
+     */
     public @NotNull Optional<Product> readProduct(int id, @NotNull String locale) {
         final String tag = LanguageService.normalizeLanguageTag(locale);
         Product product = this.productRepository.findById(id).orElse(null);
@@ -128,6 +150,12 @@ public class ProductCrudService {
         return this.productRepository.save(product);
     }
 
+    /**
+     * Merge a product with existing relationships.
+     *
+     * @param dto The product with updated values.
+     * @return The updated product.
+     */
     public @NotNull ProductDto mergeWithExistingRelationships(@NotNull ProductDto dto) {
         Product entity = this.readProduct(dto.getId()).orElseThrow(() -> new EntityNotFoundException("Product with Id " + dto.getId() + " was not found."));
         if (dto.getCategories() == null) {
