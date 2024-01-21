@@ -19,6 +19,9 @@ spring:
 
 app:
   version: ^project.version^
+  picture-config:
+    picture-path: pictures
+    store-in: memory
   translator-config:
     api-config:
       deepl-api-key: ${PDT_DEEPL_API_KEY}

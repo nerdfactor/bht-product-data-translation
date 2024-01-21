@@ -133,14 +133,6 @@ export class EditPageComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.imageChanged) {
-      if (this.product.pictures?.length > 0)
-        this.pictureService.update(this.product.pictures[0], this.image).subscribe(picture => this.product.pictures = [picture]);
-      else
-        this.pictureService.upload(this.image, this.product).subscribe((response: any) => this.product.pictures = [response.body]);
-      this.imageChanged = false;
-    }
-
     const formValue = this.productForm.value;
     this.product.name = formValue.name!;
     this.product.serial = formValue.serial!;
@@ -151,7 +143,29 @@ export class EditPageComponent implements OnInit {
     const translation = this.product.translations.find(translation => translation.language!.id = this.currentLanguage!.id)!;
     translation.shortDescription = formValue.shortDescription!;
     translation.longDescription = formValue.longDescription!;
+
+    if (this.imageChanged) {
+      if (this.product.pictures?.length > 0) {
+        this.pictureService.update(this.product.pictures[0], this.image).subscribe(picture => {
+          this.product.pictures = [picture];
+          this.updateProduct();
+        });
+      }
+      else {
+        this.pictureService.upload(this.image, this.product).subscribe((response: any) => {
+          this.product.pictures = [response.body];
+          this.updateProduct();
+        });
+      }
+      this.imageChanged = false;
+    }
+    else
+      this.updateProduct();
+
     console.log('submitting', this.product);
+  }
+  
+  updateProduct() {
     this.productService.updateProduct(this.product, this.currentLanguage!.isoCode).subscribe();
   }
 }
