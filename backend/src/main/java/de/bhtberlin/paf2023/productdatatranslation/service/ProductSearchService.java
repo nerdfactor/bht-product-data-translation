@@ -2,6 +2,7 @@ package de.bhtberlin.paf2023.productdatatranslation.service;
 
 import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
+import de.bhtberlin.paf2023.productdatatranslation.exception.TranslationException;
 import de.bhtberlin.paf2023.productdatatranslation.repo.ProductRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,12 @@ public class ProductSearchService {
         products.getContent().forEach(product -> {
             product.removeTranslationsNotInLocale(locale);
             if (!product.hasTranslations()) {
-                this.translationService.translateProduct(product, locale);
+                try {
+                    this.translationService.translateProduct(product, locale);
+                    log.info("Auto translated Product: " + product.getName() + " into " + locale);
+                } catch (TranslationException e) {
+                    // could not be translated automatically and can remain empty.
+                }
             }
         });
         return products;
