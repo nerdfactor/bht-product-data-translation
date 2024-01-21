@@ -91,18 +91,20 @@ export class CreatePageComponent implements OnInit, OnDestroy {
       categories: [],
       colors: [],
       pictures: [],
-      translations: [
-        {
-          id: 0,
-          longDescription: formValue.longDescription!,
-          shortDescription: formValue.shortDescription!,
-        }
-      ]
+      translations: []
     };
     console.log(product);
     this.productService.createProduct(product).subscribe(p => {
       p.categories = this.productCategories;
       p.colors = this.productColors;
+      p.translations = [
+        {
+          id: 0,
+          longDescription: formValue.longDescription!,
+          shortDescription: formValue.shortDescription!,
+          language: this.languageService.defaultLanguage
+        }
+      ]
       this.productService.updateProduct(p, this.currentLanguage!.isoCode).subscribe(prod => {
         this.productForm.reset();
         this.colors$ = this.colors$?.pipe(mergeWith(of(prod.colors)));

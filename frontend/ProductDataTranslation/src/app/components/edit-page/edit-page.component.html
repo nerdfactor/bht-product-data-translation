@@ -34,7 +34,7 @@
                 <div class="col-3">
                     <div class="border rounded p-3 mb-3">
                         <h4 class="fw-light">{{ elements['properties'] }}</h4>
-                        <div *ngIf="currentLanguage?.isoCode == languageService.defaultLanguage; else properties">
+                        <div *ngIf="currentLanguage?.isoCode == languageService.defaultLanguage?.isoCode; else properties">
                             <mat-form-field class="w-100">
                                 <mat-label>{{ elements['weight'] }}</mat-label>
                                 <input matInput type="number" formControlName="weight">
