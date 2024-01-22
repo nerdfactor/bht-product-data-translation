@@ -3,7 +3,12 @@ package de.bhtberlin.paf2023.productdatatranslation.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bhtberlin.paf2023.productdatatranslation.dto.PictureDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Picture;
+import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.service.PictureCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.PictureService;
+import de.bhtberlin.paf2023.productdatatranslation.service.ProductCrudService;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
@@ -12,8 +17,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.util.*;
 
@@ -49,6 +57,12 @@ class PictureRestControllerTest {
     @MockBean
     PictureCrudService pictureCrudService;
 
+    @MockBean
+    PictureService pictureService;
+
+    @MockBean
+    ProductCrudService productCrudService;
+
     /**
      * Check if {@link Picture Pictures} can be listed.
      */
@@ -72,13 +86,17 @@ class PictureRestControllerTest {
      */
     @Test
     void pictureCanBeCreated() throws Exception {
+        int prodId = 1;
         PictureDto mockDto = createTestPicture();
-        Mockito.when(pictureCrudService.createPicture(any(Picture.class)))
+        Mockito.when(pictureCrudService.createNewPicture(any(Product.class)))
+                .thenReturn(this.modelMapper.map(mockDto, Picture.class));
+        Mockito.when(productCrudService.readProduct(any(int.class)))
+                .thenReturn(Optional.of(createTestProduct(prodId)));
+        Mockito.when(pictureService.storeImageForPicture(any(Picture.class), any()))
                 .thenReturn(this.modelMapper.map(mockDto, Picture.class));
 
-        mockMvc.perform(post(API_PATH)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(this.jsonMapper.writeValueAsString(new Picture()))
+        mockMvc.perform(multipart(API_PATH + "?productId=" + prodId)
+                        .file("file", "test".getBytes())
                 ).andExpect(status().isCreated())
                 .andExpect(content().json(jsonMapper.writeValueAsString(mockDto)));
     }
@@ -91,10 +109,13 @@ class PictureRestControllerTest {
         PictureDto mockDto = createTestPicture();
         Mockito.when(pictureCrudService.readPicture(any(int.class)))
                 .thenReturn(Optional.of(this.modelMapper.map(mockDto, Picture.class)));
+        Mockito.when(pictureService.loadImageForPicture(any(Picture.class)))
+                .thenReturn("test".getBytes());
 
-        mockMvc.perform(get(API_PATH + "/" + mockDto.getId()))
+        byte[] response = mockMvc.perform(get(API_PATH + "/" + mockDto.getId()))
                 .andExpect(status().isOk())
-                .andExpect(content().json(jsonMapper.writeValueAsString(mockDto)));
+                .andReturn().getResponse().getContentAsByteArray();
+        Assertions.assertArrayEquals("test".getBytes(), response);
     }
 
     /**
@@ -103,13 +124,23 @@ class PictureRestControllerTest {
     @Test
     void pictureCanBeUpdated() throws Exception {
         PictureDto mockDto = createTestPicture(1);
+        Mockito.when(pictureCrudService.readPicture(any(int.class)))
+                .thenReturn(Optional.of(this.modelMapper.map(mockDto, Picture.class)));
         Mockito.when(pictureCrudService.updatePicture(argThat(argument -> argument.getId() == mockDto.getId())))
                 .thenReturn(this.modelMapper.map(mockDto, Picture.class));
+        Mockito.when(pictureService.storeImageForPicture(any(Picture.class), any())).
+                thenReturn(this.modelMapper.map(mockDto, Picture.class));
 
-        mockMvc.perform(put(API_PATH + "/" + mockDto.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(this.jsonMapper.writeValueAsString(mockDto))
-                ).andExpect(status().isOk())
+        MockMultipartHttpServletRequestBuilder builder = MockMvcRequestBuilders.multipart(API_PATH + "/" + mockDto.getId());
+        builder.with(new RequestPostProcessor() {
+            @Override
+            public @NotNull MockHttpServletRequest postProcessRequest(@NotNull MockHttpServletRequest request) {
+                request.setMethod("PUT");
+                return request;
+            }
+        });
+        mockMvc.perform(builder.file("file", "test".getBytes()))
+                .andExpect(status().isOk())
                 .andExpect(content().json(jsonMapper.writeValueAsString(mockDto)));
     }
 
@@ -118,6 +149,9 @@ class PictureRestControllerTest {
      */
     @Test
     void pictureCanBeDeleted() throws Exception {
+        PictureDto mockDto = createTestPicture(1);
+        Mockito.when(pictureCrudService.readPicture(any(int.class)))
+                .thenReturn(Optional.of(this.modelMapper.map(mockDto, Picture.class)));
         mockMvc.perform(delete(API_PATH + "/1"))
                 .andExpect(status().is(HttpStatus.NO_CONTENT.value()));
     }
@@ -126,7 +160,7 @@ class PictureRestControllerTest {
         Random random = new Random();
         PictureDto dto = new PictureDto();
         dto.setFilename(UUID.randomUUID().toString().replace("-", "").substring(10));
-        dto.setFormat("jpg");
+        dto.setFormat("image/jpg");
         dto.setWidth(1 + (100 - 1) * random.nextDouble());
         dto.setHeight(1 + (100 - 1) * random.nextDouble());
         return dto;
@@ -134,6 +168,12 @@ class PictureRestControllerTest {
 
     private PictureDto createTestPicture(int id) {
         PictureDto dto = createTestPicture();
+        dto.setId(id);
+        return dto;
+    }
+
+    private Product createTestProduct(int id) {
+        Product dto = new Product();
         dto.setId(id);
         return dto;
     }
