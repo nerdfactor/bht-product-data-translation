@@ -65,10 +65,10 @@ public class PictureRestController {
     public ResponseEntity<PictureDto> createPicture(@RequestPart("file") MultipartFile file, @RequestParam("productId") Optional<Integer> productIdParam) {
         int productId = productIdParam.orElseThrow(() -> new RuntimeException("Product ID is missing"));
         Product product = this.productCrudService.readProduct(productId)
-                .orElseThrow(() -> new EntityNotFoundException("Picture with Id " + productId + " was not found."));
+                .orElseThrow(() -> new EntityNotFoundException("Product with Id " + productId + " was not found."));
         Picture picture = this.pictureCrudService.createNewPicture(product);
         picture = this.pictureService.storeImageForPicture(picture, file);
-        return ResponseEntity.ofNullable(this.mapper.map(picture, PictureDto.class));
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.mapper.map(picture, PictureDto.class));
     }
 
     @RequestMapping(value = "/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
