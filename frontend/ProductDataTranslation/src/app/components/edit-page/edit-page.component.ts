@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Product } from '../../models/product';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ProductService } from '../../services/product.service';
@@ -7,11 +7,11 @@ import { Observable, catchError, first, of, tap } from 'rxjs';
 import { LanguageService } from '../../services/language.service';
 import { Language } from '../../models/language';
 import { I18nService } from '../../services/i18n.service';
+import { PictureService } from '../../services/picture.service';
 import { ColorService } from '../../services/color.service';
 import { CategoryService } from '../../services/category.service';
 import { Color } from '../../models/color';
 import { Category } from '../../models/category';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-edit-page',
@@ -19,6 +19,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrl: './edit-page.component.scss'
 })
 export class EditPageComponent implements OnInit {
+
+  @ViewChild('picInput')
+  picInput!: ElementRef;
 
   product!: Product;
   elements$!: Observable<any>;
@@ -38,11 +41,15 @@ export class EditPageComponent implements OnInit {
     longDescription: [''],
     categories: this.formBuilder.group({})
   });
+  imagePreview: any;
+  imageChanged: boolean = false;
+  image: any;
 
   constructor(private route: ActivatedRoute,
     private productService: ProductService,
     public languageService: LanguageService,
     private i18nService: I18nService,
+    private pictureService: PictureService,
     private colorService: ColorService,
     private categoryService: CategoryService,
     private formBuilder: FormBuilder) { }
@@ -94,12 +101,35 @@ export class EditPageComponent implements OnInit {
         height: product.height,
         price: product.price,
         serial: product.serial,
-        weight: product.weight,
+        weight: product.weight, 
         width: product.width,
         shortDescription: translation?.shortDescription,
         longDescription: translation?.longDescription
       });
+
+      if (product.pictures?.length > 0) {
+        this.imagePreview = this.pictureService.getPictureUrl(product.pictures[0].id);
+      }
     });
+  }
+
+  selectPicture(event: any) {
+    let selectedFiles = event.target.files;
+    if (!selectedFiles) 
+      return;
+
+    const picture = selectedFiles.item(0);
+    this.imagePreview = URL.createObjectURL(picture);
+    this.image = picture;
+    this.imageChanged = true;
+  }
+
+  deletePicture() {
+    this.imagePreview = undefined;
+    if (this.product.pictures?.length > 0) {
+      this.pictureService.remove(this.product.pictures[0]).subscribe();
+      this.product.pictures = [];
+    }
   }
 
   onSubmit() {
@@ -113,7 +143,29 @@ export class EditPageComponent implements OnInit {
     const translation = this.product.translations.find(translation => translation.language!.id = this.currentLanguage!.id)!;
     translation.shortDescription = formValue.shortDescription!;
     translation.longDescription = formValue.longDescription!;
+
+    if (this.imageChanged) {
+      if (this.product.pictures?.length > 0) {
+        this.pictureService.update(this.product.pictures[0], this.image).subscribe(picture => {
+          this.product.pictures = [picture];
+          this.updateProduct();
+        });
+      }
+      else {
+        this.pictureService.upload(this.image, this.product).subscribe((response: any) => {
+          this.product.pictures = [response.body];
+          this.updateProduct();
+        });
+      }
+      this.imageChanged = false;
+    }
+    else
+      this.updateProduct();
+
     console.log('submitting', this.product);
+  }
+  
+  updateProduct() {
     this.productService.updateProduct(this.product, this.currentLanguage!.isoCode).subscribe();
   }
 }

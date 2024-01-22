@@ -22,7 +22,7 @@ public class PictureDto {
 
     private double width;
 
-    @JsonIgnoreProperties({"pictures"})
+    @JsonIgnoreProperties({"pictures", "categories", "colors", "translations"})
     private ProductDto product;
 
     public PictureDto(int id) {

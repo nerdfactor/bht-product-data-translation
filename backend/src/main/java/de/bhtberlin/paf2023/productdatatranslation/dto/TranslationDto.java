@@ -18,7 +18,7 @@ public class TranslationDto {
 
     private String longDescription;
 
-    @JsonIgnoreProperties({"translations"})
+    @JsonIgnoreProperties({"pictures", "categories", "colors", "translations"})
     private ProductDto product;
 
     @JsonIgnoreProperties({"translations"})

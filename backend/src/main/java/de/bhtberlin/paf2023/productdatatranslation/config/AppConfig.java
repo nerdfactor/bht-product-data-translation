@@ -35,9 +35,21 @@ public class AppConfig {
     private String version;
 
     /**
+     * The configuration used for pictures.
+     */
+    private PictureConfig pictureConfig = new PictureConfig();
+
+    /**
      * The configuration used for translation.
      */
     private TranslatorConfig translatorConfig = new TranslatorConfig();
+
+    @Getter
+    @Setter
+    public static class PictureConfig {
+        private String picturePath;
+        private String storeIn;
+    }
 
     @Getter
     @Setter

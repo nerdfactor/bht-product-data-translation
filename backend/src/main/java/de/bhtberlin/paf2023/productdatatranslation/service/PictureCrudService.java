@@ -1,6 +1,7 @@
 package de.bhtberlin.paf2023.productdatatranslation.service;
 
 import de.bhtberlin.paf2023.productdatatranslation.entity.Picture;
+import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.repo.PictureRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,17 @@ public class PictureCrudService {
      */
     public @NonNull List<Picture> listAllPictures() {
         return this.pictureRepository.findAll();
+    }
+
+    /**
+     * Creates a new Picture.
+     *
+     * @return The Picture, that was created.
+     */
+    public @NotNull Picture createNewPicture(Product product) {
+        Picture picture = new Picture();
+        picture.setProduct(product);
+        return this.pictureRepository.save(picture);
     }
 
     /**

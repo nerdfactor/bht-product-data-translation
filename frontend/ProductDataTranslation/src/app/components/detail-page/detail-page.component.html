@@ -1,5 +1,5 @@
 <div class="container-fluid mat-body text-body-secondary" *ngIf="(elements$ | async) as elements; else loadingBlock">
-    <div *ngIf="(product$ | async) as product; else elseBlock">
+    <div *ngIf="product; else productMissing">
         <div class="d-flex align-items-center">
             <a mat-mini-fab color="primary" class="me-2 shadow-none" routerLink="/search">
                 <mat-icon fontIcon="chevron_left"></mat-icon>
@@ -21,15 +21,19 @@
                     <h4 class="fw-light">{{elements['properties']}}</h4>
                     <pdt-property-view [elements]="elements" [product]="product" [language]="currentLanguage"></pdt-property-view>
                 </div>
-                <div style="height: 250px;" class="d-flex border rounded justify-content-center align-items-center">
-                    {{elements['photo']}}
+                <div style="height: 250px;" class="d-flex position-relative border rounded justify-content-center align-items-center">
+                    <div *ngIf="image; else photoText" class="w-100 h-100 d-flex justify-content-center position-absolute top-0 start-0">
+                        <img *ngIf="image" [src]="image" class="mw-100 mh-100 rounded" alt="{{ elements['photo'] }}">
+                    </div>
+                    <ng-template #photoText>
+                        <mat-icon>hide_image</mat-icon>
+                    </ng-template>
                 </div>
             </div>
         </div>
     </div>
-    
-    <ng-template #elseBlock>
-        <div class="">{{ elements['notLoaded'] }}</div>
+    <ng-template #productMissing>
+        {{ elements['notLoaded'] }}
     </ng-template>
 </div>
 <ng-template #loadingBlock>

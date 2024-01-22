@@ -1,10 +1,8 @@
 package de.bhtberlin.paf2023.productdatatranslation.translation;
 
+import de.bhtberlin.paf2023.productdatatranslation.util.HashUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -42,7 +40,7 @@ public class AutoTranslationCache {
      * @param text The text.
      */
     public void clearCache(String text) {
-        String partialId = sha256(text);
+        String partialId = HashUtil.sha256(text);
         this.cache.keySet().forEach(s -> {
             if (s.endsWith(partialId)) {
                 this.cache.put(s, null);
@@ -123,23 +121,8 @@ public class AutoTranslationCache {
      * @return The id for the text.
      */
     private String createCacheId(@NotNull String text, @NotNull String from, @NotNull String to) {
-        return String.format("%s:%s:%s", from, to, sha256(text));
+        return String.format("%s:%s:%s", from, to, HashUtil.sha256(text));
     }
 
-    /**
-     * Get the sha256 hash for a String.
-     *
-     * @param str The String that should be hashed.
-     * @return The hashed String.
-     */
-    private @NotNull String sha256(@NotNull String str) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(str.getBytes(StandardCharsets.UTF_8));
-            byte[] digest = md.digest();
-            return String.format("%064x", new BigInteger(1, digest));
-        } catch (Exception e) {
-            return str;
-        }
-    }
+
 }
