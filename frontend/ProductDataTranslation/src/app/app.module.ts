@@ -54,6 +54,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 import {SearchPageComponent} from './components/search-page/search-page.component';
 import {DetailPageComponent} from './components/detail-page/detail-page.component';
@@ -61,10 +62,10 @@ import {EditPageComponent} from './components/edit-page/edit-page.component';
 import {CreatePageComponent} from './components/create-page/create-page.component';
 import {PdtChooserComponent} from './components/pdt-chooser/pdt-chooser.component';
 import {PdtPropertyViewComponent} from './components/pdt-property-view/pdt-property-view.component';
+import {PdtDeletionConfirmationComponent} from './components/pdt-deletion-confirmation/pdt-deletion-confirmation.component';
 
 import {FilterPipe} from './pipes/filter.pipe';
 import {FindPipe} from './pipes/find.pipe';
-import { PdtDeletionConfirmationComponent } from './components/pdt-deletion-confirmation/pdt-deletion-confirmation.component';
 
 @NgModule({
   declarations: [
@@ -101,7 +102,8 @@ import { PdtDeletionConfirmationComponent } from './components/pdt-deletion-conf
     MatSelectModule,
     MatProgressSpinnerModule,
     MatChipsModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

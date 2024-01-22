@@ -37,7 +37,7 @@ export class ProductService extends HttpService {
     return this.put<Product>(this.productsUri + '/' + product.id, product, isoCode);
   }
 
-  deleteProduct(product: Product) {
-    this.delete<Product>(this.productsUri + '/' + product.id).subscribe();
+  deleteProduct(product: Product): Observable<any> {
+    return this.delete(this.productsUri + '/' + product.id);
   }
 }

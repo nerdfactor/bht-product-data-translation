@@ -4,12 +4,14 @@ import { LanguageService } from '../../services/language.service';
 import { ProductService } from '../../services/product.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Language } from '../../models/language';
-import { Observable, Subscription, merge, mergeWith, of } from 'rxjs';
+import { Observable, Subscription, mergeWith, of } from 'rxjs';
 import { Product } from '../../models/product';
 import { Color } from '../../models/color';
 import { ColorService } from '../../services/color.service';
 import { Category } from '../../models/category';
 import { CategoryService } from '../../services/category.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { PictureService } from '../../services/picture.service';
 
 @Component({
   selector: 'app-create-page',
@@ -19,7 +21,7 @@ import { CategoryService } from '../../services/category.service';
 export class CreatePageComponent implements OnInit, OnDestroy {
 
   currentLanguage?: Language;
-  elements$!: Observable<any>;
+  elements!: any;
   languageChangedSubscription?: Subscription;
   productForm = this.formBuilder.group({
     name: ['', Validators.required],
@@ -36,14 +38,18 @@ export class CreatePageComponent implements OnInit, OnDestroy {
   categories$?: Observable<Category[]>;
   productColors: Color[] = [];
   productCategories: Category[] = [];
+  imagePreview: any;
+  imageChanged: boolean = false;
+  image: any;
 
   constructor(private productService: ProductService,
     private languageService: LanguageService,
     private i18nService: I18nService,
     private colorService: ColorService,
     private categoryService: CategoryService,
+    private pictureService: PictureService,
+    private snackBar: MatSnackBar,
     private formBuilder: FormBuilder) { }
-  
 
   ngOnInit(): void {
     const elements = {
@@ -61,7 +67,9 @@ export class CreatePageComponent implements OnInit, OnDestroy {
       colors: 'Farben',
       categories: 'Kategorien',
       photo: 'Foto',
-      warning: 'Alle Eingaben müssen auf Deutsch erfolgen.'
+      warning: 'Alle Eingaben müssen auf Deutsch erfolgen.',
+      saved: 'Gespeichert',
+      close: 'Schließen'
     };
 
     this.languageChangedSubscription = this.languageService.onLanguageChanged.subscribe(language => this.init(elements, language));
@@ -72,9 +80,24 @@ export class CreatePageComponent implements OnInit, OnDestroy {
 
   init(elements: any, language: Language) {
     this.currentLanguage = this.languageService.currentLanguage;
-    this.elements$ = this.i18nService.translate(elements, language.isoCode);
+    this.i18nService.translate(elements, language.isoCode).subscribe(elements => this.elements = elements);
     this.colors$ = this.colorService.getColors(language.isoCode);
     this.categories$ = this.categoryService.getCategories(language.isoCode);
+  }
+
+  selectPicture(event: any) {
+    let selectedFiles = event.target.files;
+    if (!selectedFiles) 
+      return;
+
+    const picture = selectedFiles.item(0);
+    this.imagePreview = URL.createObjectURL(picture);
+    this.image = picture;
+    this.imageChanged = true;
+  }
+
+  deletePicture() {
+    this.imagePreview = undefined;
   }
 
   onSubmit() {
@@ -93,7 +116,7 @@ export class CreatePageComponent implements OnInit, OnDestroy {
       pictures: [],
       translations: []
     };
-    console.log(product);
+
     this.productService.createProduct(product).subscribe(p => {
       p.categories = this.productCategories;
       p.colors = this.productColors;
@@ -105,12 +128,30 @@ export class CreatePageComponent implements OnInit, OnDestroy {
           language: this.languageService.defaultLanguage
         }
       ]
-      this.productService.updateProduct(p, this.currentLanguage!.isoCode).subscribe(prod => {
-        this.productForm.reset();
-        this.colors$ = this.colors$?.pipe(mergeWith(of(prod.colors)));
-        this.categories$ = this.categories$?.pipe(mergeWith(of(prod.categories)));
-        this.productCategories = [];
-        this.productColors = [];
+      if (this.imageChanged) {
+        this.pictureService.upload(this.image, p).subscribe((response: any) => {
+          p.pictures = [response.body];
+          this.updateProduct(p);
+        });
+      }
+      else {
+        this.updateProduct(p);
+      }
+    });
+  }
+
+  updateProduct(product: Product) {
+    this.productService.updateProduct(product, this.currentLanguage!.isoCode).subscribe(prod => {
+      this.productForm.reset();
+      this.colors$ = this.colors$?.pipe(mergeWith(of(prod.colors)));
+      this.categories$ = this.categories$?.pipe(mergeWith(of(prod.categories)));
+      this.productCategories = [];
+      this.productColors = [];
+      this.imagePreview = undefined;
+      this.imageChanged = false;
+      this.image = undefined;
+      this.snackBar.open(this.elements['saved'], this.elements['close'], {
+        duration: 3000
       });
     });
   }

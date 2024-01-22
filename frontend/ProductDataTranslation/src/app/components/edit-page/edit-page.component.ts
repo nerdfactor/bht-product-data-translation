@@ -16,6 +16,7 @@ import { TranslationService } from '../../services/translation.service';
 import { Translation } from '../../models/translation';
 import { MatDialog } from '@angular/material/dialog';
 import { PdtDeletionConfirmationComponent } from '../pdt-deletion-confirmation/pdt-deletion-confirmation.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-edit-page',
@@ -28,7 +29,7 @@ export class EditPageComponent implements OnInit {
   picInput!: ElementRef;
 
   product!: Product;
-  elements$!: Observable<any>;
+  elements!: any;
   currentLanguage?: Language;
   colors$?: Observable<Color[]>;
   categories$?: Observable<Category[]>;
@@ -59,6 +60,7 @@ export class EditPageComponent implements OnInit {
     private translationService: TranslationService,
     private router: Router,
     private dialog: MatDialog,
+    private snackBar: MatSnackBar,
     private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
@@ -79,6 +81,8 @@ export class EditPageComponent implements OnInit {
       categories: 'Kategorien',
       photo: 'Foto',
       notLoaded: 'Produkt konnte nicht geladen werden',
+      saved: 'Gespeichert',
+      close: 'Schließen'
     };
 
     this.languageService.onLanguageChanged.subscribe(language => this.init(elements, productId, language));
@@ -88,7 +92,7 @@ export class EditPageComponent implements OnInit {
 
   init(elements: any, productId: number, language: Language): void {
     this.currentLanguage = language;
-    this.elements$ = this.i18nService.translate(elements, language.isoCode);
+    this.i18nService.translate(elements, language.isoCode).subscribe(elements => this.elements = elements);
     this.colors$ = this.colorService.getColors(language.isoCode);
     this.categories$ = this.categoryService.getCategories(language.isoCode);
     this.productService.getProduct(productId, language.isoCode).pipe(first()).subscribe(product => {
@@ -145,8 +149,9 @@ export class EditPageComponent implements OnInit {
     });
     delConfirmDialog.afterClosed().subscribe(result => {
       if (result) {
-        this.productService.deleteProduct(this.product);
-        this.router.navigate(['/search']);
+        this.productService.deleteProduct(this.product).subscribe(() => {
+          this.router.navigate(['/search'])
+        });
       }
     });
   }
@@ -180,13 +185,15 @@ export class EditPageComponent implements OnInit {
     }
     else
       this.update(this.product, translation);
-
-    console.log('submitting', this.product);
   }
   
   update(product: Product, translation: Translation) {
     if (this.currentLanguage?.isoCode == this.languageService.defaultLanguage?.isoCode)
-      this.productService.updateProduct(product, this.currentLanguage!.isoCode).subscribe();
+      this.productService.updateProduct(product, this.currentLanguage!.isoCode).subscribe(_ => {
+        this.snackBar.open(this.elements['saved'], this.elements['close'], {
+          duration: 3000
+        });
+      });
     else {
       translation.product = {
         id: product.id,
@@ -201,7 +208,11 @@ export class EditPageComponent implements OnInit {
         translations: [],
         weight: product.weight, width: product.width
       };
-      this.translationService.updateTranslation(translation, this.currentLanguage!.isoCode).subscribe();
+      this.translationService.updateTranslation(translation, this.currentLanguage!.isoCode).subscribe(_ => {
+        this.snackBar.open(this.elements['saved'], this.elements['close'], {
+          duration: 3000
+        });
+      });
     }
   }
 }

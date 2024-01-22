@@ -41,11 +41,11 @@ export class HttpService {
     return this.httpClient.patch<T>(this.url + url, payload, { headers: headers ?? undefined});
   }
 
-  delete<T>(url: string, isoCode?: string) {
+  delete(url: string, isoCode?: string) {
     let headers: HttpHeaders | null = null;
     if (isoCode)
       headers = this.getHeader(isoCode);
-    return this.httpClient.delete<T>(this.url + url, { headers: headers ?? undefined});
+    return this.httpClient.delete(this.url + url, { headers: headers ?? undefined});
   }
 
 }

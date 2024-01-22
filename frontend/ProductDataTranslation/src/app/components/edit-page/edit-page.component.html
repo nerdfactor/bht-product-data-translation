@@ -1,4 +1,4 @@
-<div class="container-fluid mat-body text-body-secondary" *ngIf="(elements$ | async) as elements; else loadingBlock">
+<div class="container-fluid mat-body text-body-secondary" *ngIf="elements; else loadingBlock">
     <div *ngIf="product; else elseBlock">
         <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
             <div class="d-flex align-items-baseline">
