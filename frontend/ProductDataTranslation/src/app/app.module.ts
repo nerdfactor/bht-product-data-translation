@@ -2,16 +2,16 @@ import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {HttpClientModule} from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { registerLocaleData } from '@angular/common';
+import {registerLocaleData} from '@angular/common';
 import localeAf from '@angular/common/locales/af';
 import localeDe from '@angular/common/locales/de';
 import localeEn from '@angular/common/locales/en';
 import localeFr from '@angular/common/locales/fr';
 import localeBg from '@angular/common/locales/bg';
 import localeCs from '@angular/common/locales/cs';
-import localeDa from '@angular/common/locales/da'
-import localeEl from '@angular/common/locales/el'
-import localeEs from '@angular/common/locales/es'
+import localeDa from '@angular/common/locales/da';
+import localeEl from '@angular/common/locales/el';
+import localeEs from '@angular/common/locales/es';
 import localeEt from '@angular/common/locales/et';
 import localeFi from '@angular/common/locales/fi';
 import localeHu from '@angular/common/locales/hu';
@@ -53,6 +53,7 @@ import {MatSortModule} from '@angular/material/sort';
 import {MatSelectModule} from '@angular/material/select';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatChipsModule} from '@angular/material/chips';
+import {MatDialogModule} from '@angular/material/dialog';
 
 import {SearchPageComponent} from './components/search-page/search-page.component';
 import {DetailPageComponent} from './components/detail-page/detail-page.component';
@@ -63,6 +64,7 @@ import {PdtPropertyViewComponent} from './components/pdt-property-view/pdt-prope
 
 import {FilterPipe} from './pipes/filter.pipe';
 import {FindPipe} from './pipes/find.pipe';
+import { PdtDeletionConfirmationComponent } from './components/pdt-deletion-confirmation/pdt-deletion-confirmation.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +76,8 @@ import {FindPipe} from './pipes/find.pipe';
     FindPipe,
     CreatePageComponent,
     PdtChooserComponent,
-    PdtPropertyViewComponent
+    PdtPropertyViewComponent,
+    PdtDeletionConfirmationComponent
   ],
   imports: [
     HttpClientModule,
@@ -97,7 +100,8 @@ import {FindPipe} from './pipes/find.pipe';
     MatSortModule,
     MatSelectModule,
     MatProgressSpinnerModule,
-    MatChipsModule
+    MatChipsModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Product } from '../../models/product';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ProductService } from '../../services/product.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { Observable, catchError, first, of, tap } from 'rxjs';
 import { LanguageService } from '../../services/language.service';
 import { Language } from '../../models/language';
@@ -12,6 +12,10 @@ import { ColorService } from '../../services/color.service';
 import { CategoryService } from '../../services/category.service';
 import { Color } from '../../models/color';
 import { Category } from '../../models/category';
+import { TranslationService } from '../../services/translation.service';
+import { Translation } from '../../models/translation';
+import { MatDialog } from '@angular/material/dialog';
+import { PdtDeletionConfirmationComponent } from '../pdt-deletion-confirmation/pdt-deletion-confirmation.component';
 
 @Component({
   selector: 'app-edit-page',
@@ -52,6 +56,9 @@ export class EditPageComponent implements OnInit {
     private pictureService: PictureService,
     private colorService: ColorService,
     private categoryService: CategoryService,
+    private translationService: TranslationService,
+    private router: Router,
+    private dialog: MatDialog,
     private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
@@ -94,7 +101,7 @@ export class EditPageComponent implements OnInit {
         this.product.colors = [];
       if (!this.product.hasOwnProperty('pictures'))
         this.product.pictures = [];
-      const translation = this.product.translations.find(translation => translation.language!.id == language!.id);
+      const translation = this.product.translations.find(translation => translation.language!.id == language.id);
       this.productForm.patchValue({
         name: product.name,
         depth: product.depth,
@@ -132,6 +139,16 @@ export class EditPageComponent implements OnInit {
     }
   }
 
+  deleteProduct() {
+    const delConfirmDialog = this.dialog.open(PdtDeletionConfirmationComponent);
+    delConfirmDialog.afterClosed().subscribe(result => {
+      if (result) {
+        this.productService.deleteProduct(this.product);
+        this.router.navigate(['/search']);
+      }
+    });
+  }
+
   onSubmit() {
     const formValue = this.productForm.value;
     this.product.name = formValue.name!;
@@ -140,7 +157,7 @@ export class EditPageComponent implements OnInit {
     this.product.width = formValue.width!;
     this.product.height = formValue.height!;
     this.product.weight = formValue.weight!;
-    const translation = this.product.translations.find(translation => translation.language!.id = this.currentLanguage!.id)!;
+    const translation = this.product.translations.find(translation => translation.language!.id == this.currentLanguage!.id)!;
     translation.shortDescription = formValue.shortDescription!;
     translation.longDescription = formValue.longDescription!;
 
@@ -148,24 +165,41 @@ export class EditPageComponent implements OnInit {
       if (this.product.pictures?.length > 0) {
         this.pictureService.update(this.product.pictures[0], this.image).subscribe(picture => {
           this.product.pictures = [picture];
-          this.updateProduct();
+          this.update(this.product, translation);
         });
       }
       else {
         this.pictureService.upload(this.image, this.product).subscribe((response: any) => {
           this.product.pictures = [response.body];
-          this.updateProduct();
+          this.update(this.product, translation);
         });
       }
       this.imageChanged = false;
     }
     else
-      this.updateProduct();
+      this.update(this.product, translation);
 
     console.log('submitting', this.product);
   }
   
-  updateProduct() {
-    this.productService.updateProduct(this.product, this.currentLanguage!.isoCode).subscribe();
+  update(product: Product, translation: Translation) {
+    if (this.currentLanguage?.isoCode == this.languageService.defaultLanguage?.isoCode)
+      this.productService.updateProduct(product, this.currentLanguage!.isoCode).subscribe();
+    else {
+      translation.product = {
+        id: product.id,
+        categories: [],
+        colors: [],
+        depth: product.depth,
+        height: product.height,
+        name: product.name,
+        pictures: [],
+        price: product.price,
+        serial: product.serial,
+        translations: [],
+        weight: product.weight, width: product.width
+      };
+      this.translationService.updateTranslation(translation, this.currentLanguage!.isoCode).subscribe();
+    }
   }
 }

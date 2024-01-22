@@ -5,20 +5,29 @@
                 <a mat-mini-fab color="primary" class="me-2 shadow-none" routerLink="/product/{{product.id}}">
                     <mat-icon fontIcon="chevron_left" aria-label="Zurück"></mat-icon>
                 </a>
-                <mat-form-field class="flex-grow-1">
+                <mat-form-field class="flex-grow-1" *ngIf="currentLanguage?.isoCode == languageService.defaultLanguage?.isoCode; else productNameBlock">
                     <mat-label>{{ elements['name'] }}</mat-label>
                     <input matInput formControlName="name">
                 </mat-form-field>
+                <ng-template #productNameBlock>
+                    <h1 class="display-4 flex-grow-1">{{product.name}}</h1>
+                </ng-template>
                 <button type="submit" mat-icon-button [disabled]="!productForm.valid">
                     <mat-icon>save</mat-icon>
+                </button>
+                <button type="button" mat-icon-button *ngIf="currentLanguage?.isoCode == languageService.defaultLanguage?.isoCode" (click)="deleteProduct()">
+                    <mat-icon class="text-danger">delete</mat-icon>
                 </button>
             </div>
             <div class="row">
                 <div class="col-9">
-                    <mat-form-field class="w-100">
+                    <mat-form-field class="w-100" *ngIf="currentLanguage?.isoCode == languageService.defaultLanguage?.isoCode; else serialNumberBlock">
                         <mat-label>{{ elements['serial'] }}</mat-label>
                         <input matInput formControlName="serial"/>
                     </mat-form-field>
+                    <ng-template #serialNumberBlock>
+                        <p>{{elements['serial']}}: {{product.serial}}</p>
+                    </ng-template>
                     <div class="border rounded p-3">
                         <h4>{{ elements['descriptions'] }}</h4>
                         <mat-form-field class="w-100">
@@ -68,13 +77,19 @@
                         <div class="w-100 h-100 d-flex justify-content-center position-absolute top-0 start-0">
                             <img *ngIf="imagePreview" [src]="imagePreview" class="mw-100 mh-100 rounded" alt="{{ elements['photo'] }}">
                         </div>
-                        <label for="picInput" role="button" class="w-100 h-100 position-absolute top-0 start-0 d-flex justify-content-center align-items-center">
+                        <label for="picInput" role="button" class="w-100 h-100 position-absolute top-0 start-0 d-flex justify-content-center align-items-center"
+                                *ngIf="currentLanguage?.isoCode == languageService.defaultLanguage?.isoCode; else pictureMissingBlock">
                             <div *ngIf="!imagePreview" style="font-size: 16pt;" class="d-flex align-items-center">
                                 <mat-icon>add_photo_alternate</mat-icon>
                                 {{ elements['photo'] }}
                             </div>
                         </label>
                         <input id="picInput" class="invisible" type="file" accept="image/*" (change)="selectPicture($event)"/>
+                        <ng-template #pictureMissingBlock>
+                            <div *ngIf="!imagePreview" class="d-flex justify-content-center align-items-center w-100 h-100">
+                                <mat-icon>hide_image</mat-icon>
+                            </div>
+                        </ng-template>
                         <button *ngIf="imagePreview" class="position-absolute" mat-mini-fab color="warn" style="top: 10px; right: 15px" (click)="deletePicture()">
                             <mat-icon>delete</mat-icon>
                         </button>
