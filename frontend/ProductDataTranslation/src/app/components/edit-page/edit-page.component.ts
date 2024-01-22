@@ -140,7 +140,9 @@ export class EditPageComponent implements OnInit {
   }
 
   deleteProduct() {
-    const delConfirmDialog = this.dialog.open(PdtDeletionConfirmationComponent);
+    const delConfirmDialog = this.dialog.open(PdtDeletionConfirmationComponent, {
+      data: { name: this.product.name }
+    });
     delConfirmDialog.afterClosed().subscribe(result => {
       if (result) {
         this.productService.deleteProduct(this.product);

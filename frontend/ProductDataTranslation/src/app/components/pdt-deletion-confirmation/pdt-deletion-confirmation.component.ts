@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'pdt-deletion-confirmation',
@@ -7,7 +7,9 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrl: './pdt-deletion-confirmation.component.scss'
 })
 export class PdtDeletionConfirmationComponent {
-  constructor(private dialogRef: MatDialogRef<PdtDeletionConfirmationComponent>) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {name:string},
+              private dialogRef: MatDialogRef<PdtDeletionConfirmationComponent>) {
+  }
 
   confirm() {
     this.dialogRef.close(true);
