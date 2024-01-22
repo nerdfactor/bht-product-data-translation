@@ -186,6 +186,10 @@ public class Product {
         this.pictures.remove(picture);
     }
 
+    public boolean hasPictures() {
+        return this.pictures != null &&  !this.pictures.isEmpty();
+    }
+
     /**
      * Add a {@link Translation}.
      *
@@ -215,7 +219,7 @@ public class Product {
     }
 
     public boolean hasTranslations() {
-        return !this.translations.isEmpty();
+        return this.translations != null &&  !this.translations.isEmpty();
     }
 
     /**

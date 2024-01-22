@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -191,6 +192,17 @@ public class ProductCrudService {
      * @param product The product to delete.
      */
     public void deleteProduct(@NotNull Product product) {
+        if(product.getTranslations() != null) {
+            product.getTranslations().forEach(translation -> translation.setProduct(null));
+        }
+        product.setTranslations(null);
+        product.setCategories(null);
+        product.setColors(null);
+        if(product.getPictures() != null){
+            product.getPictures().forEach(picture -> picture.setProduct(null));
+        }
+        product.setPictures(null);
+        this.productRepository.save(product);
         this.productRepository.delete(product);
     }
 
@@ -200,6 +212,8 @@ public class ProductCrudService {
      * @param id The id of the product to delete.
      */
     public void deleteProductById(int id) {
-        this.productRepository.deleteById(id);
+        Product product = this.productRepository.findById(id).
+                orElseThrow(() -> new EntityNotFoundException("Product with Id " + id + " was not found."));
+        this.deleteProduct(product);
     }
 }
