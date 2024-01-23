@@ -21,10 +21,21 @@ import java.util.List;
 @RequestMapping("/api/colors")
 public class ColorRestController {
 
+    /**
+     * The {@link ColorCrudService} for access to {@link Color Colors}.
+     */
     final ColorCrudService colorCrudService;
 
+    /**
+     * The {@link ModelMapper} used for mapping between Entity and DTOs.
+     */
     final ModelMapper mapper;
 
+    /**
+     * List all {@link Color Colors}.
+     *
+     * @return A {@link ResponseEntity} containing a list of {@link ColorDto} objects.
+     */
     @GetMapping(value = {"", "/"})
     public ResponseEntity<List<ColorDto>> listAllColors() {
         return ResponseEntity.ok(this.colorCrudService.listAllColors()
@@ -32,6 +43,12 @@ public class ColorRestController {
                 .toList());
     }
 
+    /**
+     * Read a single {@link Color} by its ID.
+     *
+     * @param id The ID of the {@link Color} to read.
+     * @return A {@link ResponseEntity} containing a {@link ColorDto} object.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<ColorDto> readColor(@PathVariable final int id) {
         Color color = this.colorCrudService.readColor(id).
@@ -40,9 +57,10 @@ public class ColorRestController {
     }
 
     /**
-     * Create a new {@link Color} .
-     * <p>
-     * This method will enforce plain {@link Color} creation by removing all linked entities.
+     * Create a new {@link Color}.
+     *
+     * @param dto The {@link ColorDto} containing the data for the new {@link Color}.
+     * @return A {@link ResponseEntity} containing the created {@link ColorDto}.
      */
     @PostMapping("")
     public ResponseEntity<ColorDto> createColor(@RequestBody final ColorDto dto) {
@@ -50,6 +68,13 @@ public class ColorRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.mapper.map(created, ColorDto.class));
     }
 
+    /**
+     * Update an existing {@link Color}.
+     *
+     * @param id  The ID of the {@link Color} to update.
+     * @param dto The {@link ColorDto} containing the data for the updated {@link Color}.
+     * @return A {@link ResponseEntity} containing the updated {@link ColorDto}.
+     */
     @RequestMapping(value = "/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
     public ResponseEntity<ColorDto> setColor(@PathVariable final int id, @RequestBody final ColorDto dto) {
         if (id != dto.getId()) {
@@ -59,6 +84,12 @@ public class ColorRestController {
         return ResponseEntity.ok(this.mapper.map(updated, ColorDto.class));
     }
 
+    /**
+     * Delete an existing {@link Color}.
+     *
+     * @param id The ID of the {@link Color} to delete.
+     * @return A {@link ResponseEntity} with no content.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteColor(@PathVariable final int id) {
         this.colorCrudService.deleteColorById(id);

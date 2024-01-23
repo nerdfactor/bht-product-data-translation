@@ -2,6 +2,7 @@ package de.bhtberlin.paf2023.productdatatranslation.api;
 
 import de.bhtberlin.paf2023.productdatatranslation.dto.LanguageDto;
 import de.bhtberlin.paf2023.productdatatranslation.dto.TranslationDto;
+import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Translation;
 import de.bhtberlin.paf2023.productdatatranslation.exception.EntityNotCreatedException;
 import de.bhtberlin.paf2023.productdatatranslation.exception.EntityNotFoundException;
@@ -24,12 +25,26 @@ import java.util.List;
 @RequestMapping("/api/translations")
 public class TranslationRestController {
 
+    /**
+     * The {@link TranslationCrudService} for access to {@link Translation Translations}.
+     */
     final TranslationCrudService translationCrudService;
 
+    /**
+     * The {@link LanguageService} for access to {@link Language Languages}.
+     */
     final LanguageService languageService;
 
+    /**
+     * The {@link ModelMapper} used for mapping between Entity and DTOs.
+     */
     final ModelMapper mapper;
 
+    /**
+     * List all {@link Translation Translations}.
+     *
+     * @return A {@link ResponseEntity} containing a list of {@link TranslationDto} objects.
+     */
     @GetMapping(value = {"", "/"})
     public ResponseEntity<List<TranslationDto>> listAllTranslations() {
         return ResponseEntity.ok(this.translationCrudService.listAllTranslations()
@@ -37,6 +52,12 @@ public class TranslationRestController {
                 .toList());
     }
 
+    /**
+     * Read a single {@link Translation} by its ID.
+     *
+     * @param id The ID of the {@link Translation} to read.
+     * @return A {@link ResponseEntity} containing a {@link TranslationDto} object.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<TranslationDto> readTranslation(@PathVariable final int id) {
         Translation translation = this.translationCrudService.readTranslation(id).
@@ -46,6 +67,9 @@ public class TranslationRestController {
 
     /**
      * Create a new {@link Translation}.
+     *
+     * @param dto The {@link TranslationDto} to create.
+     * @return A {@link ResponseEntity} containing a {@link TranslationDto} object.
      */
     @PostMapping("")
     public ResponseEntity<TranslationDto> createTranslation(@RequestBody final TranslationDto dto) {
@@ -59,6 +83,13 @@ public class TranslationRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.mapper.map(created, TranslationDto.class));
     }
 
+    /**
+     * Update an existing {@link Translation}.
+     *
+     * @param id  The ID of the {@link Translation} to update.
+     * @param dto The {@link TranslationDto} to update.
+     * @return A {@link ResponseEntity} containing a {@link TranslationDto} object.
+     */
     @RequestMapping(value = "/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
     public ResponseEntity<TranslationDto> setTranslation(@PathVariable final int id, @RequestBody final TranslationDto dto) {
         if (id != dto.getId()) {
@@ -68,6 +99,11 @@ public class TranslationRestController {
         return ResponseEntity.ok(this.mapper.map(updated, TranslationDto.class));
     }
 
+    /**
+     * Delete an existing {@link Translation}.
+     *
+     * @param id The ID of the {@link Translation} to delete.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTranslation(@PathVariable final int id) {
         this.translationCrudService.deleteTranslationById(id);

@@ -2,6 +2,7 @@ package de.bhtberlin.paf2023.productdatatranslation.api;
 
 import de.bhtberlin.paf2023.productdatatranslation.dto.CategoryDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Category;
+import de.bhtberlin.paf2023.productdatatranslation.entity.Color;
 import de.bhtberlin.paf2023.productdatatranslation.exception.EntityNotFoundException;
 import de.bhtberlin.paf2023.productdatatranslation.exception.UnprocessableEntityException;
 import de.bhtberlin.paf2023.productdatatranslation.service.CategoryCrudService;
@@ -21,10 +22,21 @@ import java.util.List;
 @RequestMapping("/api/categories")
 public class CategoryRestController {
 
+    /**
+     * The {@link CategoryCrudService} for access to {@link Category Categories}.
+     */
     final CategoryCrudService categoryCrudService;
 
+    /**
+     * The {@link ModelMapper} used for mapping between Entity and DTOs.
+     */
     final ModelMapper mapper;
 
+    /**
+     * List all {@link Category Categories}.
+     *
+     * @return A {@link ResponseEntity} containing a list of {@link CategoryDto} objects.
+     */
     @GetMapping(value = {"", "/"})
     public ResponseEntity<List<CategoryDto>> listAllCategories() {
         return ResponseEntity.ok(this.categoryCrudService.listAllCategories()
@@ -32,6 +44,12 @@ public class CategoryRestController {
                 .toList());
     }
 
+    /**
+     * Read a single {@link Category} by its ID.
+     *
+     * @param id The ID of the {@link Category} to read.
+     * @return A {@link ResponseEntity} containing a {@link CategoryDto} object.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDto> readCategory(@PathVariable final int id) {
         Category category = this.categoryCrudService.readCategory(id).
@@ -40,9 +58,10 @@ public class CategoryRestController {
     }
 
     /**
-     * Create a new {@link Category} .
-     * <p>
-     * This method will enforce plain {@link Category} creation by removing all linked entities.
+     * Create a new {@link Category}.
+     *
+     * @param dto The {@link CategoryDto} to create.
+     * @return A {@link ResponseEntity} containing a {@link CategoryDto} object.
      */
     @PostMapping("")
     public ResponseEntity<CategoryDto> createCategory(@RequestBody final CategoryDto dto) {
@@ -50,6 +69,13 @@ public class CategoryRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.mapper.map(created, CategoryDto.class));
     }
 
+    /**
+     * Update an existing {@link Category}.
+     *
+     * @param id  The ID of the {@link Category} to update.
+     * @param dto The {@link CategoryDto} to update.
+     * @return A {@link ResponseEntity} containing a {@link CategoryDto} object.
+     */
     @RequestMapping(value = "/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
     public ResponseEntity<CategoryDto> setCategory(@PathVariable final int id, @RequestBody final CategoryDto dto) {
         if (id != dto.getId()) {
@@ -59,6 +85,12 @@ public class CategoryRestController {
         return ResponseEntity.ok(this.mapper.map(updated, CategoryDto.class));
     }
 
+    /**
+     * Delete an existing {@link Category} .
+     *
+     * @param id The ID of the {@link Category} to delete.
+     * @return A {@link ResponseEntity} with no content.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable final int id) {
         this.categoryCrudService.deleteCategoryById(id);

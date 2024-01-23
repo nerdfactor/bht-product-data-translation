@@ -30,10 +30,21 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/products")
 public class ProductRestController {
 
+    /**
+     * The {@link ProductCrudService} for access to {@link Product Products}.
+     */
     final ProductCrudService productCrudService;
 
+    /**
+     * The {@link ModelMapper} used for mapping between Entity and DTOs.
+     */
     final ModelMapper mapper;
 
+    /**
+     * List all {@link Product Products}.
+     *
+     * @return A {@link ResponseEntity} containing a list of {@link ProductDto} objects.
+     */
     @GetMapping(value = {"", "/"})
     public ResponseEntity<List<ProductDto>> listAllProducts() {
         return ResponseEntity.ok(this.productCrudService.listAllProducts(LocaleContextHolder.getLocale())
@@ -41,6 +52,12 @@ public class ProductRestController {
                 .toList());
     }
 
+    /**
+     * Read a single {@link Product} by its ID.
+     *
+     * @param id The ID of the {@link Product} to read.
+     * @return A {@link ResponseEntity} containing a {@link ProductDto} object.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> readProduct(@PathVariable final int id) {
         Product product = this.productCrudService.readProduct(id, LocaleContextHolder.getLocale()).
@@ -52,6 +69,9 @@ public class ProductRestController {
      * Create a new {@link Product} .
      * <p>
      * This method will enforce plain {@link Product} creation by removing all linked entities.
+     *
+     * @param dto The {@link ProductDto} to create.
+     * @return A {@link ResponseEntity} containing a {@link ProductDto} object.
      */
     @PostMapping("")
     public ResponseEntity<ProductDto> createProduct(@RequestBody final ProductDto dto) {
@@ -115,6 +135,12 @@ public class ProductRestController {
         return ResponseEntity.ok(this.mapper.map(updated, ProductDto.class));
     }
 
+    /**
+     * Delete a {@link Product} by its ID.
+     *
+     * @param id The ID of the {@link Product} to delete.
+     * @return A {@link ResponseEntity} with no content.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable final int id) {
         this.productCrudService.deleteProductById(id);
