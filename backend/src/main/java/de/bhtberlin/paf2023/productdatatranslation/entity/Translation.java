@@ -4,10 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * A {@link Translation} contains the description for a {@link Product}
@@ -47,12 +43,6 @@ public class Translation {
     private Product product;
 
     /**
-     * Multiple {@link Revision Revisions} for this {@link Translation}.
-     */
-    @OneToMany(mappedBy = "translation", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    private Set<Revision> revisions = new HashSet<>();
-
-    /**
      * The {@link Language} for this {@link Translation}.
      */
     @ManyToOne
@@ -72,30 +62,6 @@ public class Translation {
         this.shortDescription = shortDescription;
         this.longDescription = longDescription;
         this.language = language;
-    }
-
-    /**
-     * Add a {@link Revision}.
-     *
-     * @param revision The {@link Revision} to add.
-     */
-    public void addRevision(@NotNull Revision revision) {
-        if (this.revisions == null) {
-            this.revisions = new HashSet<>();
-        }
-        this.revisions.add(revision);
-    }
-
-    /**
-     * Remove a {@link Revision}.
-     *
-     * @param revision The {@link Revision} to remove.
-     */
-    public void removeRevision(@NotNull Revision revision) {
-        if (this.revisions == null) {
-            this.revisions = new HashSet<>();
-        }
-        this.revisions.remove(revision);
     }
 
     /**
