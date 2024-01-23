@@ -4,7 +4,7 @@ import de.bhtberlin.paf2023.productdatatranslation.dto.ColorDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Color;
 import de.bhtberlin.paf2023.productdatatranslation.exception.EntityNotFoundException;
 import de.bhtberlin.paf2023.productdatatranslation.exception.UnprocessableEntityException;
-import de.bhtberlin.paf2023.productdatatranslation.service.ColorCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.ColorService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -22,9 +22,9 @@ import java.util.List;
 public class ColorRestController {
 
     /**
-     * The {@link ColorCrudService} for access to {@link Color Colors}.
+     * The {@link ColorService} for access to {@link Color Colors}.
      */
-    final ColorCrudService colorCrudService;
+    final ColorService colorService;
 
     /**
      * The {@link ModelMapper} used for mapping between Entity and DTOs.
@@ -38,7 +38,7 @@ public class ColorRestController {
      */
     @GetMapping(value = {"", "/"})
     public ResponseEntity<List<ColorDto>> listAllColors() {
-        return ResponseEntity.ok(this.colorCrudService.listAllColors()
+        return ResponseEntity.ok(this.colorService.listAllColors()
                 .stream().map(color -> this.mapper.map(color, ColorDto.class))
                 .toList());
     }
@@ -51,7 +51,7 @@ public class ColorRestController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<ColorDto> readColor(@PathVariable final int id) {
-        Color color = this.colorCrudService.readColor(id).
+        Color color = this.colorService.readColor(id).
                 orElseThrow(() -> new EntityNotFoundException("Color with Id " + id + " was not found."));
         return ResponseEntity.ok(this.mapper.map(color, ColorDto.class));
     }
@@ -64,7 +64,7 @@ public class ColorRestController {
      */
     @PostMapping("")
     public ResponseEntity<ColorDto> createColor(@RequestBody final ColorDto dto) {
-        Color created = this.colorCrudService.createColor(this.mapper.map(dto, Color.class));
+        Color created = this.colorService.createColor(this.mapper.map(dto, Color.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(this.mapper.map(created, ColorDto.class));
     }
 
@@ -80,7 +80,7 @@ public class ColorRestController {
         if (id != dto.getId()) {
             throw new UnprocessableEntityException(String.format("Mismatch between provided Ids (%d - %d).", id, dto.getId()));
         }
-        Color updated = this.colorCrudService.updateColor(this.mapper.map(dto, Color.class));
+        Color updated = this.colorService.updateColor(this.mapper.map(dto, Color.class));
         return ResponseEntity.ok(this.mapper.map(updated, ColorDto.class));
     }
 
@@ -92,7 +92,7 @@ public class ColorRestController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteColor(@PathVariable final int id) {
-        this.colorCrudService.deleteColorById(id);
+        this.colorService.deleteColorById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

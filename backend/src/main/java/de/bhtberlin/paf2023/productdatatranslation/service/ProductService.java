@@ -1,5 +1,6 @@
 package de.bhtberlin.paf2023.productdatatranslation.service;
 
+import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
 import de.bhtberlin.paf2023.productdatatranslation.dto.CategoryDto;
 import de.bhtberlin.paf2023.productdatatranslation.dto.ColorDto;
 import de.bhtberlin.paf2023.productdatatranslation.dto.ProductDto;
@@ -13,22 +14,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
-import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-
 /**
- * Service for basic CRUD operations on products.
+ * Service for operations on products.
  */
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class ProductCrudService {
+public class ProductService {
 
-    final TranslationService translationService;
+    final TranslatorService translatorService;
 
     final ModelMapper mapper;
 
@@ -48,6 +49,14 @@ public class ProductCrudService {
         return this.listAllProducts("");
     }
 
+    /**
+     * Will return a list of all {@link Product products}.
+     * This list may be empty, if no products are present.
+     * Products will be translated into the given locale.
+     *
+     * @param locale The locale for the products.
+     * @return A List of {@link Product Products}
+     */
     public @NonNull List<Product> listAllProducts(@NotNull Locale locale) {
         return this.listAllProducts(locale.toLanguageTag());
     }
@@ -68,17 +77,50 @@ public class ProductCrudService {
                         product.removeTranslationsNotInLocale(tag);
                         if (!product.hasTranslations()) {
                             try {
-                                this.translationService.translateProduct(product, tag);
+                                this.translatorService.translateProduct(product, tag);
                                 log.info("Auto translated Product: " + product.getName() + " into " + tag);
                             } catch (TranslationException e) {
                                 // could not be translated automatically and can remain empty.
                             }
-
                         }
                     }
                     return product;
                 })
                 .toList();
+    }
+
+    public @NonNull Page<Product> searchAllProducts(String search, Pageable page) {
+        return this.searchAllProducts(search, "", page);
+    }
+
+    public @NonNull Page<Product> searchAllProducts(String search, Locale locale, Pageable page) {
+        return this.searchAllProducts(search, locale.toLanguageTag(), page);
+    }
+
+    /**
+     * Search all products containing the search term.
+     *
+     * @param search The search term.
+     * @param locale The locale that the result will be restricted to.
+     * @return A {@link Page} with the search results.
+     */
+    public @NonNull Page<Product> searchAllProducts(String search, String locale, Pageable page) {
+        String defaultLanguageSearch = this.translatorService.translateString(search, locale, AppConfig.DEFAULT_LANGUAGE);
+        defaultLanguageSearch = "%" + defaultLanguageSearch.trim().toLowerCase() + "%";
+        search = "%" + search.trim().toLowerCase() + "%";
+        Page<Product> products = this.productRepository.searchAllProductsMultiSearch(search, defaultLanguageSearch, page);
+        products.getContent().forEach(product -> {
+            product.removeTranslationsNotInLocale(locale);
+            if (!product.hasTranslations()) {
+                try {
+                    this.translatorService.translateProduct(product, locale);
+                    log.info("Auto translated Product: " + product.getName() + " into " + locale);
+                } catch (TranslationException e) {
+                    // could not be translated automatically and can remain empty.
+                }
+            }
+        });
+        return products;
     }
 
     /**
@@ -131,7 +173,7 @@ public class ProductCrudService {
             }
             if (!hasCorrectTranslation) {
                 try {
-                    product = this.translationService.translateProduct(product, tag);
+                    product = this.translatorService.translateProduct(product, tag);
                     log.info("Auto translated Product: " + product.getName() + " into " + tag);
                 } catch (TranslationException e) {
                     // could not be translated automatically and can remain empty.
@@ -192,13 +234,13 @@ public class ProductCrudService {
      * @param product The product to delete.
      */
     public void deleteProduct(@NotNull Product product) {
-        if(product.getTranslations() != null) {
+        if (product.getTranslations() != null) {
             product.getTranslations().forEach(translation -> translation.setProduct(null));
         }
         product.setTranslations(null);
         product.setCategories(null);
         product.setColors(null);
-        if(product.getPictures() != null){
+        if (product.getPictures() != null) {
             product.getPictures().forEach(picture -> picture.setProduct(null));
         }
         product.setPictures(null);

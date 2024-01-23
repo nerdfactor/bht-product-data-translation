@@ -6,7 +6,7 @@ import de.bhtberlin.paf2023.productdatatranslation.dto.TranslationDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Translation;
 import de.bhtberlin.paf2023.productdatatranslation.service.LanguageService;
-import de.bhtberlin.paf2023.productdatatranslation.service.TranslationCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.TranslationService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
@@ -49,11 +49,11 @@ class TranslationRestControllerTest {
     private MockMvc mockMvc;
 
     /**
-     * Mocked {@link TranslationCrudService} in order to provide
+     * Mocked {@link TranslationService} in order to provide
      * mock responses to the tested REST controller.
      */
     @MockBean
-    TranslationCrudService translationCrudService;
+    TranslationService translationService;
 
     @MockBean
     LanguageService languageService;
@@ -68,7 +68,7 @@ class TranslationRestControllerTest {
                 createTestTranslation(2)
         );
         List<Translation> mockEntities = mockDtos.stream().map(dto -> this.modelMapper.map(dto, Translation.class)).toList();
-        Mockito.when(translationCrudService.listAllTranslations())
+        Mockito.when(translationService.listAllTranslations())
                 .thenReturn(mockEntities);
 
         mockMvc.perform(get(API_PATH))
@@ -83,7 +83,7 @@ class TranslationRestControllerTest {
     void translationCanBeCreated() throws Exception {
         TranslationDto mockDto = createTestTranslation();
         mockDto.setProduct(new ProductDto(1));
-        Mockito.when(translationCrudService.createTranslation(any(Translation.class)))
+        Mockito.when(translationService.createTranslation(any(Translation.class)))
                 .thenReturn(this.modelMapper.map(mockDto, Translation.class));
         Mockito.when(languageService.getDefaultLanguage())
                 .thenReturn(new Language());
@@ -101,7 +101,7 @@ class TranslationRestControllerTest {
     @Test
     void translationCanBeRead() throws Exception {
         TranslationDto mockDto = createTestTranslation();
-        Mockito.when(translationCrudService.readTranslation(any(int.class)))
+        Mockito.when(translationService.readTranslation(any(int.class)))
                 .thenReturn(Optional.of(this.modelMapper.map(mockDto, Translation.class)));
 
         mockMvc.perform(get(API_PATH + "/" + mockDto.getId()))
@@ -115,7 +115,7 @@ class TranslationRestControllerTest {
     @Test
     void translationCanBeUpdated() throws Exception {
         TranslationDto mockDto = createTestTranslation(1);
-        Mockito.when(translationCrudService.updateTranslation(argThat(argument -> argument.getId() == mockDto.getId())))
+        Mockito.when(translationService.updateTranslation(argThat(argument -> argument.getId() == mockDto.getId())))
                 .thenReturn(this.modelMapper.map(mockDto, Translation.class));
 
         mockMvc.perform(put(API_PATH + "/" + mockDto.getId())

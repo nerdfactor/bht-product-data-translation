@@ -9,7 +9,7 @@ import de.bhtberlin.paf2023.productdatatranslation.entity.Color;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.exception.EntityNotFoundException;
 import de.bhtberlin.paf2023.productdatatranslation.exception.UnprocessableEntityException;
-import de.bhtberlin.paf2023.productdatatranslation.service.ProductCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -31,9 +31,9 @@ import java.util.stream.Collectors;
 public class ProductRestController {
 
     /**
-     * The {@link ProductCrudService} for access to {@link Product Products}.
+     * The {@link ProductService} for access to {@link Product Products}.
      */
-    final ProductCrudService productCrudService;
+    final ProductService productService;
 
     /**
      * The {@link ModelMapper} used for mapping between Entity and DTOs.
@@ -47,7 +47,7 @@ public class ProductRestController {
      */
     @GetMapping(value = {"", "/"})
     public ResponseEntity<List<ProductDto>> listAllProducts() {
-        return ResponseEntity.ok(this.productCrudService.listAllProducts(LocaleContextHolder.getLocale())
+        return ResponseEntity.ok(this.productService.listAllProducts(LocaleContextHolder.getLocale())
                 .stream().map(product -> this.mapper.map(product, ProductDto.class))
                 .toList());
     }
@@ -60,7 +60,7 @@ public class ProductRestController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> readProduct(@PathVariable final int id) {
-        Product product = this.productCrudService.readProduct(id, LocaleContextHolder.getLocale()).
+        Product product = this.productService.readProduct(id, LocaleContextHolder.getLocale()).
                 orElseThrow(() -> new EntityNotFoundException("Product with Id " + id + " was not found."));
         return ResponseEntity.ok(this.mapper.map(product, ProductDto.class));
     }
@@ -79,7 +79,7 @@ public class ProductRestController {
         dto.setColors(null);
         dto.setTranslations(null);
         dto.setPictures(null);
-        Product created = this.productCrudService.createProduct(this.mapper.map(dto, Product.class));
+        Product created = this.productService.createProduct(this.mapper.map(dto, Product.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(this.mapper.map(created, ProductDto.class));
     }
 
@@ -96,8 +96,8 @@ public class ProductRestController {
         if (id != dto.getId()) {
             throw new UnprocessableEntityException(String.format("Mismatch between provided Ids (%d - %d).", id, dto.getId()));
         }
-        this.productCrudService.mergeWithExistingRelationships(dto);
-        Product updated = this.productCrudService.updateProduct(this.mapper.map(dto, Product.class));
+        this.productService.mergeWithExistingRelationships(dto);
+        Product updated = this.productService.updateProduct(this.mapper.map(dto, Product.class));
         return ResponseEntity.ok(this.mapper.map(updated, ProductDto.class));
     }
 
@@ -121,7 +121,7 @@ public class ProductRestController {
         if (id != dto.getId()) {
             throw new UnprocessableEntityException(String.format("Mismatch between provided Ids (%d - %d).", id, dto.getId()));
         }
-        Product entity = this.productCrudService.readProduct(dto.getId()).orElseThrow(() -> new EntityNotFoundException("Product with Id " + id + " was not found."));
+        Product entity = this.productService.readProduct(dto.getId()).orElseThrow(() -> new EntityNotFoundException("Product with Id " + id + " was not found."));
         if (dto.getCategories() == null) {
             // if categories where not send, fill with existing relations.
             dto.setCategories(Optional.ofNullable(entity.getCategories()).orElse(new HashSet<>()).stream().map(c -> new CategoryDto(c.getId())).collect(Collectors.toSet()));
@@ -131,7 +131,7 @@ public class ProductRestController {
             dto.setColors(Optional.ofNullable(entity.getColors()).orElse(new HashSet<>()).stream().map(c -> new ColorDto(c.getId())).collect(Collectors.toSet()));
         }
         dto.setTranslations(null);
-        Product updated = this.productCrudService.updateProduct(this.mapper.map(dto, Product.class));
+        Product updated = this.productService.updateProduct(this.mapper.map(dto, Product.class));
         return ResponseEntity.ok(this.mapper.map(updated, ProductDto.class));
     }
 
@@ -143,7 +143,7 @@ public class ProductRestController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable final int id) {
-        this.productCrudService.deleteProductById(id);
+        this.productService.deleteProductById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

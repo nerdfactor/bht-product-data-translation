@@ -2,7 +2,7 @@ package de.bhtberlin.paf2023.productdatatranslation.api;
 
 import de.bhtberlin.paf2023.productdatatranslation.dto.ProductDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
-import de.bhtberlin.paf2023.productdatatranslation.service.ProductSearchService;
+import de.bhtberlin.paf2023.productdatatranslation.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -28,7 +28,7 @@ public class ProductController {
     /**
      * Service for searching {@link Product Products}.
      */
-    final ProductSearchService productSearchService;
+    final ProductService productService;
 
     /**
      * The {@link ModelMapper} used for mapping between Entity and DTOs.
@@ -47,7 +47,7 @@ public class ProductController {
             @RequestParam(value = "query", required = false) Optional<String> search,
             @PageableDefault(size = 20) Pageable pageable
     ) {
-        return ResponseEntity.ok(this.productSearchService.searchAllProducts(search.orElse(""), LocaleContextHolder.getLocale(), pageable)
+        return ResponseEntity.ok(this.productService.searchAllProducts(search.orElse(""), LocaleContextHolder.getLocale(), pageable)
                 .map(product -> mapper.map(product, ProductDto.class)));
     }
 }

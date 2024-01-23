@@ -4,7 +4,7 @@ import de.bhtberlin.paf2023.productdatatranslation.dto.LanguageDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
 import de.bhtberlin.paf2023.productdatatranslation.exception.EntityNotFoundException;
 import de.bhtberlin.paf2023.productdatatranslation.exception.UnprocessableEntityException;
-import de.bhtberlin.paf2023.productdatatranslation.service.LanguageCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.LanguageService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -22,9 +22,9 @@ import java.util.List;
 public class LanguageRestController {
 
     /**
-     * The {@link LanguageCrudService} for access to {@link Language Languages}.
+     * The {@link LanguageService} for access to {@link Language Languages}.
      */
-    final LanguageCrudService languageCrudService;
+    final LanguageService languageService;
 
     /**
      * The {@link ModelMapper} used for mapping between Entity and DTOs.
@@ -38,7 +38,7 @@ public class LanguageRestController {
      */
     @GetMapping(value = {"", "/"})
     public ResponseEntity<List<LanguageDto>> listAllLanguages() {
-        return ResponseEntity.ok(this.languageCrudService.listAllLanguages()
+        return ResponseEntity.ok(this.languageService.listAllLanguages()
                 .stream().map(language -> this.mapper.map(language, LanguageDto.class))
                 .toList());
     }
@@ -51,7 +51,7 @@ public class LanguageRestController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<LanguageDto> readLanguage(@PathVariable final int id) {
-        Language language = this.languageCrudService.readLanguage(id).
+        Language language = this.languageService.readLanguage(id).
                 orElseThrow(() -> new EntityNotFoundException("Language with Id " + id + " was not found."));
         return ResponseEntity.ok(this.mapper.map(language, LanguageDto.class));
     }
@@ -64,7 +64,7 @@ public class LanguageRestController {
      */
     @PostMapping("")
     public ResponseEntity<LanguageDto> createLanguage(@RequestBody final LanguageDto dto) {
-        Language created = this.languageCrudService.createLanguage(this.mapper.map(dto, Language.class));
+        Language created = this.languageService.createLanguage(this.mapper.map(dto, Language.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(this.mapper.map(created, LanguageDto.class));
     }
 
@@ -80,7 +80,7 @@ public class LanguageRestController {
         if (id != dto.getId()) {
             throw new UnprocessableEntityException(String.format("Mismatch between provided Ids (%d - %d).", id, dto.getId()));
         }
-        Language updated = this.languageCrudService.updateLanguage(this.mapper.map(dto, Language.class));
+        Language updated = this.languageService.updateLanguage(this.mapper.map(dto, Language.class));
         return ResponseEntity.ok(this.mapper.map(updated, LanguageDto.class));
     }
 
@@ -92,7 +92,7 @@ public class LanguageRestController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLanguage(@PathVariable final int id) {
-        this.languageCrudService.deleteLanguageById(id);
+        this.languageService.deleteLanguageById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -4,9 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bhtberlin.paf2023.productdatatranslation.dto.PictureDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Picture;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
-import de.bhtberlin.paf2023.productdatatranslation.service.PictureCrudService;
 import de.bhtberlin.paf2023.productdatatranslation.service.PictureService;
-import de.bhtberlin.paf2023.productdatatranslation.service.ProductCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.ProductService;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -51,17 +50,14 @@ class PictureRestControllerTest {
     private MockMvc mockMvc;
 
     /**
-     * Mocked {@link PictureCrudService} in order to provide
+     * Mocked {@link PictureService} in order to provide
      * mock responses to the tested REST controller.
      */
-    @MockBean
-    PictureCrudService pictureCrudService;
-
     @MockBean
     PictureService pictureService;
 
     @MockBean
-    ProductCrudService productCrudService;
+    ProductService productService;
 
     /**
      * Check if {@link Picture Pictures} can be listed.
@@ -73,7 +69,7 @@ class PictureRestControllerTest {
                 createTestPicture(2)
         );
         List<Picture> mockEntities = mockDtos.stream().map(dto -> this.modelMapper.map(dto, Picture.class)).toList();
-        Mockito.when(pictureCrudService.listAllPictures())
+        Mockito.when(pictureService.listAllPictures())
                 .thenReturn(mockEntities);
 
         mockMvc.perform(get(API_PATH))
@@ -88,9 +84,9 @@ class PictureRestControllerTest {
     void pictureCanBeCreated() throws Exception {
         int prodId = 1;
         PictureDto mockDto = createTestPicture();
-        Mockito.when(pictureCrudService.createNewPicture(any(Product.class)))
+        Mockito.when(pictureService.createNewPicture(any(Product.class)))
                 .thenReturn(this.modelMapper.map(mockDto, Picture.class));
-        Mockito.when(productCrudService.readProduct(any(int.class)))
+        Mockito.when(productService.readProduct(any(int.class)))
                 .thenReturn(Optional.of(createTestProduct(prodId)));
         Mockito.when(pictureService.storeImageForPicture(any(Picture.class), any()))
                 .thenReturn(this.modelMapper.map(mockDto, Picture.class));
@@ -107,7 +103,7 @@ class PictureRestControllerTest {
     @Test
     void pictureCanBeRead() throws Exception {
         PictureDto mockDto = createTestPicture();
-        Mockito.when(pictureCrudService.readPicture(any(int.class)))
+        Mockito.when(pictureService.readPicture(any(int.class)))
                 .thenReturn(Optional.of(this.modelMapper.map(mockDto, Picture.class)));
         Mockito.when(pictureService.loadImageForPicture(any(Picture.class)))
                 .thenReturn("test".getBytes());
@@ -124,9 +120,9 @@ class PictureRestControllerTest {
     @Test
     void pictureCanBeUpdated() throws Exception {
         PictureDto mockDto = createTestPicture(1);
-        Mockito.when(pictureCrudService.readPicture(any(int.class)))
+        Mockito.when(pictureService.readPicture(any(int.class)))
                 .thenReturn(Optional.of(this.modelMapper.map(mockDto, Picture.class)));
-        Mockito.when(pictureCrudService.updatePicture(argThat(argument -> argument.getId() == mockDto.getId())))
+        Mockito.when(pictureService.updatePicture(argThat(argument -> argument.getId() == mockDto.getId())))
                 .thenReturn(this.modelMapper.map(mockDto, Picture.class));
         Mockito.when(pictureService.storeImageForPicture(any(Picture.class), any())).
                 thenReturn(this.modelMapper.map(mockDto, Picture.class));
@@ -150,7 +146,7 @@ class PictureRestControllerTest {
     @Test
     void pictureCanBeDeleted() throws Exception {
         PictureDto mockDto = createTestPicture(1);
-        Mockito.when(pictureCrudService.readPicture(any(int.class)))
+        Mockito.when(pictureService.readPicture(any(int.class)))
                 .thenReturn(Optional.of(this.modelMapper.map(mockDto, Picture.class)));
         mockMvc.perform(delete(API_PATH + "/1"))
                 .andExpect(status().is(HttpStatus.NO_CONTENT.value()));

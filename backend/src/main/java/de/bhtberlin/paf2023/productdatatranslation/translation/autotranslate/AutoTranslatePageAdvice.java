@@ -1,7 +1,7 @@
 package de.bhtberlin.paf2023.productdatatranslation.translation.autotranslate;
 
 import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
-import de.bhtberlin.paf2023.productdatatranslation.service.TranslationService;
+import de.bhtberlin.paf2023.productdatatranslation.service.TranslatorService;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translatable;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +22,7 @@ import java.lang.reflect.Type;
 @RequiredArgsConstructor
 public class AutoTranslatePageAdvice implements ResponseBodyAdvice<Page<Translatable>> {
 
-    final TranslationService translationService;
+    final TranslatorService translatorService;
 
     @Override
     public boolean supports(MethodParameter returnType, @NotNull Class<? extends HttpMessageConverter<?>> converterType) {
@@ -52,7 +52,7 @@ public class AutoTranslatePageAdvice implements ResponseBodyAdvice<Page<Translat
                                               @NotNull ServerHttpResponse response) {
         if (body != null) {
             body.getContent().forEach(translatable ->
-                    translatable = this.translationService.translateTranslatable(translatable, AppConfig.DEFAULT_LANGUAGE, LocaleContextHolder.getLocale().toLanguageTag()));
+                    translatable = this.translatorService.translateTranslatable(translatable, AppConfig.DEFAULT_LANGUAGE, LocaleContextHolder.getLocale().toLanguageTag()));
         }
         return body;
     }

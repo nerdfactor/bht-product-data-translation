@@ -8,7 +8,7 @@ import de.bhtberlin.paf2023.productdatatranslation.exception.EntityNotCreatedExc
 import de.bhtberlin.paf2023.productdatatranslation.exception.EntityNotFoundException;
 import de.bhtberlin.paf2023.productdatatranslation.exception.UnprocessableEntityException;
 import de.bhtberlin.paf2023.productdatatranslation.service.LanguageService;
-import de.bhtberlin.paf2023.productdatatranslation.service.TranslationCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.TranslationService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -26,9 +26,9 @@ import java.util.List;
 public class TranslationRestController {
 
     /**
-     * The {@link TranslationCrudService} for access to {@link Translation Translations}.
+     * The {@link TranslationService} for access to {@link Translation Translations}.
      */
-    final TranslationCrudService translationCrudService;
+    final TranslationService translationService;
 
     /**
      * The {@link LanguageService} for access to {@link Language Languages}.
@@ -47,7 +47,7 @@ public class TranslationRestController {
      */
     @GetMapping(value = {"", "/"})
     public ResponseEntity<List<TranslationDto>> listAllTranslations() {
-        return ResponseEntity.ok(this.translationCrudService.listAllTranslations()
+        return ResponseEntity.ok(this.translationService.listAllTranslations()
                 .stream().map(translation -> this.mapper.map(translation, TranslationDto.class))
                 .toList());
     }
@@ -60,7 +60,7 @@ public class TranslationRestController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<TranslationDto> readTranslation(@PathVariable final int id) {
-        Translation translation = this.translationCrudService.readTranslation(id).
+        Translation translation = this.translationService.readTranslation(id).
                 orElseThrow(() -> new EntityNotFoundException("Translation with Id " + id + " was not found."));
         return ResponseEntity.ok(this.mapper.map(translation, TranslationDto.class));
     }
@@ -79,7 +79,7 @@ public class TranslationRestController {
         if (dto.getProduct() == null) {
             throw new EntityNotCreatedException("Translation requires a Product to be created");
         }
-        Translation created = this.translationCrudService.createTranslation(this.mapper.map(dto, Translation.class));
+        Translation created = this.translationService.createTranslation(this.mapper.map(dto, Translation.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(this.mapper.map(created, TranslationDto.class));
     }
 
@@ -95,7 +95,7 @@ public class TranslationRestController {
         if (id != dto.getId()) {
             throw new UnprocessableEntityException(String.format("Mismatch between provided Ids (%d - %d).", id, dto.getId()));
         }
-        Translation updated = this.translationCrudService.updateTranslation(this.mapper.map(dto, Translation.class));
+        Translation updated = this.translationService.updateTranslation(this.mapper.map(dto, Translation.class));
         return ResponseEntity.ok(this.mapper.map(updated, TranslationDto.class));
     }
 
@@ -106,7 +106,7 @@ public class TranslationRestController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTranslation(@PathVariable final int id) {
-        this.translationCrudService.deleteTranslationById(id);
+        this.translationService.deleteTranslationById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

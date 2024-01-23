@@ -1,35 +1,25 @@
 package de.bhtberlin.paf2023.productdatatranslation.service;
 
 import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
-import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
-import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Translation;
-import de.bhtberlin.paf2023.productdatatranslation.exception.TranslationException;
-import de.bhtberlin.paf2023.productdatatranslation.repo.LanguageRepository;
 import de.bhtberlin.paf2023.productdatatranslation.repo.TranslationRepository;
-import de.bhtberlin.paf2023.productdatatranslation.translation.AutoTranslationCache;
-import de.bhtberlin.paf2023.productdatatranslation.translation.Translatable;
-import de.bhtberlin.paf2023.productdatatranslation.translation.TranslationVisitor;
-import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
+
 /**
- * Service acting as a facade for translation related tasks.
+ * Service for basic CRUD operations on Translations.
  */
 @Slf4j
-@Service
 @RequiredArgsConstructor
+@Service
 public class TranslationService {
-
-    /**
-     * An implementation of {@link Translator} that takes care of translation
-     * and conversion of text, currencies and measurements.
-     */
-    final Translator translator;
-
-    final AutoTranslationCache translationCache;
 
     /**
      * An implementation of a {@link TranslationRepository} for data access.
@@ -37,107 +27,74 @@ public class TranslationService {
      */
     final TranslationRepository translationRepository;
 
-    /**
-     * An implementation of a {@link LanguageRepository} for data access.
-     * For example a specific JpaRepository for access to database layer.
-     */
-    final LanguageRepository languageRepository;
+    final TranslatorService translatorService;
 
     /**
-     * Translate a {@link Product} into a specific language.
-     * <br>
-     * This will take the default {@link Translation}, translate it to the
-     * desired language and add it to the list of translations for the {@link Product}.
-     * <br>
-     * If the {@link Translation} for this language already exists, it will be
-     * updated.
+     * Will return a list of all {@link Translation Translations}.
+     * This list may be empty, if no Translations are present.
      *
-     * @param product The {@link Product} to translate.
-     * @param to      The tag of the target locale.
-     * @return The {@link Product} with the new/updated {@link Translation}.
-     * @throws TranslationException If there was a problem during translation.
+     * @return A List of {@link Translation Translations}
      */
-    public Product translateProduct(Product product, String to) throws TranslationException {
-        if (to.equalsIgnoreCase(AppConfig.DEFAULT_LANGUAGE)) {
-            throw new TranslationException("Can not translate into default language.");
+    public @NonNull List<Translation> listAllTranslations() {
+        return this.translationRepository.findAll();
+    }
+
+    /**
+     * Create a Translation.
+     *
+     * @param translation The Translation, that should be created.
+     * @return The Translation, that was created.
+     */
+    public @NotNull Translation createTranslation(@NotNull Translation translation) {
+        return this.translationRepository.save(translation);
+    }
+
+    /**
+     * Read a Translation.
+     *
+     * @param id The id for the Translation.
+     * @return An optional containing the found Translation.
+     */
+    public @NotNull Optional<Translation> readTranslation(int id) {
+        return this.translationRepository.findById(id);
+    }
+
+    /**
+     * Update a Translation.
+     *
+     * @param translation The Translation with updated values.
+     * @return The updated Translation.
+     */
+    public @NotNull Translation updateTranslation(@NotNull Translation translation) {
+        Translation updated = this.translationRepository.save(translation);
+        // check if the translation was in the default language and change
+        // all other translations
+        if (translation.getLanguage() != null && translation.getLanguage().getIsoCode().equalsIgnoreCase(AppConfig.DEFAULT_LANGUAGE)) {
+            // todo: should TranslationService take care of Product translation or delegate to ProductService?
+            updated.getProduct().getTranslations().forEach(t -> {
+                if (!t.getLanguage().getIsoCode().equalsIgnoreCase(AppConfig.DEFAULT_LANGUAGE)) {
+                    this.translatorService.translateProduct(updated.getProduct(), t.getLanguage().getIsoCode());
+                }
+            });
         }
-        Language defaultLanguage = this.languageRepository.findOneByIsoCode(AppConfig.DEFAULT_LANGUAGE)
-                .orElseThrow(() -> new TranslationException("Could not find default Language."));
-        to = LanguageService.normalizeLanguageTag(to);
-        Language language = this.languageRepository.findOneByIsoCode(to)
-                .orElseThrow(() -> new TranslationException("Could not find Language for translation."));
-
-        // get default translation from the product
-        Translation defaultTranslation = this.translationRepository.getOneByProductAndLanguage(product, defaultLanguage);
-
-        Translation translation = this.translationRepository.getOneByProductAndLanguage(product, language);
-
-        if (translation == null) {
-            // create new translation
-            translation = new Translation();
-            translation.setLanguage(language);
-            product.addTranslation(translation);
-            translation.setProduct(product);
-        }
-
-        // set the descriptions to the descriptions of the default translation.
-        translation.setShortDescription(defaultTranslation.getShortDescription());
-        translation.setLongDescription(defaultTranslation.getLongDescription());
-
-        // let the translator translate it
-        translation.setShortDescription(this.translationCache.cachedTranslate(
-                translation.getShortDescription(),
-                defaultTranslation.getLanguage().getIsoCode(),
-                to,
-                translator
-        ));
-        translation.setLongDescription(this.translationCache.cachedTranslate(
-                translation.getLongDescription(),
-                defaultTranslation.getLanguage().getIsoCode(),
-                to, translator
-        ));
-
-        // save the translation
-        this.translationRepository.save(translation);
-        return product;
+        return updated;
     }
 
     /**
-     * Translate a {@link Translatable} into a specific language.
+     * Delete a Translation.
      *
-     * @param translatable The {@link Translatable} to translate.
-     * @param to           The tag of the target locale.
-     * @return The translated {@link Translatable}.
+     * @param translation The Translation to delete.
      */
-    public Translatable translateTranslatable(Translatable translatable, String from, String to) {
-        Language fromLang = this.languageRepository.findOneByIsoCode(from)
-                .orElseThrow(() -> new TranslationException("Translation from %s is not supported.".formatted(from)));
-        Language toLang = this.languageRepository.findOneByIsoCode(to)
-                .orElseThrow(() -> new TranslationException("Translation to %s is not supported.".formatted(to)));
-        return translatable.translate((TranslationVisitor) translator, fromLang, toLang);
+    public void deleteTranslation(@NotNull Translation translation) {
+        this.translationRepository.delete(translation);
     }
 
     /**
-     * Translate a {@link String} into a specific language.
+     * Delete a Translation by its id.
      *
-     * @param string The {@link String} to translate.
-     * @param from   The tag of the current locale.
-     * @param to     The tag of the target locale.
-     * @return The translated {@link String}.
+     * @param id The id of the Translation to delete.
      */
-    public String translateString(String string, String from, String to) {
-        return this.translationCache.cachedTranslate(string, from, to, translator);
-    }
-
-    /**
-     * Translate a {@link String} into a specific language.
-     *
-     * @param string The {@link String} to translate.
-     * @param from   The {@link Language} of the current locale.
-     * @param to     The {@link Language} of the target locale.
-     * @return The translated {@link String}.
-     */
-    public String translateString(String string, Language from, Language to) {
-        return translateString(string, from.getIsoCode(), to.getIsoCode());
+    public void deleteTranslationById(int id) {
+        this.translationRepository.deleteById(id);
     }
 }

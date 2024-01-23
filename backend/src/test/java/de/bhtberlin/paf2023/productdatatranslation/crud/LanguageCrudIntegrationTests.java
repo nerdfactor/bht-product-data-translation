@@ -1,7 +1,7 @@
 package de.bhtberlin.paf2023.productdatatranslation.crud;
 
 import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
-import de.bhtberlin.paf2023.productdatatranslation.service.LanguageCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.LanguageService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class LanguageCrudIntegrationTests {
 
     @Autowired
-    LanguageCrudService languageService;
+    LanguageService languageService;
 
     /**
      * Check if a Language can be read after it was created.

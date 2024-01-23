@@ -3,7 +3,7 @@ package de.bhtberlin.paf2023.productdatatranslation.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bhtberlin.paf2023.productdatatranslation.dto.LanguageDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
-import de.bhtberlin.paf2023.productdatatranslation.service.LanguageCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.LanguageService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
@@ -46,11 +46,11 @@ class LanguageRestControllerTest {
     private MockMvc mockMvc;
 
     /**
-     * Mocked {@link LanguageCrudService} in order to provide
+     * Mocked {@link LanguageService} in order to provide
      * mock responses to the tested REST controller.
      */
     @MockBean
-    LanguageCrudService languageCrudService;
+    LanguageService languageService;
 
     /**
      * Check if {@link Language Languages} can be listed.
@@ -62,7 +62,7 @@ class LanguageRestControllerTest {
                 createTestLanguage(2)
         );
         List<Language> mockEntities = mockDtos.stream().map(dto -> this.modelMapper.map(dto, Language.class)).toList();
-        Mockito.when(languageCrudService.listAllLanguages())
+        Mockito.when(languageService.listAllLanguages())
                 .thenReturn(mockEntities);
 
         mockMvc.perform(get(API_PATH))
@@ -76,7 +76,7 @@ class LanguageRestControllerTest {
     @Test
     void languageCanBeCreated() throws Exception {
         LanguageDto mockDto = createTestLanguage();
-        Mockito.when(languageCrudService.createLanguage(any(Language.class)))
+        Mockito.when(languageService.createLanguage(any(Language.class)))
                 .thenReturn(this.modelMapper.map(mockDto, Language.class));
 
         mockMvc.perform(post(API_PATH)
@@ -92,7 +92,7 @@ class LanguageRestControllerTest {
     @Test
     void languageCanBeRead() throws Exception {
         LanguageDto mockDto = createTestLanguage();
-        Mockito.when(languageCrudService.readLanguage(any(int.class)))
+        Mockito.when(languageService.readLanguage(any(int.class)))
                 .thenReturn(Optional.of(this.modelMapper.map(mockDto, Language.class)));
 
         mockMvc.perform(get(API_PATH + "/" + mockDto.getId()))
@@ -106,7 +106,7 @@ class LanguageRestControllerTest {
     @Test
     void languageCanBeUpdated() throws Exception {
         LanguageDto mockDto = createTestLanguage(1);
-        Mockito.when(languageCrudService.updateLanguage(argThat(argument -> argument.getId() == mockDto.getId())))
+        Mockito.when(languageService.updateLanguage(argThat(argument -> argument.getId() == mockDto.getId())))
                 .thenReturn(this.modelMapper.map(mockDto, Language.class));
 
         mockMvc.perform(put(API_PATH + "/" + mockDto.getId())

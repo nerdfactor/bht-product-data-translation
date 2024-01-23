@@ -2,10 +2,9 @@ package de.bhtberlin.paf2023.productdatatranslation.api;
 
 import de.bhtberlin.paf2023.productdatatranslation.dto.CategoryDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Category;
-import de.bhtberlin.paf2023.productdatatranslation.entity.Color;
 import de.bhtberlin.paf2023.productdatatranslation.exception.EntityNotFoundException;
 import de.bhtberlin.paf2023.productdatatranslation.exception.UnprocessableEntityException;
-import de.bhtberlin.paf2023.productdatatranslation.service.CategoryCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -23,9 +22,9 @@ import java.util.List;
 public class CategoryRestController {
 
     /**
-     * The {@link CategoryCrudService} for access to {@link Category Categories}.
+     * The {@link CategoryService} for access to {@link Category Categories}.
      */
-    final CategoryCrudService categoryCrudService;
+    final CategoryService categoryService;
 
     /**
      * The {@link ModelMapper} used for mapping between Entity and DTOs.
@@ -39,7 +38,7 @@ public class CategoryRestController {
      */
     @GetMapping(value = {"", "/"})
     public ResponseEntity<List<CategoryDto>> listAllCategories() {
-        return ResponseEntity.ok(this.categoryCrudService.listAllCategories()
+        return ResponseEntity.ok(this.categoryService.listAllCategories()
                 .stream().map(category -> this.mapper.map(category, CategoryDto.class))
                 .toList());
     }
@@ -52,7 +51,7 @@ public class CategoryRestController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDto> readCategory(@PathVariable final int id) {
-        Category category = this.categoryCrudService.readCategory(id).
+        Category category = this.categoryService.readCategory(id).
                 orElseThrow(() -> new EntityNotFoundException("Category with Id " + id + " was not found."));
         return ResponseEntity.ok(this.mapper.map(category, CategoryDto.class));
     }
@@ -65,7 +64,7 @@ public class CategoryRestController {
      */
     @PostMapping("")
     public ResponseEntity<CategoryDto> createCategory(@RequestBody final CategoryDto dto) {
-        Category created = this.categoryCrudService.createCategory(this.mapper.map(dto, Category.class));
+        Category created = this.categoryService.createCategory(this.mapper.map(dto, Category.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(this.mapper.map(created, CategoryDto.class));
     }
 
@@ -81,7 +80,7 @@ public class CategoryRestController {
         if (id != dto.getId()) {
             throw new UnprocessableEntityException(String.format("Mismatch between provided Ids (%d - %d).", id, dto.getId()));
         }
-        Category updated = this.categoryCrudService.updateCategory(this.mapper.map(dto, Category.class));
+        Category updated = this.categoryService.updateCategory(this.mapper.map(dto, Category.class));
         return ResponseEntity.ok(this.mapper.map(updated, CategoryDto.class));
     }
 
@@ -93,7 +92,7 @@ public class CategoryRestController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable final int id) {
-        this.categoryCrudService.deleteCategoryById(id);
+        this.categoryService.deleteCategoryById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

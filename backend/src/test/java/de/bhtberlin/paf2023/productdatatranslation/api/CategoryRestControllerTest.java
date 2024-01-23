@@ -7,7 +7,7 @@ import de.bhtberlin.paf2023.productdatatranslation.entity.Currency;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Measurement;
 import de.bhtberlin.paf2023.productdatatranslation.repo.LanguageRepository;
-import de.bhtberlin.paf2023.productdatatranslation.service.CategoryCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.CategoryService;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,18 +52,18 @@ class CategoryRestControllerTest {
     private MockMvc mockMvc;
 
     /**
-     * Mocked {@link CategoryCrudService} in order to provide
+     * Mocked {@link CategoryService} in order to provide
      * mock responses to the tested REST controller.
      */
     @MockBean
-    CategoryCrudService categoryCrudService;
+    CategoryService categoryService;
 
     @MockBean
     LanguageRepository languageRepository;
 
     @Autowired
     Translator translator;
-    
+
     Language de = createTestLanguage("de", "EUR", "kg", "cm");
     Language en = createTestLanguage("en", "USD", "lb", "in");
 
@@ -85,7 +85,7 @@ class CategoryRestControllerTest {
                 createTestCategory(2)
         );
         List<Category> mockEntities = mockDtos.stream().map(dto -> this.modelMapper.map(dto, Category.class)).toList();
-        Mockito.when(categoryCrudService.listAllCategories())
+        Mockito.when(categoryService.listAllCategories())
                 .thenReturn(mockEntities);
 
         mockDtos.forEach(dto -> dto.translate(translator, this.de, this.en));
@@ -100,7 +100,7 @@ class CategoryRestControllerTest {
     @Test
     void categoryCanBeCreated() throws Exception {
         CategoryDto mockDto = createTestCategory();
-        Mockito.when(categoryCrudService.createCategory(any(Category.class)))
+        Mockito.when(categoryService.createCategory(any(Category.class)))
                 .thenReturn(this.modelMapper.map(mockDto, Category.class));
 
         mockDto.translate(translator, this.de, this.en);
@@ -117,7 +117,7 @@ class CategoryRestControllerTest {
     @Test
     void categoryCanBeRead() throws Exception {
         CategoryDto mockDto = createTestCategory();
-        Mockito.when(categoryCrudService.readCategory(any(int.class)))
+        Mockito.when(categoryService.readCategory(any(int.class)))
                 .thenReturn(Optional.of(this.modelMapper.map(mockDto, Category.class)));
 
         mockDto.translate(translator, this.de, this.en);
@@ -132,7 +132,7 @@ class CategoryRestControllerTest {
     @Test
     void categoryCanBeUpdated() throws Exception {
         CategoryDto mockDto = createTestCategory(1);
-        Mockito.when(categoryCrudService.updateCategory(argThat(argument -> argument.getId() == mockDto.getId())))
+        Mockito.when(categoryService.updateCategory(argThat(argument -> argument.getId() == mockDto.getId())))
                 .thenReturn(this.modelMapper.map(mockDto, Category.class));
 
         mockDto.translate(translator, this.de, this.en);

@@ -1,7 +1,7 @@
 package de.bhtberlin.paf2023.productdatatranslation.crud;
 
 import de.bhtberlin.paf2023.productdatatranslation.entity.Color;
-import de.bhtberlin.paf2023.productdatatranslation.service.ColorCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.ColorService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ColorCrudIntegrationTests {
 
     @Autowired
-    ColorCrudService colorService;
+    ColorService colorService;
 
     /**
      * Check if a Color can be read after it was created.
@@ -108,7 +108,7 @@ public class ColorCrudIntegrationTests {
 
         List<Color> colors = this.colorService.listAllColors();
         assertNotNull(colors);
-        assertEquals(amountOfColors+previousAmountOfColors, colors.size());
+        assertEquals(amountOfColors + previousAmountOfColors, colors.size());
         assertEquals(firstColor.getName(), colors.stream().
                 min(Comparator.comparing(Color::getName))
                 .orElseThrow()

@@ -8,10 +8,10 @@ import de.bhtberlin.paf2023.productdatatranslation.entity.Category;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Color;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Translation;
-import de.bhtberlin.paf2023.productdatatranslation.service.CategoryCrudService;
-import de.bhtberlin.paf2023.productdatatranslation.service.ColorCrudService;
-import de.bhtberlin.paf2023.productdatatranslation.service.ProductCrudService;
-import de.bhtberlin.paf2023.productdatatranslation.service.TranslationCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.CategoryService;
+import de.bhtberlin.paf2023.productdatatranslation.service.ColorService;
+import de.bhtberlin.paf2023.productdatatranslation.service.ProductService;
+import de.bhtberlin.paf2023.productdatatranslation.service.TranslationService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -51,16 +51,16 @@ class AddProductToSystemTest {
     ModelMapper modelMapper;
 
     @Autowired
-    ProductCrudService productService;
+    ProductService productService;
 
     @Autowired
-    TranslationCrudService translationService;
+    TranslationService translationService;
 
     @Autowired
-    CategoryCrudService categoryService;
+    CategoryService categoryService;
 
     @Autowired
-    ColorCrudService colorService;
+    ColorService colorService;
 
     /**
      * Should add a simple product into the system.
