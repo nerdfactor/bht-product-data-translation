@@ -6,8 +6,17 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * Repository for {@link Language} entities.
+ */
 @Repository
 public interface LanguageRepository extends JpaRepository<Language, Integer> {
 
-    public Optional<Language> findOneByIsoCode(String isoCode);
+    /**
+     * Finds a language by its ISO code.
+     *
+     * @param isoCode The ISO code of the language.
+     * @return The language with the given ISO code.
+     */
+    Optional<Language> findOneByIsoCode(String isoCode);
 }
