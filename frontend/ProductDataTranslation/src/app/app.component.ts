@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
   constructor(public languageService: LanguageService) { }
 
   ngOnInit(): void {
-    let locale = AppComponent.getUsersLocale('de_DE');
+    let locale = AppComponent.getUsersLocale('de');
     this.languageService.getLanguages()
       .subscribe(languages => {
         this.languageService.changeLanguage(languages.find(language => language.isoCode.startsWith(locale))!);
@@ -33,6 +33,8 @@ export class AppComponent implements OnInit {
     const wn = window.navigator as any;
     let lang = wn.languages ? wn.languages[0] : defaultValue;
     lang = lang || wn.language || wn.browserLanguage || wn.userLanguage;
+    // use only the first part of the language code until support for country specific language codes is added.
+    lang = lang.slice(0, 2);
     return lang;
   }
 
