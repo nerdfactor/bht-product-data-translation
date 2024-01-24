@@ -1,7 +1,7 @@
 package de.bhtberlin.paf2023.productdatatranslation.api;
 
 import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
-import de.bhtberlin.paf2023.productdatatranslation.service.TranslatorService;
+import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +21,10 @@ import java.util.Map;
 public class TranslationController {
 
     /**
-     * The {@link TranslatorService} for translation related features.
+     * An implementation of {@link Translator} that takes care of translation
+     * and conversion of text, currencies and measurements.
      */
-    final TranslatorService translatorService;
+    final Translator translator;
 
     /**
      * Translate a map of strings for internationalization.
@@ -34,7 +35,7 @@ public class TranslationController {
     @PostMapping("/i18n")
     public ResponseEntity<Map<String, String>> i18n(@RequestBody final Map<String, String> values) {
         final String locale = LocaleContextHolder.getLocale().toLanguageTag().replace("-", "_");
-        values.forEach((s, s2) -> values.put(s, this.translatorService.translateString(s2, AppConfig.DEFAULT_LANGUAGE, locale)));
+        values.forEach((s, s2) -> values.put(s, this.translator.translateText(s2, AppConfig.DEFAULT_LANGUAGE, locale)));
         return ResponseEntity.ok(values);
     }
 }

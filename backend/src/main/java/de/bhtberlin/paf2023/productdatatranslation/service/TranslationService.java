@@ -1,8 +1,12 @@
 package de.bhtberlin.paf2023.productdatatranslation.service;
 
 import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
+import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
+import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Translation;
+import de.bhtberlin.paf2023.productdatatranslation.exception.TranslationException;
 import de.bhtberlin.paf2023.productdatatranslation.repo.TranslationRepository;
+import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +31,16 @@ public class TranslationService {
      */
     final TranslationRepository translationRepository;
 
-    final TranslatorService translatorService;
+    /**
+     * The {@link LanguageService} for access to {@link Language Languages}.
+     */
+    final LanguageService languageService;
+
+    /**
+     * An implementation of {@link Translator} that takes care of translation
+     * and conversion of text, currencies and measurements.
+     */
+    final Translator translator;
 
     /**
      * Will return a list of all {@link Translation Translations}.
@@ -70,10 +83,9 @@ public class TranslationService {
         // check if the translation was in the default language and change
         // all other translations
         if (translation.getLanguage() != null && translation.getLanguage().getIsoCode().equalsIgnoreCase(AppConfig.DEFAULT_LANGUAGE)) {
-            // todo: should TranslationService take care of Product translation or delegate to ProductService?
             updated.getProduct().getTranslations().forEach(t -> {
                 if (!t.getLanguage().getIsoCode().equalsIgnoreCase(AppConfig.DEFAULT_LANGUAGE)) {
-                    this.translatorService.translateProduct(updated.getProduct(), t.getLanguage().getIsoCode());
+                    this.translateProduct(updated.getProduct(), t.getLanguage().getIsoCode());
                 }
             });
         }
@@ -96,5 +108,61 @@ public class TranslationService {
      */
     public void deleteTranslationById(int id) {
         this.translationRepository.deleteById(id);
+    }
+
+    /**
+     * Translate a {@link Product} into a specific language.
+     * <br>
+     * This will take the default {@link Translation}, translate it to the
+     * desired language and add it to the list of translations for the {@link Product}.
+     * <br>
+     * If the {@link Translation} for this language already exists, it will be
+     * updated.
+     *
+     * @param product The {@link Product} to translate.
+     * @param to      The tag of the target locale.
+     * @return The {@link Product} with the new/updated {@link Translation}.
+     * @throws TranslationException If there was a problem during translation.
+     */
+    public Product translateProduct(Product product, String to) throws TranslationException {
+        if (to.equalsIgnoreCase(AppConfig.DEFAULT_LANGUAGE)) {
+            throw new TranslationException("Can not translate into default language.");
+        }
+        Language defaultLanguage = this.languageService.getByIsoCode(AppConfig.DEFAULT_LANGUAGE);
+        to = LanguageService.normalizeLanguageTag(to);
+        Language language = this.languageService.getByIsoCode(to);
+
+        // get default translation from the product
+        Translation defaultTranslation = this.translationRepository.getOneByProductAndLanguage(product, defaultLanguage);
+
+        Translation translation = this.translationRepository.getOneByProductAndLanguage(product, language);
+
+        if (translation == null) {
+            // create new translation
+            translation = new Translation();
+            translation.setLanguage(language);
+            product.addTranslation(translation);
+            translation.setProduct(product);
+        }
+
+        // set the descriptions to the descriptions of the default translation.
+        translation.setShortDescription(defaultTranslation.getShortDescription());
+        translation.setLongDescription(defaultTranslation.getLongDescription());
+
+        // let the translator translate it
+        translation.setShortDescription(this.translator.translateText(
+                translation.getShortDescription(),
+                defaultTranslation.getLanguage().getIsoCode(),
+                to
+        ));
+        translation.setLongDescription(this.translator.translateText(
+                translation.getLongDescription(),
+                defaultTranslation.getLanguage().getIsoCode(),
+                to
+        ));
+
+        // save the translation
+        this.translationRepository.save(translation);
+        return product;
     }
 }

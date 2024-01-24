@@ -2,6 +2,7 @@ package de.bhtberlin.paf2023.productdatatranslation.service;
 
 import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
+import de.bhtberlin.paf2023.productdatatranslation.exception.TranslationException;
 import de.bhtberlin.paf2023.productdatatranslation.repo.LanguageRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +65,17 @@ public class LanguageService {
      */
     public Language getDefaultLanguage() {
         return this.languageRepository.findOneByIsoCode(AppConfig.DEFAULT_LANGUAGE).orElseThrow();
+    }
+
+    /**
+     * Get a {@link Language} by its ISO code.
+     *
+     * @param isoCode The ISO code of the {@link Language}.
+     * @return The {@link Language} with the given ISO code.
+     */
+    public Language getByIsoCode(String isoCode) {
+        return this.languageRepository.findOneByIsoCode(isoCode)
+                .orElseThrow(() -> new TranslationException("Could not find Language " + isoCode + "."));
     }
 
     /**

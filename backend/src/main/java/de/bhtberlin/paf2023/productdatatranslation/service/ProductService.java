@@ -9,6 +9,7 @@ import de.bhtberlin.paf2023.productdatatranslation.entity.Translation;
 import de.bhtberlin.paf2023.productdatatranslation.exception.EntityNotFoundException;
 import de.bhtberlin.paf2023.productdatatranslation.exception.TranslationException;
 import de.bhtberlin.paf2023.productdatatranslation.repo.ProductRepository;
+import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,9 +30,15 @@ import java.util.stream.Collectors;
 @Service
 public class ProductService {
 
-    final TranslatorService translatorService;
+    final TranslationService translationService;
 
     final ModelMapper mapper;
+
+    /**
+     * An implementation of {@link Translator} that takes care of translation
+     * and conversion of text, currencies and measurements.
+     */
+    final Translator translator;
 
     /**
      * An implementation of a {@link ProductRepository} for data access.
@@ -77,7 +84,7 @@ public class ProductService {
                         product.removeTranslationsNotInLocale(tag);
                         if (!product.hasTranslations()) {
                             try {
-                                this.translatorService.translateProduct(product, tag);
+                                this.translationService.translateProduct(product, tag);
                                 log.info("Auto translated Product: " + product.getName() + " into " + tag);
                             } catch (TranslationException e) {
                                 // could not be translated automatically and can remain empty.
@@ -105,7 +112,7 @@ public class ProductService {
      * @return A {@link Page} with the search results.
      */
     public @NonNull Page<Product> searchAllProducts(String search, String locale, Pageable page) {
-        String defaultLanguageSearch = this.translatorService.translateString(search, locale, AppConfig.DEFAULT_LANGUAGE);
+        String defaultLanguageSearch = this.translator.translateText(search, locale, AppConfig.DEFAULT_LANGUAGE);
         defaultLanguageSearch = "%" + defaultLanguageSearch.trim().toLowerCase() + "%";
         search = "%" + search.trim().toLowerCase() + "%";
         Page<Product> products = this.productRepository.searchAllProductsMultiSearch(search, defaultLanguageSearch, page);
@@ -113,7 +120,7 @@ public class ProductService {
             product.removeTranslationsNotInLocale(locale);
             if (!product.hasTranslations()) {
                 try {
-                    this.translatorService.translateProduct(product, locale);
+                    this.translationService.translateProduct(product, locale);
                     log.info("Auto translated Product: " + product.getName() + " into " + locale);
                 } catch (TranslationException e) {
                     // could not be translated automatically and can remain empty.
@@ -173,7 +180,7 @@ public class ProductService {
             }
             if (!hasCorrectTranslation) {
                 try {
-                    product = this.translatorService.translateProduct(product, tag);
+                    product = this.translationService.translateProduct(product, tag);
                     log.info("Auto translated Product: " + product.getName() + " into " + tag);
                 } catch (TranslationException e) {
                     // could not be translated automatically and can remain empty.

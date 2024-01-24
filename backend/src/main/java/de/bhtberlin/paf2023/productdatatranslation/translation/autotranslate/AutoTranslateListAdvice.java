@@ -1,9 +1,7 @@
 package de.bhtberlin.paf2023.productdatatranslation.translation.autotranslate;
 
 import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
-import de.bhtberlin.paf2023.productdatatranslation.service.TranslatorService;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translatable;
-import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.MethodParameter;
@@ -12,17 +10,16 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
+/**
+ * An AutoTranslateAdvice translating lists of {@link Translatable Translatables}.
+ */
 @ControllerAdvice
-@RequiredArgsConstructor
-public class AutoTranslateListAdvice implements ResponseBodyAdvice<List<Translatable>> {
-
-    final TranslatorService translatorService;
+public class AutoTranslateListAdvice extends AutoTranslateAdvice<List<Translatable>> {
 
     @Override
     public boolean supports(MethodParameter returnType, @NotNull Class<? extends HttpMessageConverter<?>> converterType) {
@@ -52,7 +49,7 @@ public class AutoTranslateListAdvice implements ResponseBodyAdvice<List<Translat
                                               @NotNull ServerHttpResponse response) {
         if (body != null) {
             body.forEach(translatable ->
-                    translatable = this.translatorService.translateTranslatable(translatable, AppConfig.DEFAULT_LANGUAGE, LocaleContextHolder.getLocale().toLanguageTag()));
+                    translatable = this.translateTranslatable(translatable, AppConfig.DEFAULT_LANGUAGE, LocaleContextHolder.getLocale().toLanguageTag()));
         }
         return body;
     }

@@ -1,51 +1,44 @@
 package de.bhtberlin.paf2023.productdatatranslation.translation.autotranslate;
 
-import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
-import de.bhtberlin.paf2023.productdatatranslation.service.TranslatorService;
+import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
+import de.bhtberlin.paf2023.productdatatranslation.service.LanguageService;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translatable;
-import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.core.MethodParameter;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.server.ServerHttpRequest;
-import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import de.bhtberlin.paf2023.productdatatranslation.translation.TranslationVisitor;
+import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+/**
+ * An abstract AutoTranslateAdvice providing the common functionality for
+ * translating {@link Translatable} objects.
+ *
+ * @param <T> The type of the {@link Translatable} to translate.
+ */
+public abstract class AutoTranslateAdvice<T> implements ResponseBodyAdvice<T> {
 
-@ControllerAdvice
-@RequiredArgsConstructor
-public class AutoTranslateAdvice implements ResponseBodyAdvice<Translatable> {
+    /**
+     * An implementation of {@link Translator} that takes care of translation
+     * and conversion of text, currencies and measurements.
+     */
+    @Autowired
+    protected Translator translator;
 
-    final TranslatorService translatorService;
+    /**
+     * The {@link LanguageService} for access to {@link Language Languages}.
+     */
+    @Autowired
+    protected LanguageService languageService;
 
-    @Override
-    public boolean supports(MethodParameter returnType, @NotNull Class<? extends HttpMessageConverter<?>> converterType) {
-        if (returnType.getGenericParameterType() instanceof ParameterizedType parameterizedType) {
-            try {
-                Type[] args = parameterizedType.getActualTypeArguments();
-                return Translatable.class.isAssignableFrom((Class<?>) args[0]);
-            } catch (Exception e) {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public Translatable beforeBodyWrite(Translatable body,
-                                        @NotNull MethodParameter returnType,
-                                        @NotNull MediaType selectedContentType,
-                                        @NotNull Class<? extends HttpMessageConverter<?>> selectedConverterType,
-                                        @NotNull ServerHttpRequest request,
-                                        @NotNull ServerHttpResponse response) {
-        if (body != null) {
-            body = this.translatorService.translateTranslatable(body, AppConfig.DEFAULT_LANGUAGE, LocaleContextHolder.getLocale().toLanguageTag());
-        }
-        return body;
+    /**
+     * Translate a {@link Translatable} into a specific language.
+     *
+     * @param translatable The {@link Translatable} to translate.
+     * @param to           The tag of the target locale.
+     * @return The translated {@link Translatable}.
+     */
+    protected Translatable translateTranslatable(Translatable translatable, String from, String to) {
+        Language fromLang = this.languageService.getByIsoCode(from);
+        Language toLang = this.languageService.getByIsoCode(to);
+        return translatable.translate((TranslationVisitor) translator, fromLang, toLang);
     }
 }
