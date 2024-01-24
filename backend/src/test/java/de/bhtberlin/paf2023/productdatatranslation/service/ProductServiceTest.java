@@ -18,10 +18,10 @@ import java.util.Locale;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("integration")
-public class ProductSearchServiceTest {
+public class ProductServiceTest {
 
     @Autowired
-    ProductSearchService productSearchService;
+    ProductService productService;
 
     /**
      * Should find a product searched in the correct case in an existing language.
@@ -30,7 +30,7 @@ public class ProductSearchServiceTest {
     @Transactional
     public void shouldFindSearchedProductInExistingLanguage() {
         String search = "Premium";
-        Page<Product> products = this.productSearchService.searchAllProducts(search, Locale.GERMAN, Pageable.unpaged());
+        Page<Product> products = this.productService.searchAllProducts(search, Locale.GERMAN, Pageable.unpaged());
         Assertions.assertTrue(products.getContent().get(0).getName().contains(search));
     }
 
@@ -42,7 +42,7 @@ public class ProductSearchServiceTest {
     public void shouldFindWrongCaseSearchedProductInExistingLanguage() {
         String search = "Reiserucksack";
         String wrongCase = "reiserucksack".toLowerCase();
-        Page<Product> products = this.productSearchService.searchAllProducts(wrongCase, Locale.GERMAN, Pageable.unpaged());
+        Page<Product> products = this.productService.searchAllProducts(wrongCase, Locale.GERMAN, Pageable.unpaged());
         Assertions.assertTrue(products.getContent().get(0).getName().contains(search));
     }
 
@@ -53,7 +53,7 @@ public class ProductSearchServiceTest {
     @Transactional
     public void shouldFindMultipleSearchedProductInExistingLanguage() {
         String search = "Küche";
-        Page<Product> products = this.productSearchService.searchAllProducts(search, Locale.GERMAN, Pageable.unpaged());
+        Page<Product> products = this.productService.searchAllProducts(search, Locale.GERMAN, Pageable.unpaged());
         Assertions.assertTrue(products.getContent().get(0).getName().contains(search));
         Assertions.assertEquals(2, products.getNumberOfElements());
     }
@@ -66,7 +66,7 @@ public class ProductSearchServiceTest {
     public void shouldFindSearchedProductInNonExistingLanguage() {
         String search = "securite";
         String match = "sécurité"; // todo: fix translation problems with special characters.
-        Page<Product> products = this.productSearchService.searchAllProducts(search, Locale.FRENCH, Pageable.unpaged());
+        Page<Product> products = this.productService.searchAllProducts(search, Locale.FRENCH, Pageable.unpaged());
         Assertions.assertTrue(products.getContent().get(0).getTranslations().stream().findFirst().orElse(new Translation()).getShortDescription().contains(match));
     }
 
@@ -77,7 +77,7 @@ public class ProductSearchServiceTest {
     @Transactional
     public void shouldFindProductsWithoutSearchTerm() {
         String search = "";
-        Page<Product> products = this.productSearchService.searchAllProducts(search, Locale.GERMAN, Pageable.unpaged());
+        Page<Product> products = this.productService.searchAllProducts(search, Locale.GERMAN, Pageable.unpaged());
         Assertions.assertEquals(products.getNumberOfElements(), products.getTotalElements());
     }
 
@@ -89,7 +89,7 @@ public class ProductSearchServiceTest {
     public void shouldFindLimitedAmountOfProducts() {
         int amount = 5;
         String search = "";
-        Page<Product> products = this.productSearchService.searchAllProducts(search, Locale.GERMAN, Pageable.ofSize(amount));
+        Page<Product> products = this.productService.searchAllProducts(search, Locale.GERMAN, Pageable.ofSize(amount));
         Assertions.assertEquals(amount, products.getNumberOfElements());
     }
 }

@@ -7,10 +7,8 @@ import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Measurement;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.repo.LanguageRepository;
-import de.bhtberlin.paf2023.productdatatranslation.service.ProductCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.ProductService;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
-import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.CurrencyConversionStrategy;
-import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.FakeCurrencyConversionStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -37,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-class ProductRestControllerTest {
+class ProductControllerTest {
 
     private static final String API_PATH = "/api/products";
 
@@ -51,18 +49,18 @@ class ProductRestControllerTest {
     private MockMvc mockMvc;
 
     /**
-     * Mocked {@link ProductCrudService} in order to provide
+     * Mocked {@link ProductService} in order to provide
      * mock responses to the tested REST controller.
      */
     @MockBean
-    ProductCrudService productCrudService;
+    ProductService productService;
 
     @MockBean
     LanguageRepository languageRepository;
 
     @Autowired
     Translator translator;
-    
+
     Language de = createTestLanguage("de", "EUR", "kg", "cm");
     Language en = createTestLanguage("en", "USD", "lb", "in");
 
@@ -84,7 +82,7 @@ class ProductRestControllerTest {
                 createTestProduct(2)
         );
         List<Product> mockEntities = mockDtos.stream().map(dto -> this.modelMapper.map(dto, Product.class)).toList();
-        Mockito.when(productCrudService.listAllProducts(any(Locale.class)))
+        Mockito.when(productService.listAllProducts(any(Locale.class)))
                 .thenReturn(mockEntities);
 
         mockDtos.forEach(dto -> dto.translate(translator, this.de, this.en));
@@ -99,7 +97,7 @@ class ProductRestControllerTest {
     @Test
     void productCanBeCreated() throws Exception {
         ProductDto mockDto = createTestProduct();
-        Mockito.when(productCrudService.createProduct(any(Product.class)))
+        Mockito.when(productService.createProduct(any(Product.class)))
                 .thenReturn(this.modelMapper.map(mockDto, Product.class));
 
         mockDto.translate(translator, this.de, this.en);
@@ -116,7 +114,7 @@ class ProductRestControllerTest {
     @Test
     void productCanBeRead() throws Exception {
         ProductDto mockDto = createTestProduct(1);
-        Mockito.when(productCrudService.readProduct(any(int.class), any(Locale.class)))
+        Mockito.when(productService.readProduct(any(int.class), any(Locale.class)))
                 .thenReturn(Optional.of(this.modelMapper.map(mockDto, Product.class)));
 
         mockDto.translate(translator, this.de, this.en);
@@ -131,7 +129,7 @@ class ProductRestControllerTest {
     @Test
     void productCanBeUpdated() throws Exception {
         ProductDto mockDto = createTestProduct(1);
-        Mockito.when(productCrudService.updateProduct(argThat(argument -> argument.getId() == mockDto.getId())))
+        Mockito.when(productService.updateProduct(argThat(argument -> argument.getId() == mockDto.getId())))
                 .thenReturn(this.modelMapper.map(mockDto, Product.class));
 
         mockDto.translate(translator, this.de, this.en);

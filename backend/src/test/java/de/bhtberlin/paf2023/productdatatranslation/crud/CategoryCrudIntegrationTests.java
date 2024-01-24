@@ -1,7 +1,7 @@
 package de.bhtberlin.paf2023.productdatatranslation.crud;
 
 import de.bhtberlin.paf2023.productdatatranslation.entity.Category;
-import de.bhtberlin.paf2023.productdatatranslation.service.CategoryCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.CategoryService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CategoryCrudIntegrationTests {
 
     @Autowired
-    CategoryCrudService categoryService;
+    CategoryService categoryService;
 
     /**
      * Check if a Category can be read after it was created.

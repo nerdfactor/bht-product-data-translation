@@ -7,10 +7,10 @@ import de.bhtberlin.paf2023.productdatatranslation.dto.ProductDto;
 import de.bhtberlin.paf2023.productdatatranslation.dto.TranslationDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Translation;
-import de.bhtberlin.paf2023.productdatatranslation.service.CategoryCrudService;
-import de.bhtberlin.paf2023.productdatatranslation.service.ColorCrudService;
-import de.bhtberlin.paf2023.productdatatranslation.service.ProductCrudService;
-import de.bhtberlin.paf2023.productdatatranslation.service.TranslationCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.CategoryService;
+import de.bhtberlin.paf2023.productdatatranslation.service.ColorService;
+import de.bhtberlin.paf2023.productdatatranslation.service.ProductService;
+import de.bhtberlin.paf2023.productdatatranslation.service.TranslationService;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -48,16 +48,16 @@ class ChangeProductsTest {
     ModelMapper modelMapper;
 
     @Autowired
-    ProductCrudService productService;
+    ProductService productService;
 
     @Autowired
-    TranslationCrudService translationService;
+    TranslationService translationService;
 
     @Autowired
-    CategoryCrudService categoryService;
+    CategoryService categoryService;
 
     @Autowired
-    ColorCrudService colorService;
+    ColorService colorService;
 
     @Autowired
     EntityManager entityManager;

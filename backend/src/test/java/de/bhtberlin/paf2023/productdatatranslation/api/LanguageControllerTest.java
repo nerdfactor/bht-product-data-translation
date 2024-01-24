@@ -1,12 +1,9 @@
 package de.bhtberlin.paf2023.productdatatranslation.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.bhtberlin.paf2023.productdatatranslation.dto.ProductDto;
-import de.bhtberlin.paf2023.productdatatranslation.dto.TranslationDto;
+import de.bhtberlin.paf2023.productdatatranslation.dto.LanguageDto;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
-import de.bhtberlin.paf2023.productdatatranslation.entity.Translation;
 import de.bhtberlin.paf2023.productdatatranslation.service.LanguageService;
-import de.bhtberlin.paf2023.productdatatranslation.service.TranslationCrudService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
@@ -31,13 +28,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 /**
- * Test for {@link Translation} REST controller.
+ * Test for {@link Language} REST controller.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-class TranslationRestControllerTest {
+class LanguageControllerTest {
 
-    private static final String API_PATH = "/api/translations";
+    private static final String API_PATH = "/api/languages";
 
     @Autowired
     ObjectMapper jsonMapper;
@@ -49,26 +46,23 @@ class TranslationRestControllerTest {
     private MockMvc mockMvc;
 
     /**
-     * Mocked {@link TranslationCrudService} in order to provide
+     * Mocked {@link LanguageService} in order to provide
      * mock responses to the tested REST controller.
      */
-    @MockBean
-    TranslationCrudService translationCrudService;
-
     @MockBean
     LanguageService languageService;
 
     /**
-     * Check if {@link Translation Translations} can be listed.
+     * Check if {@link Language Languages} can be listed.
      */
     @Test
-    void translationsCanBeListed() throws Exception {
-        List<TranslationDto> mockDtos = Arrays.asList(
-                createTestTranslation(1),
-                createTestTranslation(2)
+    void languagesCanBeListed() throws Exception {
+        List<LanguageDto> mockDtos = Arrays.asList(
+                createTestLanguage(1),
+                createTestLanguage(2)
         );
-        List<Translation> mockEntities = mockDtos.stream().map(dto -> this.modelMapper.map(dto, Translation.class)).toList();
-        Mockito.when(translationCrudService.listAllTranslations())
+        List<Language> mockEntities = mockDtos.stream().map(dto -> this.modelMapper.map(dto, Language.class)).toList();
+        Mockito.when(languageService.listAllLanguages())
                 .thenReturn(mockEntities);
 
         mockMvc.perform(get(API_PATH))
@@ -77,32 +71,29 @@ class TranslationRestControllerTest {
     }
 
     /**
-     * Check if a {@link Translation} can be created.
+     * Check if a {@link Language} can be created.
      */
     @Test
-    void translationCanBeCreated() throws Exception {
-        TranslationDto mockDto = createTestTranslation();
-        mockDto.setProduct(new ProductDto(1));
-        Mockito.when(translationCrudService.createTranslation(any(Translation.class)))
-                .thenReturn(this.modelMapper.map(mockDto, Translation.class));
-        Mockito.when(languageService.getDefaultLanguage())
-                .thenReturn(new Language());
+    void languageCanBeCreated() throws Exception {
+        LanguageDto mockDto = createTestLanguage();
+        Mockito.when(languageService.createLanguage(any(Language.class)))
+                .thenReturn(this.modelMapper.map(mockDto, Language.class));
 
         mockMvc.perform(post(API_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(this.jsonMapper.writeValueAsString(mockDto))
+                        .content(this.jsonMapper.writeValueAsString(new Language()))
                 ).andExpect(status().isCreated())
                 .andExpect(content().json(jsonMapper.writeValueAsString(mockDto)));
     }
 
     /**
-     * Check if a {@link Translation} can be read.
+     * Check if a {@link Language} can be read.
      */
     @Test
-    void translationCanBeRead() throws Exception {
-        TranslationDto mockDto = createTestTranslation();
-        Mockito.when(translationCrudService.readTranslation(any(int.class)))
-                .thenReturn(Optional.of(this.modelMapper.map(mockDto, Translation.class)));
+    void languageCanBeRead() throws Exception {
+        LanguageDto mockDto = createTestLanguage();
+        Mockito.when(languageService.readLanguage(any(int.class)))
+                .thenReturn(Optional.of(this.modelMapper.map(mockDto, Language.class)));
 
         mockMvc.perform(get(API_PATH + "/" + mockDto.getId()))
                 .andExpect(status().isOk())
@@ -110,13 +101,13 @@ class TranslationRestControllerTest {
     }
 
     /**
-     * Check if a {@link Translation} can be updated.
+     * Check if a {@link Language} can be updated.
      */
     @Test
-    void translationCanBeUpdated() throws Exception {
-        TranslationDto mockDto = createTestTranslation(1);
-        Mockito.when(translationCrudService.updateTranslation(argThat(argument -> argument.getId() == mockDto.getId())))
-                .thenReturn(this.modelMapper.map(mockDto, Translation.class));
+    void languageCanBeUpdated() throws Exception {
+        LanguageDto mockDto = createTestLanguage(1);
+        Mockito.when(languageService.updateLanguage(argThat(argument -> argument.getId() == mockDto.getId())))
+                .thenReturn(this.modelMapper.map(mockDto, Language.class));
 
         mockMvc.perform(put(API_PATH + "/" + mockDto.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -126,24 +117,23 @@ class TranslationRestControllerTest {
     }
 
     /**
-     * Check if a {@link Translation} can be deleted.
+     * Check if a {@link Language} can be deleted.
      */
     @Test
-    void translationCanBeDeleted() throws Exception {
+    void languageCanBeDeleted() throws Exception {
         mockMvc.perform(delete(API_PATH + "/1"))
                 .andExpect(status().is(HttpStatus.NO_CONTENT.value()));
     }
 
-    private TranslationDto createTestTranslation() {
-        String description = UUID.randomUUID().toString() + UUID.randomUUID() + UUID.randomUUID();
-        TranslationDto dto = new TranslationDto();
-        dto.setShortDescription(description.substring(0, 20));
-        dto.setLongDescription(description);
+    private LanguageDto createTestLanguage() {
+        LanguageDto dto = new LanguageDto();
+        dto.setName(UUID.randomUUID().toString().replace("-", "").substring(10));
+        dto.setIsoCode(dto.getName().substring(0, 2));
         return dto;
     }
 
-    private TranslationDto createTestTranslation(int id) {
-        TranslationDto dto = createTestTranslation();
+    private LanguageDto createTestLanguage(int id) {
+        LanguageDto dto = createTestLanguage();
         dto.setId(id);
         return dto;
     }

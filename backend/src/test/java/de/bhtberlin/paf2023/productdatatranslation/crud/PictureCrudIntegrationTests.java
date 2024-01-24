@@ -1,7 +1,7 @@
 package de.bhtberlin.paf2023.productdatatranslation.crud;
 
 import de.bhtberlin.paf2023.productdatatranslation.entity.Picture;
-import de.bhtberlin.paf2023.productdatatranslation.service.PictureCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.PictureService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PictureCrudIntegrationTests {
 
     @Autowired
-    PictureCrudService pictureService;
+    PictureService pictureService;
 
     /**
      * Check if a Picture can be read after it was created.

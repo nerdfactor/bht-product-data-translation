@@ -1,7 +1,7 @@
 package de.bhtberlin.paf2023.productdatatranslation.crud;
 
 import de.bhtberlin.paf2023.productdatatranslation.entity.Product;
-import de.bhtberlin.paf2023.productdatatranslation.service.ProductCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.ProductService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ProductCrudIntegrationTests {
 
     @Autowired
-    ProductCrudService productService;
+    ProductService productService;
 
     /**
      * Check if a product can be read after it was created.

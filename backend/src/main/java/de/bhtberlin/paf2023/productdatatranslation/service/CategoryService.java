@@ -13,12 +13,12 @@ import java.util.Optional;
 
 
 /**
- * Service for basic CRUD operations on Categories.
+ * Service for operations on Categories.
  */
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class CategoryCrudService {
+public class CategoryService {
 
     /**
      * An implementation of a {@link CategoryRepository} for data access.

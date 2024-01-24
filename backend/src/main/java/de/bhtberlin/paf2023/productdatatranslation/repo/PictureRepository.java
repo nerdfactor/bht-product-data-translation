@@ -4,6 +4,9 @@ import de.bhtberlin.paf2023.productdatatranslation.entity.Picture;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Repository for {@link Picture} entities.
+ */
 @Repository
 public interface PictureRepository extends JpaRepository<Picture, Integer> {
 }

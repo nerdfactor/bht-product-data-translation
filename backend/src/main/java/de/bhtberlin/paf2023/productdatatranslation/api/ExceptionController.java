@@ -19,7 +19,6 @@ import java.util.Optional;
 /**
  * Controller for exceptions within the application.
  */
-
 @Slf4j
 @RestControllerAdvice
 @Component
@@ -28,8 +27,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ExceptionController implements ErrorController {
 
+    /**
+     * The current http request.
+     */
     private final HttpServletRequest request;
 
+    /**
+     * Handle {@link EntityNotFoundException}.
+     *
+     * @param e The exception.
+     * @return An {@link ErrorResponseDto} with the error message.
+     */
     @ExceptionHandler(EntityNotFoundException.class)
     public HttpEntity<ErrorResponseDto> handleEntityNotFoundException(Exception e) {
         log.error("EntityNotFoundException during request {}.", request.getRequestURI());
@@ -39,6 +47,12 @@ public class ExceptionController implements ErrorController {
         );
     }
 
+    /**
+     * Handle {@link NullPointerException}.
+     *
+     * @param e The exception.
+     * @return An {@link ErrorResponseDto} with the error message.
+     */
     @ExceptionHandler(NullPointerException.class)
     public HttpEntity<ErrorResponseDto> handleNullPointerException(Exception e) {
         log.error("NullPointerException during request {}.", request.getRequestURI());
@@ -48,6 +62,12 @@ public class ExceptionController implements ErrorController {
         );
     }
 
+    /**
+     * Handle all other {@link Exception Exceptions}.
+     *
+     * @param e The exception.
+     * @return An {@link ErrorResponseDto} with the error message.
+     */
     @ExceptionHandler(Exception.class)
     public HttpEntity<ErrorResponseDto> defaultErrorHandler(Exception e) throws Exception {
         if (AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class) != null) {
@@ -61,6 +81,12 @@ public class ExceptionController implements ErrorController {
     }
 
 
+    /**
+     * Fallback exception handler.
+     *
+     * @param request The current request.
+     * @return An {@link ErrorResponseDto} with the error message.
+     */
     @RequestMapping("/error")
     public HttpEntity<ErrorResponseDto> error(HttpServletRequest request) {
         log.error("Unhandled Exception {} during request {}",

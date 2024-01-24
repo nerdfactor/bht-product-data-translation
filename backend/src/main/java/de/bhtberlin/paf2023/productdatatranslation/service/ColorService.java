@@ -13,12 +13,12 @@ import java.util.Optional;
 
 
 /**
- * Service for basic CRUD operations on Colors.
+ * Service for operations on Colors.
  */
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class ColorCrudService {
+public class ColorService {
 
     /**
      * An implementation of a {@link ColorRepository} for data access.

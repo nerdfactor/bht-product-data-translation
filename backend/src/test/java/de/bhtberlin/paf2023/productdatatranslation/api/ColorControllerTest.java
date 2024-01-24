@@ -7,10 +7,8 @@ import de.bhtberlin.paf2023.productdatatranslation.entity.Currency;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Measurement;
 import de.bhtberlin.paf2023.productdatatranslation.repo.LanguageRepository;
-import de.bhtberlin.paf2023.productdatatranslation.service.ColorCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.ColorService;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
-import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.CurrencyConversionStrategy;
-import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.FakeCurrencyConversionStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -40,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-class ColorRestControllerTest {
+class ColorControllerTest {
 
     private static final String API_PATH = "/api/colors";
 
@@ -54,11 +52,11 @@ class ColorRestControllerTest {
     private MockMvc mockMvc;
 
     /**
-     * Mocked {@link ColorCrudService} in order to provide
+     * Mocked {@link ColorService} in order to provide
      * mock responses to the tested REST controller.
      */
     @MockBean
-    ColorCrudService colorCrudService;
+    ColorService colorService;
 
     @MockBean
     LanguageRepository languageRepository;
@@ -87,7 +85,7 @@ class ColorRestControllerTest {
                 createTestColor(2)
         );
         List<Color> mockEntities = mockDtos.stream().map(dto -> this.modelMapper.map(dto, Color.class)).toList();
-        Mockito.when(colorCrudService.listAllColors())
+        Mockito.when(colorService.listAllColors())
                 .thenReturn(mockEntities);
 
         mockDtos.forEach(dto -> dto.translate(translator, this.de, this.en));
@@ -102,7 +100,7 @@ class ColorRestControllerTest {
     @Test
     void colorCanBeCreated() throws Exception {
         ColorDto mockDto = createTestColor();
-        Mockito.when(colorCrudService.createColor(any(Color.class)))
+        Mockito.when(colorService.createColor(any(Color.class)))
                 .thenReturn(this.modelMapper.map(mockDto, Color.class));
 
         mockDto.translate(translator, this.de, this.en);
@@ -119,7 +117,7 @@ class ColorRestControllerTest {
     @Test
     void colorCanBeRead() throws Exception {
         ColorDto mockDto = createTestColor();
-        Mockito.when(colorCrudService.readColor(any(int.class)))
+        Mockito.when(colorService.readColor(any(int.class)))
                 .thenReturn(Optional.of(this.modelMapper.map(mockDto, Color.class)));
 
         mockDto.translate(translator, this.de, this.en);
@@ -134,7 +132,7 @@ class ColorRestControllerTest {
     @Test
     void colorCanBeUpdated() throws Exception {
         ColorDto mockDto = createTestColor(1);
-        Mockito.when(colorCrudService.updateColor(argThat(argument -> argument.getId() == mockDto.getId())))
+        Mockito.when(colorService.updateColor(argThat(argument -> argument.getId() == mockDto.getId())))
                 .thenReturn(this.modelMapper.map(mockDto, Color.class));
 
         mockDto.translate(translator, this.de, this.en);

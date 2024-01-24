@@ -1,7 +1,7 @@
 package de.bhtberlin.paf2023.productdatatranslation.crud;
 
 import de.bhtberlin.paf2023.productdatatranslation.entity.Translation;
-import de.bhtberlin.paf2023.productdatatranslation.service.TranslationCrudService;
+import de.bhtberlin.paf2023.productdatatranslation.service.TranslationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TranslationCrudIntegrationTests {
 
     @Autowired
-    TranslationCrudService translationService;
+    TranslationService translationService;
 
     /**
      * Check if a Translation can be read after it was created.
