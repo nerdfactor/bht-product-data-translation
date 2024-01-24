@@ -14,12 +14,11 @@ import java.util.Map;
 
 /**
  * Controller for translation related operations.
- * todo: combine with TranslationRestController?
  */
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/translations")
-public class TranslationController {
+@RequestMapping("/api/i18n")
+public class InternationalizationController {
 
     /**
      * An implementation of {@link Translator} that takes care of translation
@@ -33,9 +32,9 @@ public class TranslationController {
      * @param values The map of strings to translate.
      * @return A {@link ResponseEntity} containing the translated strings.
      */
-    @PostMapping("/i18n")
+    @PostMapping("")
     public ResponseEntity<Map<String, String>> i18n(@RequestBody final Map<String, String> values) {
-        final String locale = LocaleContextHolder.getLocale().toLanguageTag().replace("-", "_");
+        final String locale = LocaleContextHolder.getLocale().toLanguageTag();
         values.forEach((s, s2) -> values.put(s, this.translator.translateText(s2, AppConfig.DEFAULT_LANGUAGE, locale)));
         return ResponseEntity.ok(values);
     }

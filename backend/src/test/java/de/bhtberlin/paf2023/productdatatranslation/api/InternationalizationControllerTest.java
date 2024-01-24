@@ -19,9 +19,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class TranslationControllerTest {
+class InternationalizationControllerTest {
 
-    private static final String API_PATH = "/api/translations";
+    private static final String API_PATH = "/api/i18n";
 
     @Autowired
     ObjectMapper jsonMapper;
@@ -39,7 +39,7 @@ class TranslationControllerTest {
     void shouldTranslateI18nData() throws Exception {
         Map<String, String> i18n = new HashMap<>();
         i18n.put("test", "some testable string");
-        mockMvc.perform(post(API_PATH + "/i18n")
+        mockMvc.perform(post(API_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(this.jsonMapper.writeValueAsString(i18n))
                 ).andExpect(status().isOk())

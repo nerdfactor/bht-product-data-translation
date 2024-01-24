@@ -13,6 +13,6 @@ export class I18nService extends HttpService {
   }
 
   translate(elements: any, isoCode: string): Observable<any> {
-    return this.post<any>('api/translations/i18n', elements, isoCode);
+    return this.post<any>('api/i18n', elements, isoCode);
   }
 }
