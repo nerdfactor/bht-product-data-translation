@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/translations")
-public class TranslationRestController {
+public class TranslationController {
 
     /**
      * The {@link TranslationService} for access to {@link Translation Translations}.

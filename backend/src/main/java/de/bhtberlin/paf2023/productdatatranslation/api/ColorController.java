@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/colors")
-public class ColorRestController {
+public class ColorController {
 
     /**
      * The {@link ColorService} for access to {@link Color Colors}.

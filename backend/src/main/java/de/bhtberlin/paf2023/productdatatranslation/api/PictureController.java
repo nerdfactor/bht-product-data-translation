@@ -26,7 +26,7 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/pictures")
-public class PictureRestController {
+public class PictureController {
 
     /**
      * The {@link PictureService} for {@link Picture} related features.

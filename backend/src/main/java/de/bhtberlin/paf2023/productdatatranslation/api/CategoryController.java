@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/categories")
-public class CategoryRestController {
+public class CategoryController {
 
     /**
      * The {@link CategoryService} for access to {@link Category Categories}.

@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-class PictureRestControllerTest {
+class PictureControllerTest {
 
     private static final String API_PATH = "/api/pictures";
 

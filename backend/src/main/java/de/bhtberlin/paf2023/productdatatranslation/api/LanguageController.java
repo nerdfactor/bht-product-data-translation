@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/languages")
-public class LanguageRestController {
+public class LanguageController {
 
     /**
      * The {@link LanguageService} for access to {@link Language Languages}.

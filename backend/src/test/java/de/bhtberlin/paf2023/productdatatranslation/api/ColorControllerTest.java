@@ -1,13 +1,13 @@
 package de.bhtberlin.paf2023.productdatatranslation.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.bhtberlin.paf2023.productdatatranslation.dto.CategoryDto;
-import de.bhtberlin.paf2023.productdatatranslation.entity.Category;
+import de.bhtberlin.paf2023.productdatatranslation.dto.ColorDto;
+import de.bhtberlin.paf2023.productdatatranslation.entity.Color;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Currency;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Measurement;
 import de.bhtberlin.paf2023.productdatatranslation.repo.LanguageRepository;
-import de.bhtberlin.paf2023.productdatatranslation.service.CategoryService;
+import de.bhtberlin.paf2023.productdatatranslation.service.ColorService;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,13 +34,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 /**
- * Test for {@link Category} REST controller.
+ * Test for {@link Color} REST controller.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-class CategoryRestControllerTest {
+class ColorControllerTest {
 
-    private static final String API_PATH = "/api/categories";
+    private static final String API_PATH = "/api/colors";
 
     @Autowired
     ObjectMapper jsonMapper;
@@ -52,11 +52,11 @@ class CategoryRestControllerTest {
     private MockMvc mockMvc;
 
     /**
-     * Mocked {@link CategoryService} in order to provide
+     * Mocked {@link ColorService} in order to provide
      * mock responses to the tested REST controller.
      */
     @MockBean
-    CategoryService categoryService;
+    ColorService colorService;
 
     @MockBean
     LanguageRepository languageRepository;
@@ -76,16 +76,16 @@ class CategoryRestControllerTest {
     }
 
     /**
-     * Check if {@link Category Categories} can be listed.
+     * Check if {@link Color Colors} can be listed.
      */
     @Test
-    void categoriesCanBeListed() throws Exception {
-        List<CategoryDto> mockDtos = Arrays.asList(
-                createTestCategory(1),
-                createTestCategory(2)
+    void colorsCanBeListed() throws Exception {
+        List<ColorDto> mockDtos = Arrays.asList(
+                createTestColor(1),
+                createTestColor(2)
         );
-        List<Category> mockEntities = mockDtos.stream().map(dto -> this.modelMapper.map(dto, Category.class)).toList();
-        Mockito.when(categoryService.listAllCategories())
+        List<Color> mockEntities = mockDtos.stream().map(dto -> this.modelMapper.map(dto, Color.class)).toList();
+        Mockito.when(colorService.listAllColors())
                 .thenReturn(mockEntities);
 
         mockDtos.forEach(dto -> dto.translate(translator, this.de, this.en));
@@ -95,30 +95,30 @@ class CategoryRestControllerTest {
     }
 
     /**
-     * Check if a {@link Category} can be created.
+     * Check if a {@link Color} can be created.
      */
     @Test
-    void categoryCanBeCreated() throws Exception {
-        CategoryDto mockDto = createTestCategory();
-        Mockito.when(categoryService.createCategory(any(Category.class)))
-                .thenReturn(this.modelMapper.map(mockDto, Category.class));
+    void colorCanBeCreated() throws Exception {
+        ColorDto mockDto = createTestColor();
+        Mockito.when(colorService.createColor(any(Color.class)))
+                .thenReturn(this.modelMapper.map(mockDto, Color.class));
 
         mockDto.translate(translator, this.de, this.en);
         mockMvc.perform(post(API_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(this.jsonMapper.writeValueAsString(new Category()))
+                        .content(this.jsonMapper.writeValueAsString(new Color()))
                 ).andExpect(status().isCreated())
                 .andExpect(content().json(jsonMapper.writeValueAsString(mockDto)));
     }
 
     /**
-     * Check if a {@link Category} can be read.
+     * Check if a {@link Color} can be read.
      */
     @Test
-    void categoryCanBeRead() throws Exception {
-        CategoryDto mockDto = createTestCategory();
-        Mockito.when(categoryService.readCategory(any(int.class)))
-                .thenReturn(Optional.of(this.modelMapper.map(mockDto, Category.class)));
+    void colorCanBeRead() throws Exception {
+        ColorDto mockDto = createTestColor();
+        Mockito.when(colorService.readColor(any(int.class)))
+                .thenReturn(Optional.of(this.modelMapper.map(mockDto, Color.class)));
 
         mockDto.translate(translator, this.de, this.en);
         mockMvc.perform(get(API_PATH + "/" + mockDto.getId()))
@@ -127,13 +127,13 @@ class CategoryRestControllerTest {
     }
 
     /**
-     * Check if a {@link Category} can be updated.
+     * Check if a {@link Color} can be updated.
      */
     @Test
-    void categoryCanBeUpdated() throws Exception {
-        CategoryDto mockDto = createTestCategory(1);
-        Mockito.when(categoryService.updateCategory(argThat(argument -> argument.getId() == mockDto.getId())))
-                .thenReturn(this.modelMapper.map(mockDto, Category.class));
+    void colorCanBeUpdated() throws Exception {
+        ColorDto mockDto = createTestColor(1);
+        Mockito.when(colorService.updateColor(argThat(argument -> argument.getId() == mockDto.getId())))
+                .thenReturn(this.modelMapper.map(mockDto, Color.class));
 
         mockDto.translate(translator, this.de, this.en);
         mockMvc.perform(put(API_PATH + "/" + mockDto.getId())
@@ -144,22 +144,22 @@ class CategoryRestControllerTest {
     }
 
     /**
-     * Check if a {@link Category} can be deleted.
+     * Check if a {@link Color} can be deleted.
      */
     @Test
-    void categoryCanBeDeleted() throws Exception {
+    void colorCanBeDeleted() throws Exception {
         mockMvc.perform(delete(API_PATH + "/1"))
                 .andExpect(status().is(HttpStatus.NO_CONTENT.value()));
     }
 
-    private CategoryDto createTestCategory() {
-        CategoryDto dto = new CategoryDto();
+    private ColorDto createTestColor() {
+        ColorDto dto = new ColorDto();
         dto.setName(UUID.randomUUID().toString().replace("-", "").substring(10));
         return dto;
     }
 
-    private CategoryDto createTestCategory(int id) {
-        CategoryDto dto = createTestCategory();
+    private ColorDto createTestColor(int id) {
+        ColorDto dto = createTestColor();
         dto.setId(id);
         return dto;
     }
