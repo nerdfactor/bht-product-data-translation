@@ -19,6 +19,7 @@ import java.util.Optional;
 
 /**
  * Controller for {@link Product} related operations.
+ * todo: combine with ProductRestController?
  */
 @RequiredArgsConstructor
 @RestController

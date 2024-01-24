@@ -14,6 +14,7 @@ import java.util.Map;
 
 /**
  * Controller for translation related operations.
+ * todo: combine with TranslationRestController?
  */
 @RequiredArgsConstructor
 @RestController
