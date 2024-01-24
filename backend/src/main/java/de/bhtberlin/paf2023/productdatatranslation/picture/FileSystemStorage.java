@@ -1,13 +1,11 @@
 package de.bhtberlin.paf2023.productdatatranslation.picture;
 
-import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
 import de.bhtberlin.paf2023.productdatatranslation.entity.Picture;
 import de.bhtberlin.paf2023.productdatatranslation.exception.EntityNotFoundException;
 import de.bhtberlin.paf2023.productdatatranslation.repo.PictureRepository;
 import de.bhtberlin.paf2023.productdatatranslation.util.HashUtil;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
@@ -37,6 +35,7 @@ public class FileSystemStorage implements Storage {
         }
         picture.setFilename(fileName);
         picture.setFormat(fileType);
+        // todo: maybe remove reference to repository by returning the unsaved picture back to the service
         this.pictureRepository.save(picture);
         return picture;
     }

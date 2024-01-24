@@ -30,6 +30,7 @@ public class MemoryStorage implements Storage {
         }
         picture.setFilename(fileName);
         picture.setFormat(fileType);
+        // todo: maybe remove reference to repository by returning the unsaved picture back to the service
         this.pictureRepository.save(picture);
         return picture;
     }
