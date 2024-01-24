@@ -1,4 +1,4 @@
-package de.bhtberlin.paf2023.productdatatranslation.translation.autotranslate;
+package de.bhtberlin.paf2023.productdatatranslation.api.autotranslate;
 
 import de.bhtberlin.paf2023.productdatatranslation.entity.Language;
 import de.bhtberlin.paf2023.productdatatranslation.service.LanguageService;
