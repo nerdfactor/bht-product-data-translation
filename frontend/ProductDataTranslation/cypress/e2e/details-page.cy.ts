@@ -1,6 +1,12 @@
 describe('details page', () => {
   beforeEach(function () {
-    cy.visit('http://localhost:4200/product/1');
+    cy.visit('http://localhost:4200/product/1', {
+      onBeforeLoad: (win) => {
+        Object.defineProperty(win.navigator, 'languages', {
+          value: ['de-DE'],
+        });
+      }
+    });
   })
 
   it('should navigate back to search page', () => {

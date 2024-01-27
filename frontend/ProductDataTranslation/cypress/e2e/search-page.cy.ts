@@ -1,6 +1,12 @@
 describe('search page', () => {
   beforeEach(function () {
-    cy.visit('http://localhost:4200/');
+    cy.visit('http://localhost:4200/', {
+      onBeforeLoad: (win) => {
+        Object.defineProperty(win.navigator, 'languages', {
+          value: ['de-DE'],
+        });
+      }
+    });
   })
 
   it('should move to search page', () => {

@@ -1,6 +1,12 @@
 describe('search page', () => {
   beforeEach(function () {
-    cy.visit('http://localhost:4200/create');
+    cy.visit('http://localhost:4200/create', {
+      onBeforeLoad: (win) => {
+        Object.defineProperty(win.navigator, 'languages', {
+          value: ['de-DE'],
+        });
+      }
+    });
   });
 
   it('should navigate back', () => {
@@ -42,7 +48,7 @@ describe('search page', () => {
   });
 
   it('should select image', () => {
-    cy.contains('label', 'Foto').invoke('attr', 'for').then(id => 
+    cy.contains('label', 'Foto').invoke('attr', 'for').then(id =>
       cy.get('#' + id).selectFile({
       contents: Cypress.Buffer.from(''),
       fileName: 'image.jpg',

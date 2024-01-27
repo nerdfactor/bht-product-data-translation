@@ -1,6 +1,12 @@
 describe('edit page', () => {
   beforeEach(function () {
-    cy.visit('http://localhost:4200/edit/1');
+    cy.visit('http://localhost:4200/edit/1', {
+      onBeforeLoad: (win) => {
+        Object.defineProperty(win.navigator, 'languages', {
+          value: ['de-DE'],
+        });
+      }
+    });
   });
 
   it('should navigate back', () => {
@@ -66,7 +72,7 @@ describe('edit page', () => {
   });
 
   it('should pick an image', () => {
-    cy.contains('label', 'Foto').invoke('attr', 'for').then(id => 
+    cy.contains('label', 'Foto').invoke('attr', 'for').then(id =>
       cy.get('#' + id).selectFile({
       contents: Cypress.Buffer.from(''),
       fileName: 'image.jpg',
