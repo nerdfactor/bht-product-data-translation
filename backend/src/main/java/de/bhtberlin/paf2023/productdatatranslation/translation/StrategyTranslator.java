@@ -1,5 +1,6 @@
 package de.bhtberlin.paf2023.productdatatranslation.translation;
 
+import de.bhtberlin.paf2023.productdatatranslation.translation.caching.AutoTranslationCache;
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.CurrencyConversionStrategy;
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.MeasurementConversionStrategy;
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.TextTranslationStrategy;
@@ -17,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
  */
 @Getter
 @Setter
-@Builder(setterPrefix = "with")
 @NoArgsConstructor
 @AllArgsConstructor
 public class StrategyTranslator extends BasicTranslator {
@@ -27,8 +27,6 @@ public class StrategyTranslator extends BasicTranslator {
     private CurrencyConversionStrategy currencyStrategy;
 
     private MeasurementConversionStrategy measurementStrategy;
-
-    private AutoTranslationCache translationCache;
 
     /**
      * Set all strategies.
@@ -50,22 +48,10 @@ public class StrategyTranslator extends BasicTranslator {
      */
     @Override
     public @NotNull String translateText(String text, String from, String to) {
-        return this.translateText(text, from, to, this.translationCache != null);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public @NotNull String translateText(String text, String from, String to, boolean cached) {
         if (text == null || text.isEmpty()) {
             return "";
         }
-        if (cached && this.translationCache != null) {
-            return this.translationCache.cachedTranslate(text, from, to, this);
-        } else {
-            return this.textStrategy.translateText(text, from, to);
-        }
+        return this.textStrategy.translateText(text, from, to);
     }
 
     /**

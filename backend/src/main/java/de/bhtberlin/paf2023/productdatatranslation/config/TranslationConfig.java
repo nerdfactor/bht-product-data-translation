@@ -3,7 +3,7 @@ package de.bhtberlin.paf2023.productdatatranslation.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.TranslateOptions;
-import de.bhtberlin.paf2023.productdatatranslation.translation.AutoTranslationCache;
+import de.bhtberlin.paf2023.productdatatranslation.translation.caching.AutoTranslationCache;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
 import de.bhtberlin.paf2023.productdatatranslation.translation.factory.TranslatorFactory;
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.CurrencyLayerConversionStrategy;
@@ -47,7 +47,8 @@ public class TranslationConfig {
             String factoryClass = this.createClassName(this.appConfig.getTranslatorConfig().getFactory(), this.appConfig.getTranslatorConfig().getFactoryPackage());
             Class<?> cls = Class.forName(factoryClass);
             TranslatorFactory factory = (TranslatorFactory) cls.getDeclaredConstructor().newInstance();
-            return factory.getTranslator(this.appConfig.getTranslatorConfig(), context);
+            Translator translator = factory.getTranslator(this.appConfig.getTranslatorConfig(), context);
+            return translator;
         } catch (Exception e) {
             throw new ClassNotFoundException("Could not create translator.", e);
         }

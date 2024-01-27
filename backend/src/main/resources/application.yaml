@@ -36,3 +36,4 @@ app:
       text-translation-strategy: "GoogleWebTranslationStrategy"
       currency-conversion-strategy: "OpenExchangeConversionStrategy"
       measurement-conversion-strategy: "LocalMeasurementConversionStrategy"
+    translation-cache: "AutoTranslationCache"

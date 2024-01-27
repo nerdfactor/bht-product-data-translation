@@ -1,5 +1,6 @@
-package de.bhtberlin.paf2023.productdatatranslation.translation;
+package de.bhtberlin.paf2023.productdatatranslation.translation.caching;
 
+import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
 import de.bhtberlin.paf2023.productdatatranslation.util.HashUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -95,22 +96,7 @@ public class AutoTranslationCache {
         return Optional.ofNullable(this.cache.get(this.createCacheId(text, from, to)));
     }
 
-    /**
-     * Wrapp translateText call to a {@link Translator} in a check for a cached
-     * version of the text.
-     *
-     * @param text       The text.
-     * @param from       The tag of the current locale.
-     * @param to         The tag of the target locale.
-     * @param translator The {@link Translator} used for translation of the cache was not hit.
-     * @return The translated text.
-     */
-    public String cachedTranslate(@NotNull String text, @NotNull String from, @NotNull String to, @NotNull Translator translator) {
-        Optional<String> cached = this.getFromCache(text, from, to);
-        String translated = cached.orElse(translator.translateText(text, from, to, false));
-        this.addToCache(text, from, to, translated);
-        return translated;
-    }
+
 
     /**
      * Create an id for a text with its pair of current and target locale.

@@ -1,6 +1,6 @@
 package de.bhtberlin.paf2023.productdatatranslation.config;
 
-import de.bhtberlin.paf2023.productdatatranslation.translation.AutoTranslationCache;
+import de.bhtberlin.paf2023.productdatatranslation.translation.caching.AutoTranslationCache;
 import de.bhtberlin.paf2023.productdatatranslation.translation.BasicTranslator;
 import de.bhtberlin.paf2023.productdatatranslation.translation.StrategyTranslator;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
@@ -65,6 +65,8 @@ public class AppConfig {
 
         private String translator = BasicTranslator.class.getSimpleName();
 
+        private String translationCache = "";
+
         /**
          * The configuration for the translation strategies.
          * This will only be used if the translator is a {@link StrategyTranslator}
@@ -86,8 +88,6 @@ public class AppConfig {
             private String currencyConversionStrategy = FakeCurrencyConversionStrategy.class.getSimpleName();
 
             private String measurementConversionStrategy = FakeMeasurementConversionStrategy.class.getSimpleName();
-
-            private String translationCache = AutoTranslationCache.class.getSimpleName();
         }
 
         @Getter

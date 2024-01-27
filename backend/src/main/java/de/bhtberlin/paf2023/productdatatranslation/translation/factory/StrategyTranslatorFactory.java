@@ -1,18 +1,16 @@
 package de.bhtberlin.paf2023.productdatatranslation.translation.factory;
 
 import de.bhtberlin.paf2023.productdatatranslation.config.AppConfig;
-import de.bhtberlin.paf2023.productdatatranslation.exception.TranslationException;
-import de.bhtberlin.paf2023.productdatatranslation.translation.AutoTranslationCache;
 import de.bhtberlin.paf2023.productdatatranslation.translation.StrategyTranslator;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
+import de.bhtberlin.paf2023.productdatatranslation.translation.caching.AutoTranslationCache;
+import de.bhtberlin.paf2023.productdatatranslation.translation.caching.CachedTranslatorProxy;
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.CurrencyConversionStrategy;
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.MeasurementConversionStrategy;
 import de.bhtberlin.paf2023.productdatatranslation.translation.strategy.TextTranslationStrategy;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.context.annotation.Bean;
-
-import java.lang.reflect.Method;
 
 /**
  * Factory for creating {@link StrategyTranslator StrategyTranslators} and all
@@ -28,19 +26,25 @@ public class StrategyTranslatorFactory extends BasicTranslatorFactory {
         String textTranslationStrategyClassName = createClassName(config.getStrategyConfig().getTextTranslationStrategy(), config.getStrategyPackage());
         String currencyConversionStrategyClassName = createClassName(config.getStrategyConfig().getCurrencyConversionStrategy(), config.getStrategyPackage());
         String measurementConversionStrategyClassName = createClassName(config.getStrategyConfig().getMeasurementConversionStrategy(), config.getStrategyPackage());
-        String translationCacheClassName = createClassName(config.getStrategyConfig().getTranslationCache(), config.getTranslatorPackage());
+        String translationCacheClassName = createClassName(config.getTranslationCache(), config.getTranslatorPackage() + ".caching");
 
         try {
-            // The factory assumes that all {@link StrategyTranslator StrategyTranslators} have a static builder method.
+            // Check if the translator is a valid StrategyTranslator
             Class<?> translatorClass = Class.forName(translatorClassName);
-            Method builderMethod = translatorClass.getMethod("builder");
-            StrategyTranslator.StrategyTranslatorBuilder builder = (StrategyTranslator.StrategyTranslatorBuilder) builderMethod.invoke(null);
+            if (!StrategyTranslator.class.isAssignableFrom(translatorClass)) {
+                throw new ClassNotFoundException(translatorClassName + " is not a valid StrategyTranslator.");
+            }
 
-            return builder.withTextStrategy((TextTranslationStrategy) createClass(Class.forName(textTranslationStrategyClassName), beanFactory))
-                    .withCurrencyStrategy((CurrencyConversionStrategy) createClass(Class.forName(currencyConversionStrategyClassName), beanFactory))
-                    .withMeasurementStrategy((MeasurementConversionStrategy) createClass(Class.forName(measurementConversionStrategyClassName), beanFactory))
-                    .withTranslationCache((AutoTranslationCache) createClass(Class.forName(translationCacheClassName), beanFactory))
-                    .build();
+            // Create the translator and add all strategies.
+            StrategyTranslator translator = (StrategyTranslator) this.createClass(translatorClass, beanFactory);
+            translator.setTextStrategy((TextTranslationStrategy) createClass(Class.forName(textTranslationStrategyClassName), beanFactory));
+            translator.setCurrencyStrategy((CurrencyConversionStrategy) createClass(Class.forName(currencyConversionStrategyClassName), beanFactory));
+            translator.setMeasurementStrategy((MeasurementConversionStrategy) createClass(Class.forName(measurementConversionStrategyClassName), beanFactory));
+            // If the translator should be cached put it into a CachedTranslatorProxy.
+            if (translationCacheClassName != null) {
+                return new CachedTranslatorProxy(translator, (AutoTranslationCache) createClass(Class.forName(translationCacheClassName), beanFactory));
+            }
+            return translator;
         } catch (Exception e) {
             throw new ClassNotFoundException("Could not create translator.", e);
         }

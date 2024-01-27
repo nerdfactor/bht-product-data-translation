@@ -5,6 +5,7 @@ import de.bhtberlin.paf2023.productdatatranslation.exception.TranslationExceptio
 import de.bhtberlin.paf2023.productdatatranslation.translation.BasicTranslator;
 import de.bhtberlin.paf2023.productdatatranslation.translation.Translator;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +34,10 @@ public class BasicTranslatorFactory implements TranslatorFactory {
      * @param packageName The package name to use.
      * @return The full class name.
      */
-    protected @NotNull String createClassName(@NotNull String className, String packageName) {
+    protected @Nullable String createClassName(@Nullable String className, String packageName) {
+        if(className == null || className.isEmpty()){
+            return null;
+        }
         if (className.contains(".")) {
             return className;
         }
