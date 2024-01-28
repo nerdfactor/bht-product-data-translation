@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
  */
 @Getter
 @Setter
-@Builder(setterPrefix = "with")
 @NoArgsConstructor
 @AllArgsConstructor
 public class StrategyTranslator extends BasicTranslator {

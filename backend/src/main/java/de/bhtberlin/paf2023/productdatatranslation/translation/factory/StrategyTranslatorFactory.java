@@ -31,16 +31,19 @@ public class StrategyTranslatorFactory extends BasicTranslatorFactory {
         String translationCacheClassName = createClassName(config.getStrategyConfig().getTranslationCache(), config.getTranslatorPackage());
 
         try {
-            // The factory assumes that all {@link StrategyTranslator StrategyTranslators} have a static builder method.
+            // Check if the translator is a valid StrategyTranslator
             Class<?> translatorClass = Class.forName(translatorClassName);
-            Method builderMethod = translatorClass.getMethod("builder");
-            StrategyTranslator.StrategyTranslatorBuilder builder = (StrategyTranslator.StrategyTranslatorBuilder) builderMethod.invoke(null);
+            if (!StrategyTranslator.class.isAssignableFrom(translatorClass)) {
+                throw new ClassNotFoundException(translatorClassName + " is not a valid StrategyTranslator.");
+            }
 
-            return builder.withTextStrategy((TextTranslationStrategy) createClass(Class.forName(textTranslationStrategyClassName), beanFactory))
-                    .withCurrencyStrategy((CurrencyConversionStrategy) createClass(Class.forName(currencyConversionStrategyClassName), beanFactory))
-                    .withMeasurementStrategy((MeasurementConversionStrategy) createClass(Class.forName(measurementConversionStrategyClassName), beanFactory))
-                    .withTranslationCache((AutoTranslationCache) createClass(Class.forName(translationCacheClassName), beanFactory))
-                    .build();
+            // Create the translator and add all strategies.
+            StrategyTranslator translator = (StrategyTranslator) this.createClass(translatorClass, beanFactory);
+            translator.setTextStrategy((TextTranslationStrategy) createClass(Class.forName(textTranslationStrategyClassName), beanFactory));
+            translator.setCurrencyStrategy((CurrencyConversionStrategy) createClass(Class.forName(currencyConversionStrategyClassName), beanFactory));
+            translator.setMeasurementStrategy((MeasurementConversionStrategy) createClass(Class.forName(measurementConversionStrategyClassName), beanFactory));
+            translator.setTranslationCache((AutoTranslationCache) createClass(Class.forName(translationCacheClassName), beanFactory));
+            return translator;
         } catch (Exception e) {
             throw new ClassNotFoundException("Could not create translator.", e);
         }
