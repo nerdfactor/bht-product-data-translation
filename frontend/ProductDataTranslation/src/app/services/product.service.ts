@@ -20,7 +20,16 @@ export class ProductService extends HttpService {
     return this.get<Product[]>(this.productsUri, isoCode);
   }
 
-  searchProducts(search: String, isoCode: string, page: number = 0, size: number = 10, sort: string = 'id', direction: string = 'asc'): Observable<Page<Product>> {
+  /**
+   * Search for products by name or description in a specific language and add a sorting and pagination parameters.
+   * @param search
+   * @param isoCode
+   * @param page
+   * @param size
+   * @param sort
+   * @param direction
+   */
+  searchProducts(search: string, isoCode: string, page: number = 0, size: number = 10, sort: string = 'id', direction: string = 'asc'): Observable<Page<Product>> {
     let url = this.productsUri + `/search?page=${page}&size=${size}&sort=${sort},${direction}&query=${search}`;
     return this.get<Page<Product>>(url, isoCode);
   }

@@ -1,3 +1,6 @@
+/**
+ * Page is a wrapper for a list of generic items with paging and sorting.
+ */
 export class Page<T> {
   content: T[] = [];
   pageable: Pageable = new Pageable();
@@ -12,6 +15,9 @@ export class Page<T> {
   empty: boolean = false;
 }
 
+/**
+ * Paging parameters for a page.
+ */
 export class Pageable {
   pageNumber: number = 0;
   pageSize: number = 0;
@@ -21,6 +27,9 @@ export class Pageable {
   unpaged: boolean = false;
 }
 
+/**
+ * Sort parameters for a page.
+ */
 export class Sort {
   sorted: boolean = false;
   unsorted: boolean = true;
