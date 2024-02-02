@@ -59,11 +59,11 @@ public class ColorService {
     /**
      * Update a Color.
      *
-     * @param Color The Color with updated values.
+     * @param color The Color with updated values.
      * @return The updated Color.
      */
-    public @NotNull Color updateColor(@NotNull Color Color) {
-        return this.colorRepository.save(Color);
+    public @NotNull Color updateColor(@NotNull Color color) {
+        return this.colorRepository.save(color);
     }
 
     /**

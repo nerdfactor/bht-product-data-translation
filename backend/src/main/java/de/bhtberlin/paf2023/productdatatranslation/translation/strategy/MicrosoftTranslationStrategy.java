@@ -26,7 +26,7 @@ public class MicrosoftTranslationStrategy implements ExternalTranslationApiStrat
 
     private final ObjectMapper mapper;
 
-    private final static String apiUrl = "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=%s&to=%s";
+    private static final String API_URL = "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=%s&to=%s";
 
     public MicrosoftTranslationStrategy(String apiKey, String apiRegion, ObjectMapper mapper) {
         this.apiKey = apiKey;
@@ -63,7 +63,7 @@ public class MicrosoftTranslationStrategy implements ExternalTranslationApiStrat
 
         RestTemplate restTemplate = new RestTemplate();
 
-        String uri = apiUrl.formatted(from, to);
+        String uri = API_URL.formatted(from, to);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

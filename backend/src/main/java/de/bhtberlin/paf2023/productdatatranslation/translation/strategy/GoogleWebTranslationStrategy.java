@@ -23,7 +23,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class GoogleWebTranslationStrategy implements ExternalTranslationApiStrategy {
 
-    private final static String apiUrl = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=%s&tl=%s&dt=t&q=%s";
+    private static final String API_URL = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=%s&tl=%s&dt=t&q=%s";
 
     private final ObjectMapper mapper;
 
@@ -54,7 +54,7 @@ public class GoogleWebTranslationStrategy implements ExternalTranslationApiStrat
 
         RestTemplate restTemplate = new RestTemplate();
 
-        String uri = apiUrl.formatted(from, to, text);
+        String uri = API_URL.formatted(from, to, text);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));

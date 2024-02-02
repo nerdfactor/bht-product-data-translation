@@ -85,7 +85,7 @@ public class ProductService {
                         if (!product.hasTranslations()) {
                             try {
                                 this.translationService.translateProduct(product, tag);
-                                log.info("Auto translated Product: " + product.getName() + " into " + tag);
+                                log.info("Auto translated Product: %s into %s".formatted(product.getName(), tag));
                             } catch (TranslationException e) {
                                 // could not be translated automatically and can remain empty.
                             }
